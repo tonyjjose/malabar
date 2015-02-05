@@ -29,3 +29,21 @@ define('DB_HOST', 'localhost');
 define('DB_NAME', 'login');
 define('DB_USER', 'root');
 define('DB_PASS', 'google');
+
+/**
+ * Configuration for: Folders
+ * Here you define where your folders are. Unless you have renamed them, there's no need to change this.
+ */
+define('LIBS_PATH', 'application/libs/');
+define('CONTROLLER_PATH', 'application/controllers/');
+define('MODELS_PATH', 'application/models/');
+define('VIEWS_PATH', 'application/views/');
+
+
+/**
+ * Configuration for: Error messages and notices
+ *
+ * In this project, the error messages, notices etc are all-together called "feedback".
+ */
+define('FEEDBACK_USERNAME_FIELD_EMPTY', 'Username field was empty.');
+define('FEEDBACK_PASSWORD_FIELD_EMPTY', 'Password field was empty.');

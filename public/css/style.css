@@ -1,4 +1,5 @@
-/* Demo CSS */
+/* Just for demo 
+ * Replace with proper css */
 
 html, body {
     margin: 0;
@@ -6,28 +7,20 @@ html, body {
 }
 
 body {
-    font-size: 15px;
+    font-size: 1em;
 }
 
-table {
-    font-size: 13px;
-}
-
-.container {
-    border: 3px solid #000;
+.content {
+    border: 2px solid green;
     padding: 20px;
     margin: 10px;
 }
 
-.where-are-we-box {
-    position: relative;
-    left: -20px;
-    top: -20px;
-    background-color: #bbb;
-    padding: 10px 15px;
-    display: inline-block;
-}
 
 .bold {
     font-weight: bold;
+}
+
+.feedback {
+    border:3px solid red;
 }

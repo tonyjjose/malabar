@@ -4,8 +4,7 @@
  * Session class
  *
  * handles the session stuff. creates session when no one exists, sets and
- * gets values, and closes the session properly (=logout). Those methods
- * are STATIC, which means you can call them with Session::get(XXX);
+ * gets values, and closes the session properly (=logout). 
  */
 class Session
 {
@@ -47,6 +46,7 @@ class Session
      */
     public static function destroy()
     {
+        //$_SESSION = array();
         session_destroy();
     }
 }

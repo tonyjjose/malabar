@@ -10,6 +10,10 @@
  *
  *
  * Date 4 Feb 2015	
+ *
+ * Requirements
+ * PHP 5.3+
+ * mod_rewrite()
  */
 
 // load the (optional) Composer auto-loader
@@ -25,8 +29,9 @@ require 'application/config/config.php';
 require 'application/libs/application.php';
 require 'application/libs/controller.php';
 
-//load session 
+//load session and view class
 require 'application/libs/session.php';
+require 'application/libs/view.php';
 
 // start the application
 $app = new Application();

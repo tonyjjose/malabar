@@ -1,5 +1,9 @@
 <?php
 
+/**
+* The heart of the application. :-p
+*/
+
 class Application
 {
     /** @var null The controller */
@@ -58,7 +62,7 @@ class Application
         } else {
             // invalid URL, so simply show home/index
             require './application/controller/home.php';
-            echo "We got into an invalid page. so going to show home.."
+            echo "We got into an invalid page. so going to show home..";
             $home = new Home();
             $home->index();
         }
