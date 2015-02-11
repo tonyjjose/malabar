@@ -32,6 +32,7 @@ require 'application/libs/controller.php';
 //load session and view class
 require 'application/libs/session.php';
 require 'application/libs/view.php';
+require 'application/libs/feedback.php';
 
 // start the application
 $app = new Application();

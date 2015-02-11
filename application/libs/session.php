@@ -42,6 +42,18 @@ class Session
     }
 
     /**
+     * adds a value as a new array element to the key.
+     * useful for collecting error messages etc
+     *
+     * @param mixed $key
+     * @param mixed $value
+     */
+    public static function add($key, $value)
+    {
+        $_SESSION[$key][] = $value;
+    }    
+
+    /**
      * deletes the session (= logs the user out)
      */
     public static function destroy()

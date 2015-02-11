@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame -->
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <!--  Mobile Viewport Fix -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+
+        <title>{% block title %}{{ name }}{# page specific title #} {% endblock %} - MalabarBibleCourses.org</title>
+        <meta name="description" content="the description">
+
+        <!-- css -->
+        <link href="{{URL}}public/css/style.css" rel="stylesheet">
+        <!-- jQuery -->
+        <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+        <!-- JavaScript -->
+        <script src="{{URL}}public/js/application.js"></script>
+        {% block head %} {# if anything more has to be added to head #} {% endblock %} 
+    </head>
+
+    <body>
+        <div class="header">
+            <h1>Malabar Bible Courses</h1>
+            <img src="{{URL}}public/img/demo-image.png" />
+            <div class="navigation">
+                {% block nav %} {# should we need a different nav, we can addit here #}
+                    <ul>
+                        <!-- same like "home" or "home/index" -->
+                        <li><a href="{{URL}}">home</a></li>
+                        <li><a href="{{URL}}home/link1">Link1</a></li>
+                        <li><a href="{{URL}}home/link2">Link2</a></li>
+                        <li><a href="{{URL}}link3">Link3</a></li>
+                    </ul>
+                {% endblock %}
+            </div> <!-- end nav -->
+        </div> <!-- end header -->
+
+        <div id="content">
+            {% block feedback%}{# any error/success msgs here #}{% endblock %}
+
+            {% block content %}{# the main content block #}{% endblock %}
+
+        </div><!-- end content -->
+
+        <div id="footer">
+            {% block footer %}
+                &copy; Copyright 2015 by <a href="http://malabarbiblecourses.org/">Home</a>
+            {% endblock %}
+        </div><!-- end footer -->
+    </body>
+</html>

@@ -7,6 +7,30 @@
  */
 class View
 {
+
+    //The twig variables.
+    private $loader = null;
+    private $twig = null;
+
+
+    function __construct ()
+    {
+        //load the twig library. We installed it above the application directory.
+        require_once TWIG_PATH . 'Autoloader.php';
+        Twig_Autoloader::register();
+
+        $this->loader = new Twig_Loader_Filesystem(VIEWS_PATH);
+
+        /* set the cache directory. here we set it one level above the app directory so that
+         * it is not accessible from outside world. 
+         * Note that the dir should be writable. 
+         */
+        //$this->twig = new Twig_Environment($this->loader, array('cache' => TWIG_CACHE_PATH,));
+
+        $this->twig = new Twig_Environment($this->loader, array('cache' => false,'debug' => true));   #no cache as we are coding.     
+
+    }
+
     /**
      * simply includes (=shows) the view. this is done from the controller. In the controller, you usually say
      * $this->view->render('help/index'); to show (in this example) the view index.php in the folder help.
@@ -39,6 +63,13 @@ class View
         // delete these messages (as they are not needed anymore and we want to avoid to show them twice
         Session::set('feedback_positive', null);
         Session::set('feedback_negative', null);
+    }
+
+    public function renderWithTwig($template, $array)
+    {
+        echo "we came somehow here in twig";
+        echo $this->twig->render($template,$array);
+
     }
 
     /**

@@ -22,5 +22,12 @@ body {
 }
 
 .feedback {
-    border:3px solid red;
+    display: block;
+    /*border:3px solid red;*/
+}
+.failure {
+    color: red;
+}
+.success {
+    color: green;
 }

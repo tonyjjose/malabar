@@ -38,6 +38,16 @@ define('LIBS_PATH', 'application/libs/');
 define('CONTROLLER_PATH', 'application/controllers/');
 define('MODELS_PATH', 'application/models/');
 define('VIEWS_PATH', 'application/views/');
+define('TEMPLATES_PATH', 'application/views/');
+
+/* Path for twig and twig cache.
+ * we are giving here filesystem level path. Note sure if this is the correct way.
+ * An expert advice or review needed here  -------------???
+ * Cache folder is put above the http public folder as it is writable and we dont need it to
+ * be accessed from outside world.
+ */
+define('TWIG_PATH', '../Twig/');
+define('TWIG_CACHE_PATH', '../../cache/');
 
 
 /**

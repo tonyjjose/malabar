@@ -23,8 +23,14 @@ class Login extends controller
 
         echo "we are in login controller index and about to show the form";      
         //Show the login page
-        $this->view->render('login/index');       
-	}
+        //$this->view->render('login/index');  
+        print_r(Session::get('feedback_negative'));
+        print_r(Session::get('feedback_positive'));
+        print_r(Feedback::getPositive());
+//require 'application/lib/feedback.php';
+        //$this->view->renderWithTwig('login/index.html.twig',array('URL'=>URL,'feedback_negative'=>Session::get('feedback_negative'),'feedback_positive'=>Session::get('feedback_positive')));     
+        $this->view->renderWithTwig('login/index.html.twig',array('URL'=>URL,'feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive() ));	
+    }
 
         /**
         * Check the supplied credentionals and validate the user.
@@ -41,6 +47,7 @@ class Login extends controller
         // perform the login method, put result (true or false) into $login_successful
         $login_successful = $login_model->signIn();
 
+print_r(Feedback::getPositive());
         // check login status
         if ($login_successful) {
             // if YES, then move user to home)

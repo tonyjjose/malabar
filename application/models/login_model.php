@@ -23,9 +23,15 @@ class LoginModel
      */
     public function signIn()
     {
+        //require 'application/lib/feedback.php';
+        echo "wtf";
+        Feedback::addPositive("hahaha");
+        echo "wtf2";
+        Feedback::addNegative("ayyoooo");
         // See if the data is send, if not, give feedback and exit false
         if (!isset($_POST['user_name']) OR empty($_POST['user_name'])) {
-            $_SESSION["feedback_negative"][] = FEEDBACK_USERNAME_FIELD_EMPTY;
+            //$_SESSION["feedback_negative"][] = FEEDBACK_USERNAME_FIELD_EMPTY;
+            Session::add('feedback_negative', FEEDBACK_USERNAME_FIELD_EMPTY);
             return false;
         }
         if (!isset($_POST['user_password']) OR empty($_POST['user_password'])) {
