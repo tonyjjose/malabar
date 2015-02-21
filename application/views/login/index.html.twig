@@ -3,13 +3,12 @@
 {% block title %}Login{% endblock %}
 
 {% block feedback %}
-        {% for feed in feedback_positive %}
+    {% for feed in feedback_positive %}
         <span class="feedback success">{{feed|e }}</span>
     {% endfor %}
-        {% for feed in feedback_negative %}
+    {% for feed in feedback_negative %}
         <span class="feedback failure">{{feed|e }}</span>
     {% endfor %}    
-
 {% endblock %}
 
 {% block content %}

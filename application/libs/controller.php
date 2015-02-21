@@ -27,14 +27,13 @@ class Controller
         Session::init();
 
         if (!isset($_SESSION['user_logged_in'])) {
-                echo "we are not logged in";
 
                 //We check the URL to see if it is to login[or login related] page, if so we allow, 
                 //otherwise, we redirect to login page.
                 if (strpos($_SERVER['REQUEST_URI'], '/app/login') === false){
                      
                     Session::destroy();
-                    header('location: ' . URL . 'login'); 
+                    Redirect::to('login'); 
                     //exit(); //should we enable this so as to prevent curl?? may be we should.                   
                 }
             }

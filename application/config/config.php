@@ -3,8 +3,6 @@
 /**
  * Configuration
  *
- * For more info about constants please @see http://php.net/manual/en/function.define.php
- * If you want to know why we use "define" instead of "const" @see http://stackoverflow.com/q/2447791/1114320
  */
 
 /**
@@ -46,7 +44,7 @@ define('TEMPLATES_PATH', 'application/views/');
  * Cache folder is put above the http public folder as it is writable and we dont need it to
  * be accessed from outside world.
  */
-define('TWIG_PATH', '../Twig/');
+define('TWIG_PATH', 'Twig/');
 define('TWIG_CACHE_PATH', '../../cache/');
 
 
@@ -57,3 +55,6 @@ define('TWIG_CACHE_PATH', '../../cache/');
  */
 define('FEEDBACK_USERNAME_FIELD_EMPTY', 'Username field was empty.');
 define('FEEDBACK_PASSWORD_FIELD_EMPTY', 'Password field was empty.');
+
+
+

@@ -9,6 +9,9 @@ class Application
     /** @var null The controller */
     private $url_controller = null;
 
+    //the name of the controller class
+    private $controllerName;
+
     /** @var null The method (of the above controller), often also named "action" */
     private $url_action = null;
 
@@ -30,13 +33,17 @@ class Application
         // create array with URL parts in $url
         $this->splitUrl();
 
-        // check for controller: does such a controller exist ?
-        if (file_exists('./application/controller/' . $this->url_controller . '.php')) {
+        //the controller class name. We have named our controller class names in the form 'FooController' or 'BarController'
+        $this->controllerName = $this->url_controller. 'Controller';
 
-            // if so, then load this file and create this controller
-            // example: if controller would be "car", then this line would translate into: $this->car = new car();
-            require './application/controller/' . $this->url_controller . '.php';
-            $this->url_controller = new $this->url_controller();
+        // check for controller: does such a controller file exist ?
+        if (file_exists('./application/controller/' . $this->url_controller . '_controller.php')) {
+
+            // if so, then load this file
+            require './application/controller/' . $this->url_controller . '_controller.php';
+
+            // and instatiate the controller.
+            $this->url_controller = new $this->controllerName();
 
             // check for method: does such a method exist in the controller ?
             if (method_exists($this->url_controller, $this->url_action)) {
@@ -60,11 +67,8 @@ class Application
                 $this->url_controller->index();
             }
         } else {
-            // invalid URL, so simply show home/index
-            require './application/controller/home.php';
-            echo "We got into an invalid page. so going to show home..";
-            $home = new Home();
-            $home->index();
+            // invalid URL, so simply redirect error page           
+            Redirect::to('error');
         }
     }
 

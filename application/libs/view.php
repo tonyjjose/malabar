@@ -3,7 +3,7 @@
 /**
  * Class View
  *
- * Provides the methods all views will have
+ * Provides the render methods and does the twig initialization
  */
 class View
 {
@@ -15,7 +15,7 @@ class View
 
     function __construct ()
     {
-        //load the twig library. We installed it above the application directory.
+        //load the twig library. We installed it in the application directory.
         require_once TWIG_PATH . 'Autoloader.php';
         Twig_Autoloader::register();
 
@@ -26,50 +26,31 @@ class View
          * Note that the dir should be writable. 
          */
         //$this->twig = new Twig_Environment($this->loader, array('cache' => TWIG_CACHE_PATH,));
-
-        $this->twig = new Twig_Environment($this->loader, array('cache' => false,'debug' => true));   #no cache as we are coding.     
-
+        $this->twig = new Twig_Environment($this->loader, array('cache' => false,'debug' => true));   #no cache as we are coding. 
+        
+        //add a twig global variable that holds the project URL.
+        $this->twig->addGlobal('URL', URL);        
     }
 
     /**
-     * simply includes (=shows) the view. this is done from the controller. In the controller, you usually say
-     * $this->view->render('help/index'); to show (in this example) the view index.php in the folder help.
-     * Usually the Class and the method are the same like the view, but sometimes you need to show different views.
-     * @param string $filename Path of the to-be-rendered view, usually folder/file(.php)
-     * @param boolean $render_without_header_and_footer Optional: Set this to true if you don't want to include header and footer
+     * This will render the template requested. 
+     * Note that the parameter list must be an array for twig.
+     *
      */
-    public function render($filename, $render_without_header_and_footer = false)
+    public function render($template, $array=array())
     {
-        // page without header and footer, for whatever reason
-        if ($render_without_header_and_footer == true) {
-            require VIEWS_PATH . $filename . '.php';
-        } 
-        else {
-            require VIEWS_PATH . '_templates/header.php';
-            require VIEWS_PATH . $filename . '.php';
-            require VIEWS_PATH . '_templates/footer.php';
-        }
-    }
-
-    /**
-     * renders the feedback messages into the view
-     */
-    public function renderFeedbackMessages()
-    {
-        // echo out the feedback messages (errors and success messages etc.),
-        // they are in $_SESSION["feedback_positive"] and $_SESSION["feedback_negative"]
-        require VIEWS_PATH . '_templates/feedback.php';
-
-        // delete these messages (as they are not needed anymore and we want to avoid to show them twice
-        Session::set('feedback_positive', null);
-        Session::set('feedback_negative', null);
-    }
-
-    public function renderWithTwig($template, $array)
-    {
-        echo "we came somehow here in twig";
         echo $this->twig->render($template,$array);
+        //Clear feedback. Is it not the right place to do it???
+        Feedback::clear();
+    }
 
+    /**
+     * This is included if we need to bypass twig for whatever reason we may need, if any.
+     */
+    public function renderWithoutTwig($filename)
+    {
+        //display the file..
+        require VIEWS_PATH . $filename . '.php';
     }
 
     /**
