@@ -1,0 +1,33 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}Login{% endblock %}
+
+{% block feedback %}
+    {% for feed in feedback_positive %}
+        <span class="feedback success">{{feed|e }}</span>
+    {% endfor %}
+    {% for feed in feedback_negative %}
+        <span class="feedback failure">{{feed|e }}</span>
+    {% endfor %}    
+{% endblock %}
+
+{% block content %}
+    <h1>Welcome</h1>
+    <div class="content">
+        <h2>Welcome to our application</h2>
+        <p>Lets add a course category</p>
+        <div>
+            <h1>Add a course category</h1>
+            <form action="{{URL}}course/addcategorysave" method="post">
+                    <label>Category Name</label>
+                    <input type="text" name="category_name" required/><br>
+                    <label>Description</label>
+                    <textarea id="category_desc" name="category_desc" maxlength="255" cols="30" rows="8" 
+                    placeholder="A small description about the category, if any"></textarea><br>
+                    <input type="submit" class="category-submit-button" />
+            </form>
+        </div>        
+
+    </div>  <!-- end content -->
+
+{% endblock %}

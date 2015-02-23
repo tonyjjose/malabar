@@ -33,10 +33,12 @@ require 'application/libs/view.php';
 require 'application/libs/feedback.php';
 require 'application/libs/redirect.php';
 require 'application/libs/request.php';
+require 'application/libs/database.php';
 
 /*
 * load bussiness classes
 */
+require 'application/core/course.php';
 
 // start the application
 $app = new Application();

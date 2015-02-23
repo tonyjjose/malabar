@@ -24,7 +24,7 @@ define('URL', 'http://127.0.0.1/app/');
  */
 define('DB_TYPE', 'mysql');
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'login');
+define('DB_NAME', 'bcc_app');
 define('DB_USER', 'root');
 define('DB_PASS', 'google');
 

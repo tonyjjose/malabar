@@ -17,6 +17,7 @@ class Feedback
 		$_SESSION['feedback_negative'][] = $feedback;
 	}
 
+	//returns a string array
 	public static function getPositive()
 	{
 		if (isset($_SESSION['feedback_positive'])) {
@@ -34,6 +35,11 @@ class Feedback
 	{
 		Session::set('feedback_positive', null);
         Session::set('feedback_negative', null);
+	}
+	public static function printAll()
+	{
+		print_r(Feedback::getPositive());
+		print_r(Feedback::getNegative());		
 	}
 
 }

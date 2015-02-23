@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `bcc_app`.`users` (
   CHECK (`user_age`>14)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-ALTER TABLE `bcc_app`.`users`AUTO_INCREMENT=101; -- to begin from 101 onwards
+ALTER TABLE `bcc_app`.`users` AUTO_INCREMENT=101; -- to begin from 101 onwards
 
 /* Our course catogory table. we can use this for categorising courses,
  * as of now, may be in the basis of languages
@@ -58,7 +58,7 @@ PRIMARY KEY (`cat_id`),
 UNIQUE (`cat_name`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-ALTER TABLE `bcc_app`.`category`AUTO_INCREMENT=101;
+ALTER TABLE `bcc_app`.`category` AUTO_INCREMENT=101;
 
 
 /* The course details
@@ -76,7 +76,7 @@ UNIQUE (`course_name`),
 CONSTRAINT `coure_category_fk` FOREIGN KEY (`course_category_id`) REFERENCES `category` (`cat_id`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-ALTER TABLE `bcc_app`.`courses`AUTO_INCREMENT=101; -- to begin from 101 onwards
+ALTER TABLE `bcc_app`.`courses` AUTO_INCREMENT=101; -- to begin from 101 onwards
 
 
 
