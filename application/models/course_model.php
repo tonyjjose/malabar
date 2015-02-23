@@ -17,6 +17,48 @@ class CourseModel
         $this->db = $db;
     }
 
+    public function addSave()
+    {
+        echo "Lets save to db";
+        //get the inputs
+        $name = Request::post('course_name');
+        $desc = Request::post('course_desc');
+        $cat_id = Request::post('course_cat');
+
+        //validate them
+    	if(!$name || strlen($name)== 0 || strlen($name) > 25) {
+    		Feedback::addNegative('Failed! Course name is invalid.');
+    		return false;
+    	}        
+    	//Check if the course name already exist
+    	if (Course::courseExists($name)) {
+    		Feedback::addNegative('Failure! Course name already exists.');
+    		return false;
+    	}
+    	//check whether course category is provided
+    	if(!$cat_id) {
+    		Feedback::addNegative('Failure! A Course category must be selected.');
+    		return false;
+    	}
+
+    	//ok, try to add to db
+    	$sql = "INSERT INTO courses (course_name, course_desc, course_category_id) VALUES (:name, :desc, :cat_id)";
+    	$query = $this->db->prepare($sql);
+    	$query->execute(array(':name'=>$name,':desc'=>$desc,'cat_id'=>$cat_id));
+
+    	//has it got added? if so success.
+    	if ($query->rowCount() == 1) {
+    		Feedback::addPositive("Success! Course '{$name}' added.");
+            return true;
+        }  
+
+    	//We come here if its not added properly, notify it and exit
+    	Feedback::addNegative('Failed! Unknown reason.');
+    	return false;
+       
+
+    }    
+
     public function saveCategory(){
 
     	//get the inputs
@@ -25,7 +67,7 @@ class CourseModel
 
     	//validate them
     	if(!$name || strlen($name)== 0 || strlen($name) > 15) {
-    		Feedback::addNegative("Failed! Course Category name is invalid.");
+    		Feedback::addNegative('Failed! Course Category name is invalid.');
     		return false;
     	}
 

@@ -20,7 +20,7 @@
             <h1>Add a course category</h1>
             <form action="{{URL}}course/addcategorysave" method="post">
                     <label>Category Name</label>
-                    <input type="text" name="category_name" required/><br>
+                    <input type="text" name="category_name" maxlength="15" required/><br>
                     <label>Description</label>
                     <textarea id="category_desc" name="category_desc" maxlength="255" cols="30" rows="8" 
                     placeholder="A small description about the category, if any"></textarea><br>

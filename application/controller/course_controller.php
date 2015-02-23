@@ -28,8 +28,27 @@ class CourseController extends Controller
      */  
     public function add()
     {
+        echo "yup, show add course form";
+        $categoryNames = Course::getAllCourseCategoryNames();
+        //var_dump($names);
+        $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive()
+            ,'category_names'=>$categoryNames );        
+        $this->view->render('course/add.html.twig', $params);        
 
     }
+    /**
+     * POST request after add course form submitted.
+     * We call the model and save it.
+     *
+     */  
+    public function addSave()
+    {
+        echo "yup, now lets save it";
+        $course_model = $this->loadModel('Course');
+        $success = $course_model->addSave(); //we dont use $success now.  
+        Redirect::to('course/add'); 
+    }
+
 
     /**
      * Edit Course page.
@@ -41,16 +60,36 @@ class CourseController extends Controller
 
     }
     /**
-     * Delete Course page.
-     * We display the form, along with the feedback of any previous actions.
+     * EditSave POST request after edit page.
+     * Save the edits
      *
      */  
-    public function Delete($id)
+    public function editSave($id)
+    {
+
+    }  
+
+
+    /**
+     * Delete Course page.
+     * We can display a confirmation dialog here.
+     *
+     */  
+    public function delete($id)
     {
 
     }   
+      
+    /**
+     * Delete Course POST request
+     * Delete it
+     *
+     */  
+    public function deleteSave($id)
+    {
 
-         
+    }  
+
 
     /**
      * Add Course category page.
