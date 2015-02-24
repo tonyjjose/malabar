@@ -16,7 +16,10 @@ class CourseController extends Controller
     public function index()
     {
         //as of now display the home, later we will redirect to respective pages based on user roles.
-        $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive() );        
+        $courses = Course::getAllCourses();
+        $categories = Course::getAllCourseCategoryNames();        
+        $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive(),
+            'courses'=>$courses, 'categories'=>$categories );        
         $this->view->render('course/index.html.twig', $params);
 
     }
@@ -28,6 +31,7 @@ class CourseController extends Controller
      */  
     public function add()
     {
+        //gather the parameters        
         $categoryNames = Course::getAllCourseCategoryNames();
         $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive()
             ,'category_names'=>$categoryNames );        
@@ -54,16 +58,28 @@ class CourseController extends Controller
      */  
     public function edit($id)
     {
+        //is there anything to edit?
+        if(!$id) {
+            Redirect::to('error');
+        }  
 
+        //gather the parameters
+        $course = Course::getCourse($id);
+        $categories = Course::getAllCourseCategoryNames();        
+
+        $params = array('course'=>$course,'categories'=>$categories);
+        $this->view->render('course/edit.html.twig', $params); 
     }
     /**
      * EditSave POST request after edit page.
      * Save the edits
      *
      */  
-    public function editSave($id)
+    public function editSave()
     {
-
+        $course_model = $this->loadModel('Course');
+        $success = $course_model->editSave(); //we dont use $success now.  
+        Redirect::to('course'); 
     }  
 
 
@@ -79,9 +95,10 @@ class CourseController extends Controller
             Redirect::to('error');
         }
 
-        //ask for confirmation
+        //gather the parameters
         $courseName = Course::getCourseName($id);
 
+        //display request for confirmation 
         $params = array('course_name'=>$courseName,'course_id'=>$id);
         $this->view->render('course/delete.html.twig', $params);        
 

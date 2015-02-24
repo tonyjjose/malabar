@@ -57,4 +57,14 @@ define('FEEDBACK_USERNAME_FIELD_EMPTY', 'Username field was empty.');
 define('FEEDBACK_PASSWORD_FIELD_EMPTY', 'Password field was empty.');
 
 
+/**
+ * Program level constants
+ *
+ *
+ **/
+
+CONST YES = 1;
+CONST NO = 0;
+
+
 
