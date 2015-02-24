@@ -28,9 +28,7 @@ class CourseController extends Controller
      */  
     public function add()
     {
-        echo "yup, show add course form";
         $categoryNames = Course::getAllCourseCategoryNames();
-        //var_dump($names);
         $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive()
             ,'category_names'=>$categoryNames );        
         $this->view->render('course/add.html.twig', $params);        
@@ -43,7 +41,6 @@ class CourseController extends Controller
      */  
     public function addSave()
     {
-        echo "yup, now lets save it";
         $course_model = $this->loadModel('Course');
         $success = $course_model->addSave(); //we dont use $success now.  
         Redirect::to('course/add'); 
@@ -77,6 +74,17 @@ class CourseController extends Controller
      */  
     public function delete($id)
     {
+        //is there anything to delete?
+        if(!$id) {
+            Redirect::to('error');
+        }
+
+        //ask for confirmation
+        $courseName = Course::getCourseName($id);
+
+        $params = array('course_name'=>$courseName,'course_id'=>$id);
+        $this->view->render('course/delete.html.twig', $params);        
+
 
     }   
       
@@ -85,9 +93,12 @@ class CourseController extends Controller
      * Delete it
      *
      */  
-    public function deleteSave($id)
+    public function deleteSave()
     {
-
+        echo 'we came ehre' . Request::post('course_id').'';
+        $course_model = $this->loadModel('Course');
+        $success = $course_model->deleteSave();
+        Redirect::to('course');  
     }  
 
 

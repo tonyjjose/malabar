@@ -55,8 +55,32 @@ class CourseModel
     	//We come here if its not added properly, notify it and exit
     	Feedback::addNegative('Failed! Unknown reason.');
     	return false;
-       
+    }
 
+    public function deleteSave(){
+        //get the inputs
+        $id = Request::post('course_id');
+
+        //validate it
+        if(!$id) {
+            //hacking attempt?
+            Feedback::addNegative ('Failure! No Course to delete.');
+            return false;
+        }
+
+        $sql = "DELETE FROM courses WHERE course_id = :course_id";
+        $query = $this->db->prepare($sql);
+        $query->execute(array(':course_id'=>$id));
+
+        //has it got deleted?
+        if ($query->rowCount() == 1) {
+            Feedback::addPositive("Success! Course (ID={$id}) deleted.");
+            return true;
+        }        
+
+        //We come here if its not deleted properly, notify it and exit
+        Feedback::addNegative('Failed! Unknown reason.');
+        return false;
     }    
 
     public function saveCategory(){
