@@ -36,6 +36,7 @@ class Feedback
 		Session::set('feedback_positive', null);
         Session::set('feedback_negative', null);
 	}
+	//useful while in development
 	public static function printAll()
 	{
 		print_r(Feedback::getPositive());

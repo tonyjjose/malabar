@@ -33,6 +33,7 @@ define('DB_PASS', 'google');
  * Here you define where your folders are. Unless you have renamed them, there's no need to change this.
  */
 define('LIBS_PATH', 'application/libs/');
+define('CORE_PATH', 'application/core/');
 define('CONTROLLER_PATH', 'application/controllers/');
 define('MODELS_PATH', 'application/models/');
 define('VIEWS_PATH', 'application/views/');

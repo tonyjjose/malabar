@@ -1,0 +1,40 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}Login{% endblock %}
+
+{% block feedback %}
+    {% for feed in feedback_positive %}
+        <span class="feedback success">{{feed|e }}</span>
+    {% endfor %}
+    {% for feed in feedback_negative %}
+        <span class="feedback failure">{{feed|e }}</span>
+    {% endfor %}    
+{% endblock %}
+
+{% block content %}
+    <h1>Welcome</h1>
+    <div class="content">
+        <h2>Welcome to </h2>
+        <p>Lets add a course</p>
+        <div>
+            <h1>Add a course </h1>
+            <form action="{{URL}}course/addSave" method="post">
+                    <label>Course Name</label>
+                    <input type="text" name="course_name" maxlength="25" required/><br>
+                    <label>Description</label>
+                    <textarea id="course_desc" name="course_desc" maxlength="255" cols="30" rows="8" 
+                    placeholder="A small description about the course, if any"></textarea><br>
+                    <label>Course Category</label>
+                    <select name="course_cat" size="3">
+                    {% for name in category_names %}
+                        <option value={{name.cat_id}}>{{name.cat_name}}</option>
+                    {% endfor %}
+                    </select>    
+                    <br>
+                    <input type="submit" class="course-submit-button" />
+            </form>
+        </div>        
+
+    </div>  <!-- end content -->
+
+{% endblock %}

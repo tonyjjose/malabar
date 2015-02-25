@@ -1,0 +1,38 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}Login{% endblock %}
+
+{# no feedback display needed here, this is just an intermediate stop, we get redirected to 
+    course/index after we are done.. #}
+
+{% block content %}
+    <h1>Welcome</h1>
+    <div class="content">
+        <h2>Welcome to </h2>
+        <p>Lets add a course</p>
+        <div>
+            <h1>Edit a course </h1>
+            <form action="{{URL}}course/editSave" method="post">
+                    <input type="hidden" name="course_id" value="{{course.course_id}}">
+                    <label>Course Name</label>
+                    <input type="text" name="course_name" maxlength="25" value = "{{course.course_name}}" required/><br>
+                    <label>Description</label>
+                    <textarea id="course_desc" name="course_desc" maxlength="255" cols="30" rows="8" 
+                    placeholder="A small description about the course, if any">{{course.course_desc}}</textarea><br>
+                    <label>Course Category</label>
+                    <select name="course_cat" size="3">
+                        {% for category in categories %}
+                            <option value="{{category.cat_id}}" {% if category.cat_id == course.course_category_id %}
+                                Selected {% endif %}>{{category.cat_name}}</option>
+                        {% endfor %}
+                    </select>    
+                    <br>
+                    <label>Active (yes if checked)</label>
+                    <input type="checkbox" name="course_active" value="yes" {% if course.course_active == 1 %} checked {% endif %}><br>                    
+                    <input type="submit" class="course-submit-button" />
+            </form>
+        </div>        
+
+    </div>  <!-- end content -->
+
+{% endblock %}

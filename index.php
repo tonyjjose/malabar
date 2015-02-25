@@ -39,6 +39,10 @@ require 'application/libs/database.php';
 * load bussiness classes
 */
 require 'application/core/course.php';
+require 'application/core/user.php';
+require 'application/core/student.php';
+require 'application/core/instructor.php';
+require 'application/core/manager.php';
 
 // start the application
 $app = new Application();
