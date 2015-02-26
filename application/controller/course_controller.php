@@ -16,11 +16,35 @@ class CourseController extends Controller
     public function index()
     {
         //as of now display the home, later we will redirect to respective pages based on user roles.
-        $courses = Course::getAllCourses();
+        $courses = Course::getAllCoursesRows();
         $categories = Course::getAllCourseCategoryNames();        
         $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive(),
             'courses'=>$courses, 'categories'=>$categories );        
         $this->view->render('course/index.html.twig', $params);
+
+    }
+
+    public function test($id){
+       // $cat = Category::getInstance($id);
+        //var_dump($cat);
+
+        //var_dump(Category::getAllCategories());
+
+        echo "course\n";
+        $c = Course::getInstance(102);
+        echo $c->getId();
+        echo $c->getCategory()->getName();
+        //print_r(Course::getInstance(103));
+        //var_dump(Course::getAllCourses());
+        echo "---\n";
+
+        $cs = Course::getAllCourses();
+        foreach ($cs as $c) {
+            # code...
+                    echo $c->getId();
+        echo $c->getCategory()->getName();
+        echo "\r\n";
+        }
 
     }
 

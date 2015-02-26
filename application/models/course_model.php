@@ -147,8 +147,7 @@ class CourseModel
     	}
 
     	//Check if the category name already exist
-    	//if ($this->categoryExists($name)) {
-    	if (Course::categoryExists($name)) {
+    	if (Category::categoryExists($name)) {
     		Feedback::addNegative("Failure! Course Category name already exists.");
     		return false;
     	}
@@ -170,18 +169,4 @@ class CourseModel
 
     }
 
-    /**
-     * Check if a category already exists.
-     * Should we move this to a special class??
-     *
-     */
-    public function categoryExists($name)
-    {
-    	$query = $this->db->prepare("SELECT cat_id FROM category WHERE cat_name = :name LIMIT 1");
-        $query->execute(array(':name' => $name));
-        if ($query->rowCount() == 0) {
-            return false;
-        }
-        return true;
-    }
 }

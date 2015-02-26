@@ -38,6 +38,7 @@ require 'application/libs/database.php';
 /*
 * load bussiness classes
 */
+require 'application/core/category.php';
 require 'application/core/course.php';
 require 'application/core/user.php';
 require 'application/core/student.php';
