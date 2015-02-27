@@ -23,6 +23,13 @@ require 'application/config/config.php';
 require 'application/libs/application.php';
 require 'application/libs/controller.php';
 
+//load the password compatibility library
+
+if (version_compare(PHP_VERSION, '5.5.0', '<')) {
+//load the libraray.
+    require_once("application/libs/password_compatibility_library.php");
+}
+
 /*
 * To Do: Create a auto loader class 
 *

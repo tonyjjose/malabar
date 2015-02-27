@@ -12,6 +12,9 @@
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
+//Set the default timezone for the script.
+date_default_timezone_set("Asia/Calcutta");
+
 /**
  * Configuration for: Project URL
  * Put your URL here, for local development "127.0.0.1" or "localhost" (plus sub-folder) is fine
@@ -66,6 +69,18 @@ define('FEEDBACK_PASSWORD_FIELD_EMPTY', 'Password field was empty.');
 
 CONST YES = 1;
 CONST NO = 0;
+
+define('ROLE_NONE', 'N');
+define('ROLE_STUDENT', 'S');
+define('ROLE_INSTRUCTOR', 'I');
+define('ROLE_MANAGER', 'M');
+
+define('SEX_MALE', 'M');
+define('SEX_FEMALE', 'F');
+
+define ('COURSE_MODE_EMAIL','E');
+define ('COURSE_MODE_POSTAL','P');
+
 
 
 

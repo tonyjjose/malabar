@@ -8,6 +8,7 @@
  */
 class UserController extends Controller
 {
+
     /**
      * PAGE: index
      * We will list all the available users here. 
@@ -17,42 +18,40 @@ class UserController extends Controller
     {
         //
         $users = User::getAllusers();
-        $categories = User::getAllUserCategoryNames();        
+        $categories = "";//Course::getAllCategoryNames();        
         $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive(),
             'users'=>$users, 'categories'=>$categories );        
-        $this->view->render('User/index.html.twig', $params);
+        $this->view->render('user/index.html.twig', $params);
 
     }
 
     /**
-     * Add User page.
+     * Add user page.
      * We display the form, along with the feedback of any previous actions.
      *
      */  
     public function add()
     {
-        //gather the parameters        
-        $categoryNames = User::getAllUserCategoryNames();
-        $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive()
-            ,'category_names'=>$categoryNames );        
-        $this->view->render('User/add.html.twig', $params);        
+        $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive(),'showManagerControls'=>false);        
+        $this->view->render('user/add.html.twig', $params);        
 
     }
     /**
-     * POST request after add User form submitted.
+     * POST request after add user form submitted.
      * We call the model and save it.
      *
      */  
     public function addSave()
     {
-        $User_model = $this->loadModel('User');
-        $success = $User_model->addSave(); //we dont use $success now.  
-        Redirect::to('User/add'); 
+        $user_model = $this->loadModel('User');
+        $success = $user_model->addSave(); //we dont use $success now.  
+        //Redirect::to('user/add'); 
+        Feedback::printAll();
     }
 
 
     /**
-     * Edit User page.
+     * Edit user page.
      * We display the edit form, along with the feedback of any previous actions.
      *
      */  
@@ -64,11 +63,10 @@ class UserController extends Controller
         }  
 
         //gather the parameters
-        $User = User::getUser($id);
-        $categories = User::getAllUserCategoryNames();        
+        $user = User::getInstance($id);       
 
-        $params = array('User'=>$User,'categories'=>$categories);
-        $this->view->render('User/edit.html.twig', $params); 
+        $params = array('user'=>$user,);
+        $this->view->render('user/edit.html.twig', $params); 
     }
     /**
      * EditSave POST request after edit page.
@@ -77,14 +75,14 @@ class UserController extends Controller
      */  
     public function editSave()
     {
-        $User_model = $this->loadModel('User');
-        $success = $User_model->editSave(); //we dont use $success now.  
-        Redirect::to('User'); 
+        $user_model = $this->loadModel('user');
+        $success = $user_model->editSave(); //we dont use $success now.  
+        Redirect::to('user'); 
     }  
 
 
     /**
-     * Delete User page.
+     * Delete user page.
      * We can display a confirmation dialog here.
      *
      */  
@@ -96,24 +94,25 @@ class UserController extends Controller
         }
 
         //gather the parameters
-        $UserName = User::getUserName($id);
+        $userName = user::getuserName($id);
 
         //display request for confirmation 
-        $params = array('User_name'=>$UserName,'User_id'=>$id);
-        $this->view->render('User/delete.html.twig', $params);        
+        $params = array('user_name'=>$userName,'user_id'=>$id);
+        $this->view->render('user/delete.html.twig', $params);        
 
 
     }   
       
     /**
-     * Delete User POST request
+     * Delete user POST request
      * Delete it
      *
      */  
     public function deleteSave()
     {
-        echo 'we came ehre' . Request::post('User_id').'';
-        $User_model = $this->loadModel('User');
-        $success = $User_model->deleteSave();
-        Redirect::to('User');  
+        echo 'we came ehre' . Request::post('user_id').'';
+        $user_model = $this->loadModel('user');
+        $success = $user_model->deleteSave();
+        Redirect::to('user');  
     }  
+}
