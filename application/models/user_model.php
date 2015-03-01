@@ -22,7 +22,7 @@ class UserModel
         //get the inputs
         $name = Request::post('user_name');
         $email = Request::post('user_email');
-        $password = Request::post('user_password');
+        $password = trim(Request::post('user_password')); //trim will return empty string on NULL/unset var.
         $age = (int)Request::post('user_age');
         $sex = Request::post('user_sex');
         $qual = Request::post('user_qual');
@@ -38,9 +38,11 @@ class UserModel
         //these will be set only by manager, so set default values if they are unset
         $type = Request::post('user_type');
         $type = (is_null($type)) ? ROLE_STUDENT : $type;
-        $approved = Request::post('user_approved');
-        $approved = (is_null($approved)) ? NO : ($approved == 'yes') ? YES : NO;
+
+        $approved = (Request::post('user_approved') == 'yes') ? YES : NO;
+        //$approved = (is_null($approved)) ? NO : ($approved == 'yes') ? YES : NO;
         $active = Request::post('user_active');
+        
         if (is_null($active)){ $active = YES; }
             //it is set, so process it.
             else { $active = (($active) == 'yes') ? YES : NO; }
@@ -118,12 +120,14 @@ class UserModel
         //these will be set only by manager, so set default values if they are unset
         $type = Request::post('user_type');
         $type = (is_null($type)) ? ROLE_STUDENT : $type;
+        
         $approved = Request::post('user_approved');
         $approved = (is_null($approved)) ? NO : ($approved == 'yes') ? YES : NO;
+        
         $active = Request::post('user_active');
         if (is_null($active)){ $active = YES; }
             //it is set, so process it.
-            else { $active = (($active) == 'yes') ? YES : NO; }
+            else { $active = ($active == 'yes') ? YES : NO; }
 
         $hash; //variable to hold the hash if needed
 
@@ -142,38 +146,42 @@ class UserModel
             Feedback::addNegative('Failure! user email already exists.');
             return false;
         }
-        if(!$password || strlen(trim($password)) == 0 || strlen($password) > 8) {
-            Feedback::addNegative('Failed! user password is invalid.');
-            return false;
-        }  
-        $password = trim($password);
-
         if($age < 14 || $age > 99) {
             Feedback::addNegative('Failed! user should be older than 14.');
             return false;
         }  
 
-        //is there a password field? if so get new hash and include it in query
-        if (!$password || strlen(trim($password)) == 0) {
+        //OK try to add to db
+
+        //is there a password field? 
+        if (!$password || strlen($password) == 0) {
+            //no password. update the remaining
             $sql = "UPDATE users SET user_name = :name, user_email = :email, user_age = :age, user_sex = :sex,
                 user_qualification = :qual, user_bio = :bio, user_phone = :phone, user_mobile = :mobile,
                 user_address = :address, user_course_mode = :mode, user_type = :type, user_approved = :approved,
                 user_active = :active, user_anonymous = :anon WHERE user_id =:id";
+            $query = $this->db->prepare($sql);
+            $query->execute(array(':name'=>$name,':email'=>$email,':age'=>$age,':sex'=>$sex,':qual'=>$qual,':bio'=>$bio,':phone'=>$phone,':mobile'=>$mobile,':address'=>$address,':mode'=>$mode,':type'=>$type,':approved'=>$approved,
+                ':active'=>$active,':anon'=>$anon,':id'=>$id));                
         }
         else {
+            //new password provided. Validate it
+            $password = trim($password);            
+            if(strlen($password) == 0 || strlen($password) > 8) {
+                Feedback::addNegative('Failed! user password is invalid.');
+            return false;
+            }
             //Note: this is a PHP 5.5.5+ function, but we use it with a compatibility lib
-            $hash = password_hash(trim($password), PASSWORD_DEFAULT);
+            $hash = password_hash($password, PASSWORD_DEFAULT);
             $sql = "UPDATE users SET user_name = :name, user_email = :email, user_age = :age, user_sex = :sex,
                 user_qualification = :qual, user_bio = :bio, user_phone = :phone, user_mobile = :mobile,
                 user_address = :address, user_course_mode = :mode, user_type = :type, user_approved = :approved,
                 user_active = :active, user_anonymous = :anon, user_password_hash = :hash WHERE user_id =:id";   
+            $query = $this->db->prepare($sql);
+            $query->execute(array(':name'=>$name,':hash'=>$hash,':email'=>$email,':age'=>$age,':sex'=>$sex,':qual'=>$qual,
+                ':bio'=>$bio,':phone'=>$phone,':mobile'=>$mobile,':address'=>$address,':mode'=>$mode,':type'=>$type,
+                ':approved'=>$approved,':active'=>$active,':anon'=>$anon,':id'=>$id));                
         }
-
-
-        //ok, try to add to db
-        $query = $this->db->prepare($sql);
-        $query->execute(array(':name'=>$name,':hash'=>$hash,':email'=>$email,':age'=>$age,':sex'=>$sex,':qual'=>$qual,':bio'=>$bio,':phone'=>$phone,':mobile'=>$mobile,':address'=>$address,':mode'=>$mode,':type'=>$type,':approved'=>$approved,
-            ':active'=>$active,':anon'=>$anon,':id'=>$id));
 
         //has it got added? if so success.
         if ($query->rowCount() == 1) {
@@ -183,7 +191,7 @@ class UserModel
 
         //We come here if its not added properly, notify it and exit
         Feedback::addNegative('Failed! Unknown reason.');
-        return false;
+        return false; 
 
     }    
 

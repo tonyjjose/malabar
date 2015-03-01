@@ -14,9 +14,15 @@
 {% block content %}
     <h1>Welcome</h1>
     <div class="content">
-        <h2>The list of available users</h2>
-        <p>This is the page of user..We will list the users here, for managers there will be the option to add new/edit and delete!!</p>
-        <a href="{{URL}}user/add">Add a new user</a>
+        <h2>Dashboard</h2>
+        <p>This is the page of student..We will list his courses along with its instructor if assigned.
+            There will be an option for him to upload assignments.
+            There will be a link to view/edit his profile. </p>
+
+            <h2>Welcome {{student.name}}</h2>
+            <h2>Your courses</h2>
+            {{student.getMyCourses}}
+
     
         <table>
             {# table head #}

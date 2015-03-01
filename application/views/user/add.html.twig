@@ -49,20 +49,18 @@
                     <label>Anonymous (yes if checked)</label>
                     <input type="checkbox" name="user_anon" value="yes" ><br><br><br>
 
-                    {# Manager specific options, will be shown only for manager #}
-                    {% if showManagerControls %}
-                        <label>User type</label>
-                        <select name="user_type" size="3">
-                                <option value='S' selected>Student</option>
-                                <option value='I'>Instructor</option>
-                                <option value='M'>Manager</option>
-                        </select> <br>
-                        <label>Approved</label>
-                        <input type="checkbox" name="user_approved" value="yes" ><br> 
-                        <label>Active</label>
-                        <input type="radio" name="user_active" value="yes" checked>Active<br>
-                        <input type="radio" name="user_active" value="no">Inactive<br>   
-                    {% endif %}                                      
+                    <label>User type</label>
+                    <select name="user_type" size="3">
+                            <option value='S' selected>Student</option>
+                            <option value='I'>Instructor</option>
+                            <option value='M'>Manager</option>
+                    </select> <br>
+                    <label>Approved</label>
+                    <input type="checkbox" name="user_approved" value="yes" ><br> 
+                    <label>Active</label>
+                    <input type="radio" name="user_active" value="yes" checked>Active<br>
+                    <input type="radio" name="user_active" value="no">Inactive<br>   
+                                      
 
                     <input type="submit" class="user-submit-button" />
             </form>

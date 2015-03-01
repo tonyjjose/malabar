@@ -10,11 +10,11 @@
         <p>Delete?</p>
         <div>
             <h1>Are you sure?</h1>
-            <form action="{{URL}}course/deleteSave" method="post">
-                <p> Are you sure to delete the course {{course_name}} ?
-                    <input type="hidden" name="course_id" value="{{course_id}}">
-                    <input type="submit" text="yes" class="course-submit-button" /><br>
-                    <a href="{{URL}}course">No, Let me go back</a>
+            <form action="{{URL}}user/deleteSave" method="post">
+                <p> Are you sure to delete the user {{user.name}} ?
+                    <input type="hidden" name="user_id" value="{{user.id}}">
+                    <input type="submit" text="yes" class="user-submit-button" /><br>
+                    <a href="{{URL}}user">No, Let me go back</a>
             </form>
         </div>        
 

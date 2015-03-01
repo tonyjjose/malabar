@@ -16,11 +16,10 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
-        $users = User::getAllusers();
-        $categories = "";//Course::getAllCategoryNames();        
+        //gather the parameters
+        $users = User::getAllUsers();       
         $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive(),
-            'users'=>$users, 'categories'=>$categories );        
+            'users'=>$users,);        
         $this->view->render('user/index.html.twig', $params);
 
     }
@@ -45,8 +44,7 @@ class UserController extends Controller
     {
         $user_model = $this->loadModel('User');
         $success = $user_model->addSave(); //we dont use $success now.  
-        //Redirect::to('user/add'); 
-        Feedback::printAll();
+        Redirect::to('user/add');
     }
 
 
@@ -77,7 +75,7 @@ class UserController extends Controller
     {
         $user_model = $this->loadModel('user');
         $success = $user_model->editSave(); //we dont use $success now.  
-        Redirect::to('user'); 
+        Redirect::to('user');
     }  
 
 
@@ -94,10 +92,10 @@ class UserController extends Controller
         }
 
         //gather the parameters
-        $userName = user::getuserName($id);
+        $user = User::getInstance($id);
 
         //display request for confirmation 
-        $params = array('user_name'=>$userName,'user_id'=>$id);
+        $params = array('user'=>$user);
         $this->view->render('user/delete.html.twig', $params);        
 
 
@@ -110,7 +108,6 @@ class UserController extends Controller
      */  
     public function deleteSave()
     {
-        echo 'we came ehre' . Request::post('user_id').'';
         $user_model = $this->loadModel('user');
         $success = $user_model->deleteSave();
         Redirect::to('user');  
