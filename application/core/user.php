@@ -123,10 +123,38 @@ class User
         //if nothing return null 
         if (empty($row)) {return null;}
 
-        return new User($row->user_id,$row->user_name,$row->user_password_hash,$row->user_email,$row->user_age,
+        if ($row->user_type == 'M') {
+            return new Manager($row->user_id,$row->user_name,$row->user_password_hash,$row->user_email,$row->user_age,
+                $row->user_sex,$row->user_qualification,$row->user_bio,$row->user_phone,$row->user_mobile,$row->user_address,
+                $row->user_approved,$row->user_active,$row->user_anonymous,
+                $row->user_creation_timestamp,$row->user_last_login_timestamp);
+        }
+        elseif ($row->user_type == "I") {
+            return new Instructor($row->user_id,$row->user_name,$row->user_password_hash,$row->user_email,$row->user_age,
+                $row->user_sex,$row->user_qualification,$row->user_bio,$row->user_phone,$row->user_mobile,$row->user_address,
+                $row->user_approved,$row->user_active,$row->user_anonymous,
+                $row->user_creation_timestamp,$row->user_last_login_timestamp);            
+            # code...
+        }
+        elseif ($row->user_type == 'S') {
+            return new Student($row->user_id,$row->user_name,$row->user_password_hash,$row->user_email,$row->user_age,
+                $row->user_sex,$row->user_qualification,$row->user_bio,$row->user_phone,$row->user_mobile,$row->user_address,
+                $row->user_course_mode,$row->user_approved,$row->user_active,$row->user_anonymous,
+                $row->user_creation_timestamp,$row->user_last_login_timestamp);            # code...
+        }
+        else
+        {
+            return new User($row->user_id,$row->user_name,$row->user_password_hash,$row->user_email,$row->user_age,
+                $row->user_sex,$row->user_qualification,$row->user_bio,$row->user_phone,$row->user_mobile,$row->user_address,
+                $row->user_course_mode,$row->user_type,$row->user_approved,$row->user_active,$row->user_anonymous,
+                $row->user_creation_timestamp,$row->user_last_login_timestamp);
+            # code...
+        }
+
+       /* return new User($row->user_id,$row->user_name,$row->user_password_hash,$row->user_email,$row->user_age,
             $row->user_sex,$row->user_qualification,$row->user_bio,$row->user_phone,$row->user_mobile,$row->user_address,
             $row->user_course_mode,$row->user_type,$row->user_approved,$row->user_active,$row->user_anonymous,
-            $row->user_creation_timestamp,$row->user_last_login_timestamp);      
+            $row->user_creation_timestamp,$row->user_last_login_timestamp);     */ 
     }
     /**
      * Get all courses from DB, return an array of course objects 

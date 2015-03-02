@@ -21,24 +21,17 @@
 
             <h2>Welcome {{student.name}}</h2>
             <h2>Your courses</h2>
-            {{student.getMyCourses}}
 
     
         <table>
             {# table head #}
-            <tr><th>No</th><th>Name</th><th>ID</th><th>Email</th><th>Mobile</th><th>Type</th><th>Approved</th><th>Active</th><th>Anonymous</th><th>Actions</th></tr>
+            <tr><th>No</th><th>Course</th><th>Instructor</th><th>Status</th></tr>
 
             {# list the users #}             
-            {% for user in users %}
+            {% for  course in student.getMyCourses %}
                 <tr>
-                    <td>{{loop.index}}</td><td>{{user.name}}</td><td>{{user.id}}</td>
-                    <td>{{user.email}}</td><td>{{user.mobile}}</td>
-                    <td>{% if user.type == 'S' %}Student{% elseif user.type == 'I' %}Instructor{% else %} Manager {% endif %}</td>
-                    <td> {% if user.approved == 1 %}Yes {% else %} No {% endif %}</td>
-                    <td> {% if user.active == 1 %}Yes {% else %} No {% endif %}</td>
-                    <td> {% if user.anonymous == 1 %}Yes {% else %} No {% endif %}</td>
-                    <td><a href="{{URL}}user/edit/{{user.id}}">Edit</a></td>
-                    <td><a href="{{URL}}user/delete/{{user.id}}">Delete</a></td>
+                    <td>{{loop.index}}</td><td>{{course.course.name}}</td><td>{{course.instructor.name}}</td>
+                    <td>{{course.status}}
                 </tr>
             {% endfor %}
         </table>

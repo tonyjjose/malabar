@@ -48,13 +48,13 @@ class Student extends User
      * 
      *
      */
-    public function getMyCourses($id)
+    public function loadMyCourses()
     {
         $db = DatabaseFactory::getFactory()->getConnection();
 
         //query the DB
-        $query = $db->prepare("SELECT * FROM student_courses WHERE student_id = :id");
-        $query->execute(array(':id' => $id));
+        $query = $db->prepare("SELECT * FROM student_course WHERE student_id = :id");
+        $query->execute(array(':id' => $this->getId()));
         
         //is this check absolutely necessary??
         if ($query->rowCount() == 0) {
@@ -68,9 +68,12 @@ class Student extends User
             $course = Course::getInstance($row->course_id);
             $instructor = Instructor::getInstance($row->instructor_id);
             $this->courseInstances[] = new CourseInstance ($course,$instructor,$row->course_status);            
-        }   
-        return $this->CourseInstance;     
+        }     
     } 
+
+    public function getMyCourses(){
+        return $this->courseInstances;
+    }
 
 
 }
