@@ -23,20 +23,40 @@ class LoginModel
      */
     public function signIn()
     {
+        //get the inputs
+        $email = Request::post('user_email');
+        $password = Request::post('user_password');
+
         // See if the data is send, if not, give feedback and exit false
-        if (!isset($_POST['user_name']) OR empty($_POST['user_name'])) {
-            Feedback::addNegative(FEEDBACK_USERNAME_FIELD_EMPTY);
+        if(!$email || strlen($email) > 64 || (!filter_var($email, FILTER_VALIDATE_EMAIL))) {
+            Feedback::addNegative("Login failed: Invalid user email");
             return false;
-        }
-        if (!isset($_POST['user_password']) OR empty($_POST['user_password'])) {
+        }         
+        if (!$password || strlen($password)== 0) {
             Feedback::addNegative(FEEDBACK_PASSWORD_FIELD_EMPTY);           
             return false;
         }
 
         //As of now we make the user logged in. later we add the authentication code here
-        //Session::init();
-        Session::set('user_logged_in', true);    
-        return true;    
+        $user = User::getInstanceFromEmail($email);
+
+        if (is_null($user)) {
+            Feedback::addNegative("Login failed: No such user");
+            return false;
+        }
+        
+        if (!password_verify($password, $user->getPasswordHash()))
+        {
+            Feedback::addNegative("Login failed: Wrong password");
+            return false;           
+        }   
+        //$user->saveLoginTimestamp();
+        Session::set('user_id', $user->getId());
+        Session::set('user_name', $user->getName());
+        Session::set('user_email', $user->getEmail());
+        Session::set('user_type', $user->getType());
+        Session::set('user_logged_in', true); 
+        return true;
 
     }
 

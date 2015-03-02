@@ -111,5 +111,23 @@ class UserController extends Controller
         $user_model = $this->loadModel('user');
         $success = $user_model->deleteSave();
         Redirect::to('user');  
-    }  
+    } 
+
+    public function enrol($id)
+    {
+        //is there anything to delete?
+        if(!$id) {
+            Redirect::to('error');
+        }
+
+        //gather the parameters
+        $cousrses = Course::getAllCourses();
+        $student = User::getInstance($id);
+
+        //display request for confirmation 
+        $params = array('courses'=>$courses,'student'=>$student);
+        $this->view->render('user/enrol.html.twig', $params);        
+
+
+    } 
 }

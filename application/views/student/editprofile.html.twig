@@ -1,0 +1,50 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+    <h1>Welcome</h1>
+    <div class="content">
+        <h2>Welcome to </h2>
+        <p>Edit your profile</p>
+        <div>
+            <h1>Fill the form </h1>
+            <form action="{{URL}}student/editprofilesave" method="post">
+                    <input type="hidden" name="user_id" value="{{student.id}}">
+                    <label>Email</label>
+                    <input type="text" name="user_email" maxlength="64" required value="{{student.email}}"/><br>                
+                    <label>Name</label>
+                    <input type="text" name="user_name" maxlength="64" required value="{{student.name}}"/><br>
+                    <label>Password</label>
+                    <input type="text" name="user_password" maxlength="8" /><br>
+                    <label>Age</label>
+                    <input type="text" name="user_age" maxlength="2" required value="{{student.age}}"/><br>   
+                    <label>Sex</label>
+                    <input type="radio" name="user_sex" value="M" {% if (student.sex == 'M') %} checked {% endif %}>Male<br>
+                    <input type="radio" name="user_sex" value="F" {% if (student.sex == 'F') %} checked {% endif %}>Female<br>
+
+                    <label>Qualification</label>
+                    <input type="text" name="user_qual" maxlength="20"  value="{{student.qualification}}"/><br>     
+                    <label>Bio</label>
+                    <textarea id="user_bio" name="user_bio" maxlength="255" cols="30" rows="8" 
+                        placeholder="A small introduction about yourself, if any">{{student.bio}}</textarea><br>
+                    <label>Phone</label>
+                    <input type="text" name="user_phone" maxlength="15" value="{{student.phone}}"/><br>
+                    <label>Mobile</label>
+                    <input type="text" name="user_mobile" maxlength="15" value="{{student.mobile}}"/><br>
+                    <label>Address</label>
+                    <textarea id="user_address" name="user_address" maxlength="255" cols="10" rows="5" 
+                        placeholder="Full postal address..">{{student.address}}</textarea><br>  
+                    <label>Course Mode</label>
+                    <input type="radio" name="user_course_mode" value="E" {% if (student.courseMode == 'E') %} checked {% endif %}>Email<br>
+                    <input type="radio" name="user_course_mode" value="P" {% if (student.courseMode == 'P') %} checked {% endif %}>Postal<br>                         
+                    <label>Anonymous (yes if checked)</label>
+                    <input type="checkbox" name="user_anon" value="yes"  {% if student.anonymous %} checked {% endif %}><br><br><br>
+
+                    <input type="submit" class="student-submit-button" />
+            </form>
+        </div>        
+
+    </div>  <!-- end content -->
+
+{% endblock %}

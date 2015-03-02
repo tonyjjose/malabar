@@ -28,4 +28,37 @@ class StudentController extends Controller
         $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive(),'student'=>$student );
         $this->view->render('student/index.html.twig',$params);	
     }
+
+    public function showProfile($id){
+        //are we authorised for view?
+        if ($id == Session::get('user_id') || Session::get('user_type') == 'M')
+        {
+            $student = User::getInstance($id);
+            $student->loadMyCourses();
+            $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive(),
+                'student'=>$student );            
+            $this->view->render('student/showprofile.html.twig',$params);
+        }
+        else
+        {
+            Redirect::to('error/noauth');
+        }
+
+    }
+    public function editProfile($id){
+        //are we authorised for view?
+        if ($id == Session::get('user_id') || Session::get('user_type') == 'M')
+        {
+            $student = User::getInstance($id);
+            var_dump($student);
+            $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive(),
+                'student'=>$student );            
+            $this->view->render('student/editprofile.html.twig',$params);
+        }
+        else
+        {
+            Redirect::to('error/noauth');
+        }
+
+    }    
 }

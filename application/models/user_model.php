@@ -72,13 +72,25 @@ class UserModel
         }  
 
         //Note: this is a PHP 5.5.5+ function, but we use it with a compatibility lib
-        $hash = password_hash($password, PASSWORD_DEFAULT);
+        $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
         //create the time string to be put in DB.
-        $create_time = date('Y-m-d H:i:s', time());
+        $created = date('Y-m-d H:i:s', time());
 
     	//ok, try to add to db
-    	$sql = "INSERT INTO users (user_name, user_password_hash, user_email, user_age, user_sex, user_qualification,
+
+        $success = User::save($name, $password_hash, $email, $age, $sex, $qual, $bio, $phone, 
+        $mobile, $address, $mode, $type, $approved, $active, $anon, $created);
+
+        if ($success) {
+            Feedback::addPositive("Success! user '{$name}' added.");
+            return true;            
+        }
+        else {
+            Feedback::addNegative('Failed! Unknown reason.');
+            return false;                
+        }
+    	/*$sql = "INSERT INTO users (user_name, user_password_hash, user_email, user_age, user_sex, user_qualification,
             user_bio, user_phone, user_mobile, user_address, user_course_mode, user_type, user_approved, user_active,
             user_anonymous, user_creation_timestamp) 
             VALUES (:name,:hash,:email,:age,:sex,:qual,:bio,:phone,:mobile,:address,:mode,:type,:approved,:active,
@@ -95,7 +107,7 @@ class UserModel
 
     	//We come here if its not added properly, notify it and exit
     	Feedback::addNegative('Failed! Unknown reason.');
-    	return false;
+    	return false; */
     }
 
     public function editSave()

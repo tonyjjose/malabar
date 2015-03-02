@@ -1,0 +1,26 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}Login{% endblock %}
+
+{# no feedback display needed here as this is just a confimation request page #}
+{% block content %}
+    <h1>Enrol</h1>
+    <div class="content">
+        <h2>Welcome to </h2>
+        <p></p>
+        <div>
+            <h1>Select the course to enrol to..</h1>
+            <form action="{{URL}}user/enrolSave" method="post">
+                Student Name: {{student.name}} <br>
+                Stident Email: {{student.email}}<br>
+                <label>Courses</label>
+                
+                    <input type="hidden" name=++++++++++++++++++++++++++++++++++_id" value="{{user.id}}">
+                    <input type="submit" text="yes" class="user-submit-button" /><br>
+                    <a href="{{URL}}user">No, Let me go back</a>
+            </form>
+        </div>        
+
+    </div>  <!-- end content -->
+
+{% endblock %}

@@ -27,6 +27,10 @@ class LoginController extends controller
         $this->view->render('login/index.html.twig',$params);	
     }
 
+    //a test funtcion for devlopment
+    public function test(){
+        var_dump($_SESSION);
+    }
         /**
         * Check the supplied credentionals and validate the user.
         * 
