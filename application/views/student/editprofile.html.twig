@@ -15,8 +15,6 @@
                     <input type="text" name="user_email" maxlength="64" required value="{{student.email}}"/><br>                
                     <label>Name</label>
                     <input type="text" name="user_name" maxlength="64" required value="{{student.name}}"/><br>
-                    <label>Password</label>
-                    <input type="text" name="user_password" maxlength="8" /><br>
                     <label>Age</label>
                     <input type="text" name="user_age" maxlength="2" required value="{{student.age}}"/><br>   
                     <label>Sex</label>
@@ -39,7 +37,7 @@
                     <input type="radio" name="user_course_mode" value="E" {% if (student.courseMode == 'E') %} checked {% endif %}>Email<br>
                     <input type="radio" name="user_course_mode" value="P" {% if (student.courseMode == 'P') %} checked {% endif %}>Postal<br>                         
                     <label>Anonymous (yes if checked)</label>
-                    <input type="checkbox" name="user_anon" value="yes"  {% if student.anonymous %} checked {% endif %}><br><br><br>
+                    <input type="checkbox" name="user_anon" value="yes"  {% if student.anonymous %} checked {% endif %}><br><br>
 
                     <input type="submit" class="student-submit-button" />
             </form>

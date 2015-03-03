@@ -265,12 +265,29 @@ class User
         return false; 
     }
 
+    public static function delete($id)
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();
+
+        //ok, lets try to delete
+        $sql = "DELETE FROM users WHERE user_id = :user_id";
+        $query = $db->prepare($sql);
+        $query->execute(array(':user_id'=>$id));
+        
+        //has it got added? if so success.
+        if ($query->rowCount() == 1) {
+            return true;
+        }
+        return false;
+
+    }
+
     public static function updatePassword($id, $password_hash)
     {
         $db = DatabaseFactory::getFactory()->getConnection();
 
-        $query = $db->prepare("UPDATE users SET user_password_hash = :hash WHERE user_id <> :id");
-        $query->execute(array(':hash' => $passward_hash,':id' => $id));
+        $query = $db->prepare("UPDATE users SET user_password_hash = :hash WHERE user_id = :id");
+        $query->execute(array(':hash' => $password_hash,':id' => $id));
 
         //has it got added? if so success.
         if ($query->rowCount() == 1) {

@@ -3,7 +3,8 @@
 /**
  * Category class
  *
- * Handles the Categories bussiness object
+ * Handles the Course Category
+ * As of now the idea is to represent languages
  */
 
 class Category
@@ -67,9 +68,10 @@ class Category
             $categories[] = new Category($row->cat_id,$row->cat_name,$row->cat_desc);
         }
 
-        return $categories;
-        
+        return $categories;       
     }
+
+    
     /**
      * Check if a category already exists.
      * 
@@ -86,7 +88,23 @@ class Category
             return false;
         }
         return true;
-    }    
+    }  
+
+    public static function save($name, $desc)
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();
+
+        //ok, try to add to db
+        $sql = "INSERT INTO category (cat_name, cat_desc) VALUES (:name, :desc)";
+        $query = $db->prepare($sql);
+        $query->execute(array(':name'=>$name,':desc'=>$desc));
+
+        //has it got added? if so success.
+        if ($query->rowCount() == 1) {
+            return true;
+        }  
+        return false;
+    }  
 }
 
 

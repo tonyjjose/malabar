@@ -66,7 +66,7 @@ class Student extends User
 
         foreach ($rows as $row) {
             $course = Course::getInstance($row->course_id);
-            $instructor = Instructor::getInstance($row->instructor_id);
+            $instructor = User::getInstance($row->instructor_id);
             $this->courseInstances[] = new CourseInstance ($course,$instructor,$row->course_status);            
         }     
     } 
@@ -74,6 +74,26 @@ class Student extends User
     public function getMyCourses(){
         return $this->courseInstances;
     }
+
+    //note that we do not update password here
+    public static function update($id, $name, $email, $age, $sex, $qual, $bio, $phone, 
+        $mobile, $address, $course_mode, $anon)
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();
+
+        $sql = "UPDATE users SET user_name = :name, user_email = :email, user_age = :age, user_sex = :sex,
+            user_qualification = :qual, user_bio = :bio, user_phone = :phone, user_mobile = :mobile,
+            user_address = :address, user_course_mode = :mode, user_anonymous = :anon WHERE user_id =:id";
+        $query = $db->prepare($sql);
+        $query->execute(array(':name'=>$name,':email'=>$email,':age'=>$age,':sex'=>$sex,':qual'=>$qual,':bio'=>$bio,
+            ':phone'=>$phone,':mobile'=>$mobile,':address'=>$address,':mode'=>$course_mode,':anon'=>$anon,':id'=>$id));
+        
+        //has it got added? if so success.
+        if ($query->rowCount() == 1) {
+            return true;
+        }
+        return false; 
+    }    
 
 
 }

@@ -61,4 +61,11 @@ class StudentController extends Controller
         }
 
     }    
+    public function editProfileSave()
+    {
+        $student_model = $this->loadModel('student');
+        $success = $student_model->editSave(); //we dont use $success now.  
+        //Redirect::to('user');
+        Feedback::printAll();
+    }      
 }

@@ -3,7 +3,7 @@
 /**
  * UserModel
  *
- * Handles the users stuff in db
+ * Handles the users related bussiness logic
  */
 
 class UserModel
@@ -78,7 +78,6 @@ class UserModel
         $created = date('Y-m-d H:i:s', time());
 
     	//ok, try to add to db
-
         $success = User::save($name, $password_hash, $email, $age, $sex, $qual, $bio, $phone, 
         $mobile, $address, $mode, $type, $approved, $active, $anon, $created);
 
@@ -90,24 +89,6 @@ class UserModel
             Feedback::addNegative('Failed! Unknown reason.');
             return false;                
         }
-    	/*$sql = "INSERT INTO users (user_name, user_password_hash, user_email, user_age, user_sex, user_qualification,
-            user_bio, user_phone, user_mobile, user_address, user_course_mode, user_type, user_approved, user_active,
-            user_anonymous, user_creation_timestamp) 
-            VALUES (:name,:hash,:email,:age,:sex,:qual,:bio,:phone,:mobile,:address,:mode,:type,:approved,:active,
-            :anon,:creation)";
-    	$query = $this->db->prepare($sql);
-    	$query->execute(array(':name'=>$name,':hash'=>$hash,':email'=>$email,':age'=>$age,':sex'=>$sex,':qual'=>$qual,':bio'=>$bio,':phone'=>$phone,':mobile'=>$mobile,':address'=>$address,':mode'=>$mode,':type'=>$type,':approved'=>$approved,
-            ':active'=>$active,':anon'=>$anon,':creation'=>$create_time));
-
-    	//has it got added? if so success.
-    	if ($query->rowCount() == 1) {
-    		Feedback::addPositive("Success! user '{$name}' added.");
-            return true;
-        }  
-
-    	//We come here if its not added properly, notify it and exit
-    	Feedback::addNegative('Failed! Unknown reason.');
-    	return false; */
     }
 
     public function editSave()
@@ -163,49 +144,50 @@ class UserModel
             return false;
         }  
 
-        //OK try to add to db
-
-        //is there a password field? 
-        if (!$password || strlen($password) == 0) {
-            //no password. update the remaining
-            $sql = "UPDATE users SET user_name = :name, user_email = :email, user_age = :age, user_sex = :sex,
-                user_qualification = :qual, user_bio = :bio, user_phone = :phone, user_mobile = :mobile,
-                user_address = :address, user_course_mode = :mode, user_type = :type, user_approved = :approved,
-                user_active = :active, user_anonymous = :anon WHERE user_id =:id";
-            $query = $this->db->prepare($sql);
-            $query->execute(array(':name'=>$name,':email'=>$email,':age'=>$age,':sex'=>$sex,':qual'=>$qual,':bio'=>$bio,':phone'=>$phone,':mobile'=>$mobile,':address'=>$address,':mode'=>$mode,':type'=>$type,':approved'=>$approved,
-                ':active'=>$active,':anon'=>$anon,':id'=>$id));                
+        //OK try to add to db       
+        if (!$password || strlen($password) == 0) //is there a password field? 
+        {
+            $success = User::update($id, $name, $email, $age, $sex, $qual, $bio, $phone, 
+            $mobile, $address, $mode, $type, $approved, $active, $anon); 
         }
-        else {
+        else 
+        {
             //new password provided. Validate it
             $password = trim($password);            
             if(strlen($password) == 0 || strlen($password) > 8) {
                 Feedback::addNegative('Failed! user password is invalid.');
-            return false;
+                return false;
             }
             //Note: this is a PHP 5.5.5+ function, but we use it with a compatibility lib
-            $hash = password_hash($password, PASSWORD_DEFAULT);
-            $sql = "UPDATE users SET user_name = :name, user_email = :email, user_age = :age, user_sex = :sex,
-                user_qualification = :qual, user_bio = :bio, user_phone = :phone, user_mobile = :mobile,
-                user_address = :address, user_course_mode = :mode, user_type = :type, user_approved = :approved,
-                user_active = :active, user_anonymous = :anon, user_password_hash = :hash WHERE user_id =:id";   
-            $query = $this->db->prepare($sql);
-            $query->execute(array(':name'=>$name,':hash'=>$hash,':email'=>$email,':age'=>$age,':sex'=>$sex,':qual'=>$qual,
-                ':bio'=>$bio,':phone'=>$phone,':mobile'=>$mobile,':address'=>$address,':mode'=>$mode,':type'=>$type,
-                ':approved'=>$approved,':active'=>$active,':anon'=>$anon,':id'=>$id));                
+            $hash = password_hash($password, PASSWORD_DEFAULT);  
+            
+            //try updating user          
+            $success = User::update($id, $name, $email, $age, $sex, $qual, $bio, $phone, 
+            $mobile, $address, $mode, $type, $approved, $active, $anon); 
+
+            //try updating password
+            $pass_success = User::updatePassword($id,$hash);
+            
+            //notify the user about password update
+            if ($pass_success) {
+                Feedback::addPositive('Password updated');
+            }
+            else{
+                Feedback::addNegative('Failed to update password');
+            }
         }
 
-        //has it got added? if so success.
-        if ($query->rowCount() == 1) {
+        //has it got updated? if so success.
+        if ($success) {
             Feedback::addPositive("Success! user '{$name}' updated.");
             return true;
         }  
 
-        //We come here if its not added properly, notify it and exit
+        //We come here if its not updated properly, notify it and exit
         Feedback::addNegative('Failed! Unknown reason.');
-        return false; 
-
-    }    
+        return false;         
+    }
+ 
 
     public function deleteSave(){
         //get the inputs
@@ -219,54 +201,18 @@ class UserModel
         }
 
         //ok, lets try to delete
-        $sql = "DELETE FROM users WHERE user_id = :user_id";
-        $query = $this->db->prepare($sql);
-        $query->execute(array(':user_id'=>$id));
+        $success = User::delete($id);
 
         //has it got deleted?
-        if ($query->rowCount() == 1) {
+        if ($success) {
             Feedback::addPositive("Success! user (ID={$id}) deleted.");
             return true;
         }        
 
         //We come here if its not deleted properly, notify it and exit
         Feedback::addNegative('Failed! Unknown reason.');
+        Feedback::addNegative('Most probably the user is in use!');
         return false;
     }    
-
-    public function saveCategory(){
-
-    	//get the inputs
-    	$name = Request::post('category_name');
-    	$desc = Request::post('category_desc');
-
-    	//validate them
-    	if(!$name || strlen($name)== 0 || strlen($name) > 15) {
-    		Feedback::addNegative('Failed! user Category name is invalid.');
-    		return false;
-    	}
-
-    	//Check if the category name already exist
-    	if (Category::categoryExists($name)) {
-    		Feedback::addNegative("Failure! user Category name already exists.");
-    		return false;
-    	}
-
-    	//ok, try to add to db
-    	$sql = "INSERT INTO category (cat_name, cat_desc) VALUES (:name, :desc)";
-    	$query = $this->db->prepare($sql);
-    	$query->execute(array(':name'=>$name,':desc'=>$desc));
-
-    	//has it got added? if so success.
-    	if ($query->rowCount() == 1) {
-    		Feedback::addPositive("Success! user category '{$name}' added.");
-            return true;
-        }  
-
-    	//We come here if its not added properly, notify it and exit
-    	Feedback::addNegative("Failed! Unknown reason.");
-    	return false;
-
-    }
 
 }

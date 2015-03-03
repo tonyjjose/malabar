@@ -45,12 +45,10 @@ class CourseModel
     	}
 
     	//ok, try to add to db
-    	$sql = "INSERT INTO courses (course_name, course_desc, course_category_id) VALUES (:name, :desc, :cat_id)";
-    	$query = $this->db->prepare($sql);
-    	$query->execute(array(':name'=>$name,':desc'=>$desc,'cat_id'=>$cat_id));
+        $success = Course::save($name, $desc, $cat_id);
 
     	//has it got added? if so success.
-    	if ($query->rowCount() == 1) {
+    	if ($success) {
     		Feedback::addPositive("Success! Course '{$name}' added.");
             return true;
         }  
@@ -91,16 +89,13 @@ class CourseModel
         }
 
         //ok, try to update to db
-        $sql = "UPDATE courses SET course_name = :name, course_desc = :desc, course_active = :active, 
-            course_category_id = :cat_id WHERE course_id = :id";
-        $query = $this->db->prepare($sql);
-        $query->execute(array(':name'=>$name,':desc'=>$desc,':active'=>$active,'cat_id'=>$cat_id, 'id'=>$id));
-
+        $success = Course::update($id, $name, $desc, $active, $cat_id);
+        
         //has it got updated? if so success.
-        if ($query->rowCount() == 1) {
+        if ($success) {
             Feedback::addPositive("Success! Course '{$name}' updated.");
             return true;
-        }  
+        }
 
         //We come here if its not updated properly, notify it and exit
         Feedback::addNegative('Failed! Unknown reason.');
@@ -119,54 +114,50 @@ class CourseModel
         }
 
         //ok, lets try to delete
-        $sql = "DELETE FROM courses WHERE course_id = :course_id";
-        $query = $this->db->prepare($sql);
-        $query->execute(array(':course_id'=>$id));
+        $success = Course::delete($id);
 
         //has it got deleted?
-        if ($query->rowCount() == 1) {
+        if ($success) {
             Feedback::addPositive("Success! Course (ID={$id}) deleted.");
             return true;
-        }        
+        }         
 
         //We come here if its not deleted properly, notify it and exit
         Feedback::addNegative('Failed! Unknown reason.');
+        Feedback::addNegative('May be the course is in use.');        
         return false;
     }    
 
     public function saveCategory(){
 
-    	//get the inputs
-    	$name = Request::post('category_name');
-    	$desc = Request::post('category_desc');
+        //get the inputs
+        $name = Request::post('category_name');
+        $desc = Request::post('category_desc');
 
-    	//validate them
-    	if(!$name || strlen($name)== 0 || strlen($name) > 15) {
-    		Feedback::addNegative('Failed! Course Category name is invalid.');
-    		return false;
-    	}
+        //validate them
+        if(!$name || strlen($name)== 0 || strlen($name) > 15) {
+            Feedback::addNegative('Failed! Course Category name is invalid.');
+            return false;
+        }
 
-    	//Check if the category name already exist
-    	if (Category::categoryExists($name)) {
-    		Feedback::addNegative("Failure! Course Category name already exists.");
-    		return false;
-    	}
+        //Check if the category name already exist
+        if (Category::categoryExists($name)) {
+            Feedback::addNegative("Failure! Course Category name already exists.");
+            return false;
+        }
 
-    	//ok, try to add to db
-    	$sql = "INSERT INTO category (cat_name, cat_desc) VALUES (:name, :desc)";
-    	$query = $this->db->prepare($sql);
-    	$query->execute(array(':name'=>$name,':desc'=>$desc));
-
-    	//has it got added? if so success.
-    	if ($query->rowCount() == 1) {
-    		Feedback::addPositive("Success! Course category '{$name}' added.");
+        //ok, try to add to db
+        $success = Category::save($name,$desc);
+        
+        //has it got added? if so success.
+        if ($success) {
+            Feedback::addPositive("Success! Course category '{$name}' added.");
             return true;
-        }  
+        }          
 
-    	//We come here if its not added properly, notify it and exit
-    	Feedback::addNegative("Failed! Unknown reason.");
-    	return false;
-
-    }
+        //We come here if its not added properly, notify it and exit
+        Feedback::addNegative("Failed! Unknown reason.");
+        return false;
+    }    
 
 }

@@ -67,4 +67,27 @@ class LoginController extends controller
         header('location: ' . URL);
     }
 
+    public function register()
+    {
+        $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive());        
+        $this->view->render('login/register.html.twig',$params);   
+    }
+    public function registerSave () {
+
+        // run the login() method in the login-model
+        $user_model = $this->loadModel('user');
+        // perform the login method, put result (true or false) into $login_successful
+        $registration_success = $user_model->addSave();
+
+        // check login status
+        if ($registration_success) {
+            // if YES, then move user to home)
+            Redirect::to('student');
+        } else {
+            // if NO, then move user to login/index (login form) again
+            Redirect::to('register');
+        }
+    }        
+
+
 }

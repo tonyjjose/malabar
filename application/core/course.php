@@ -196,6 +196,58 @@ class Course
         return true;
     }
 
+    //we assume that all new courses are active. 
+    public static function save($name, $desc, $cat_id)
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();
+
+        //ok, try to update to db  
+        $sql = "INSERT INTO courses (course_name, course_desc, course_category_id) VALUES (:name, :desc, :cat_id)";
+        $query = $db->prepare($sql);
+        $query->execute(array(':name'=>$name,':desc'=>$desc,'cat_id'=>$cat_id));
+
+        //has it got updated? if so success.
+        if ($query->rowCount() == 1) {
+            return true;
+        }  
+        return false;
+    }
+
+    public static function update($id, $name, $desc, $active, $cat_id)
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();
+
+        //ok, try to update to db
+        $sql = "UPDATE courses SET course_name = :name, course_desc = :desc, course_active = :active, 
+            course_category_id = :cat_id WHERE course_id = :id";
+        $query = $db->prepare($sql);
+        $query->execute(array(':name'=>$name,':desc'=>$desc,':active'=>$active,'cat_id'=>$cat_id, 'id'=>$id));
+
+        //has it got updated? if so success.
+        if ($query->rowCount() == 1) {
+            return true;
+        }  
+        return false;
+    }        
+
+    public static function delete($id)
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();
+
+        //ok, lets try to delete
+        $sql = "DELETE FROM courses WHERE course_id = :id";
+        $query = $db->prepare($sql);
+        $query->execute(array(':id'=>$id));
+        
+        //has it got added? if so success.
+        if ($query->rowCount() == 1) {
+            return true;
+        }
+        return false;
+
+    }
+
+
 
 	
 }

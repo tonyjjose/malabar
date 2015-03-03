@@ -32,8 +32,7 @@
                     <td> {% if user.active == 1 %}Yes {% else %} No {% endif %}</td>
                     <td> {% if user.anonymous == 1 %}Yes {% else %} No {% endif %}</td>
                     <td><a href="{{URL}}user/edit/{{user.id}}">Edit</a></td>
-                    <td><a href="{{URL}}user/delete/{{user.id}}">Delete</a></td>
-                    <td>{% if user.type == 'S' %}<a href="{{URL}}user/enrol/{{user.id}}">Enrol Course</a></td>                    
+                    <td><a href="{{URL}}user/delete/{{user.id}}">Delete</a></td>                    
                 </tr>
             {% endfor %}
         </table>

@@ -62,7 +62,7 @@ define('FEEDBACK_PASSWORD_FIELD_EMPTY', 'Password field was empty.');
 
 
 /**
- * Program level constants
+ * Application specific constants
  *
  *
  **/
@@ -80,6 +80,11 @@ define('SEX_FEMALE', 'F');
 
 define ('COURSE_MODE_EMAIL','E');
 define ('COURSE_MODE_POSTAL','P');
+
+define ('COURSE_INSTANCE_ACTIVE','A');
+define ('COURSE_INSTANCE_INACTIVE','I');
+define ('COURSE_INSTANCE_COMPLETED','C');
+
 
 
 
