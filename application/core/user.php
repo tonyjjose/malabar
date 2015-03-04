@@ -296,4 +296,17 @@ class User
         return false;
             
     }
+
+    public static function getUserType($id)
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();
+
+        $query = $db->prepare("SELECT user_type FROM users WHERE user_id = :id");
+        $query->execute(array(':id' => $id));        
+
+        //has it got added? if so success.
+        if ($query->rowCount() == 1) {
+            return $query->fetch()->user_type;
+        }
+    }
 }

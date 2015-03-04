@@ -1,0 +1,61 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}Login{% endblock %}
+
+{% block feedback %}
+    {% for feed in feedback_positive %}
+        <span class="feedback success">{{feed|e }}</span>
+    {% endfor %}
+    {% for feed in feedback_negative %}
+        <span class="feedback failure">{{feed|e }}</span>
+    {% endfor %}    
+{% endblock %}
+
+{% block content %}
+    <h1>Welcome</h1>
+    <div class="content">
+        <h2>Student profile</h2>
+        <p>This is the page of student..We will list his courses along with its instructor if assigned.
+            There will be an option for him to upload assignments.
+            There will be a link to view/edit his profile. </p>
+
+            <h2>Welcome</h2>
+            <label>ID</label>{{user.id}}     <br>          
+                    <label>Name</label>{{user.name}}<br>             
+                    <label>Email</label>{{user.email}}<br> 
+                    <label>Age</label>{{user.age}}<br>    
+                    <label>Sex</label>{{user.sex}}<br> 
+
+                    <label>Qualification</label>{{user.qualification}} <br>   
+                    <label>Bio</label>{{user.bio}}<br> 
+                    <label>Phone</label>{{user.phone}}<br> 
+                    <label>Mobile</label>{{user.mobile}}<br> 
+                    <label>Address</label>{{user.address}} <br> 
+                    <label>Course Mode</label>{% if (user.courseMode == 'E') %} Email {% else %} Postal {% endif %}<br>                        
+                    <label>Anonymous</label>{% if (user.anonymous) %} Yes {% else %} No {% endif %}<br> 
+
+                    <label>User type</label> {% if (user.type == 'S') %} Student {% elseif (user.type == 'I') %} Instructor {% else %} Manager{% endif %}<br> 
+                    <label>Approved</label>{% if (user.approved) %} Yes {% else %} No {% endif %}<br> 
+                    <label>Active</label>{% if (user.active) %} Yes {% else %} No {% endif %} <br>                                    
+        
+            <h2>Your courses</h2>
+
+        <a href="{{URL}}manager/enrol/{{user.id}}/">Enrol for a new course</a>
+        <table>
+            {# table head #}
+            <tr><th>No</th><th>Course</th><th>Instructor</th><th>Status</th><th>Actions</th></tr>
+
+            {# list the users #}             
+            {% for  course in user.getMyCourses %}
+                <tr>
+                    <td>{{loop.index}}</td><td>{{course.course.name}}</td><td>{{course.instructor.name}}</td>
+                    <td>{{course.status}}</td><td><a href="{{URL}}manager/editenrol/{{user.id}}/{{course.course.id}}">Edit</a></td>
+                    <td><a href="{{URL}}manager/disenrol/{{user.id}}/{{course.course.id}}">Disenrol</a></td>
+                </tr>
+            {% endfor %}
+        </table>
+
+
+    </div>  <!-- end content -->
+
+{% endblock %}

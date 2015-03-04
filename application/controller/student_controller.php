@@ -45,6 +45,15 @@ class StudentController extends Controller
         }
 
     }
+    public function showCourseMates($course_id)
+    {
+        $id = Session::get('user_id');
+        $students = Student::getCourseMates($id,$course_id);
+        $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive(),
+                'students'=>$students );
+        $this->view->render('student/showcoursemates.html.twig',$params);                
+    }
+    
     public function editProfile($id){
         //are we authorised for view?
         if ($id == Session::get('user_id') || Session::get('user_type') == 'M')

@@ -94,6 +94,136 @@ class Student extends User
         }
         return false; 
     }    
+    public static function getCourseMates($student_id, $course_id)
+    {
+
+        $db = DatabaseFactory::getFactory()->getConnection();
+
+        //query the DB
+        $query = $db->prepare("SELECT student_id FROM student_course WHERE student_id <> :student_id 
+            AND course_id = :course_id AND course_status = 'A'");
+        $query->execute(array(':student_id' => $student_id, ':course_id' => $course_id));
+
+        //is this check absolutely necessary??
+        if ($query->rowCount() == 0) {
+            return array();
+        }
+        
+        $rows = $query->fetchAll();     
+        $mates = array();
+                
+        foreach ($rows as $row) {
+            $mates[] = User::getInstance($row->student_id);            
+        } 
+
+        return $mates;
+    }
+        
+    public static function getCourseInstance($student_id,$course_id)
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();  
+                      //query the DB
+        $query = $db->prepare("SELECT * FROM student_course WHERE student_id = :student_id 
+            AND course_id = :course_id");
+        $query->execute(array(':student_id' => $student_id, ':course_id' => $course_id));
+
+        //is this check absolutely necessary??
+        if ($query->rowCount() == 0) {
+            return null;
+        }
+
+        $row = $query->fetch();
+
+        $course = Course::getInstance($row->course_id);
+        $instructor = User::getInstance($row->instructor_id);           
+        $courseInstance = new CourseInstance($course, $instructor, $row->course_status);          
+
+        return $courseInstance;
+    } 
+
+    public static function saveCourseInstance($student_id,$course_id,$instructor_id,$status)
+    {
+        $db = DatabaseFactory::getFactory()->getConnection(); 
+
+        $sql = "INSERT INTO student_course (student_id, course_id, instructor_id, course_status) VALUES
+             (:student_id, :course_id, :instructor_id, :status)";
+        $query = $db->prepare($sql);
+        $query->execute(array('student_id'=>$student_id,'course_id'=>$course_id,
+            'instructor_id'=>$instructor_id,'status'=>$status));
+        
+        //has it got added? if so success.
+        if ($query->rowCount() == 1) {
+            return true;
+        }
+        return false;
+    }  
+
+    public static function updateCourseInstance($student_id,$course_id,$instructor_id,$status)
+    {
+        $db = DatabaseFactory::getFactory()->getConnection(); 
+
+        $sql = "UPDATE student_course SET instructor_id = :instructor_id, course_status = :status WHERE
+             student_id = :student_id AND course_id = :course_id";
+        $query = $db->prepare($sql);
+        $query->execute(array('instructor_id'=>$instructor_id,'status'=>$status,
+            'student_id'=>$student_id,'course_id'=>$course_id));
+        
+        //has it got added? if so success.
+        if ($query->rowCount() == 1) {
+            return true;
+        }
+        return false;
+    }     
+
+    public static function deleteCourseInstance($student_id,$course_id)
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();
+
+        $sql = "DELETE FROM student_course WHERE student_id = :student_id AND course_id = :course_id";
+        $query = $db->prepare($sql);
+        $query->execute(array('student_id'=>$student_id,'course_id'=>$course_id));
+        
+        //has it got added? if so success.
+        if ($query->rowCount() == 1) {
+            return true;
+        }
+        return false;
+
+    }
+
+    public static function getUnEnrolledCourses($id)
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();      
+        
+        $sql = "SELECT course_id FROM courses WHERE course_id NOT IN
+             (SELECT course_id from student_course WHERE student_id = :student_id)"; 
+
+        $query = $db->prepare($sql);
+        $query->execute(array('student_id'=>$id));
+        
+        //is this check absolutely necessary??
+        if ($query->rowCount() == 0) {
+            return array();
+        }
+        
+        $rows = $query->fetchAll();     
+        $courses = array();
+                
+        foreach ($rows as $row) {
+            $courses[] = Course::getInstance($row->course_id);            
+        } 
+
+        return $courses;            
+
+    }
+
+    public static function isUserStudent($id)
+    {
+        if (User::getUserType($id) == ROLE_STUDENT) {
+           return true;
+        }
+        return false;
+    }
 
 
 }
