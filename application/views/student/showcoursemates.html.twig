@@ -10,12 +10,14 @@
         <p>Students doing ths same course</p>
         <div>
             <h1>Are you sure?</h1>
-            
-            {% for student in students %}
+            <table>
                 <tr><td>No</td><td>Name</td><td>Email</td></tr>
+            {% for student in students %}
+                
                 <tr><td>{{loop.index}}</td><td>{{student.name}}</td><td>{{student.email}}</td>
                 </tr>
             {% endfor %}
+            </table>
         </div>        
 
     </div>  <!-- end content -->

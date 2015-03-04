@@ -19,7 +19,13 @@ class ManagerController extends Controller
         $this->view->render('manager/index.html.twig', $params);
 
     }
-    
+    public function viewStudents()
+    {
+        $students = Student::getAllStudents();
+        $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive(),
+            'students'=>$students );
+        $this->view->render('manager/viewstudents.html.twig',$params);         
+    }    
     public function viewStudent($id)
     {
         $student = Student::getInstance($id);

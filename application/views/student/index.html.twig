@@ -26,13 +26,13 @@
     
         <table>
             {# table head #}
-            <tr><th>No</th><th>Course</th><th>Instructor</th><th>Status</th></tr>
+            <tr><th>No</th><th>Course</th><th>Instructor</th><th>Status</th><th>Actions</th></tr>
 
             {# list the users #}             
             {% for  course in student.getMyCourses %}
                 <tr>
                     <td>{{loop.index}}</td><td>{{course.course.name}}</td><td>{{course.instructor.name}}</td>
-                    <td>{{course.status}}
+                    <td>{{course.status}}</td><td><a href="{{URL}}student/showcoursemates/{{course.course.id}}">Show course mates</a></td>
                 </tr>
             {% endfor %}
         </table>
