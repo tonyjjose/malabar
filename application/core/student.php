@@ -36,9 +36,9 @@ class Student extends User
         $students = array();
 
         foreach ($rows as $row) {
-            $students[] = new User($row->user_id,$row->user_name,$row->user_password_hash,$row->user_email,$row->user_age,
+            $students[] = new Student($row->user_id,$row->user_name,$row->user_password_hash,$row->user_email,$row->user_age,
                 $row->user_sex,$row->user_qualification,$row->user_bio,$row->user_phone,$row->user_mobile,
-                $row->user_address,$row->user_course_mode, ROLE_STUDENT, $row->user_approved,$row->user_active,
+                $row->user_address,$row->user_course_mode, $row->user_approved,$row->user_active,
                 $row->user_anonymous,$row->user_creation_timestamp,$row->user_last_login_timestamp);
         }
 
@@ -198,7 +198,7 @@ class Student extends User
         $db = DatabaseFactory::getFactory()->getConnection();      
         
         $sql = "SELECT course_id FROM courses WHERE course_id NOT IN
-             (SELECT course_id from student_course WHERE student_id = :student_id)"; 
+             (SELECT course_id FROM student_course WHERE student_id = :student_id)"; 
 
         $query = $db->prepare($sql);
         $query->execute(array('student_id'=>$id));

@@ -60,6 +60,43 @@ class LoginModel
 
     }
 
+    public function changePasswordSave()
+    {
+        $id = Session::get('user_id');
+        $old_pass = Request::post('user_old_password');
+        $new_pass = Request::post('user_new_password');
+
+        $user = User::getInstance($id);
+
+        //is the old password correct?
+        if (!password_verify($old_pass, $user->getPasswordHash()))
+        {
+            Feedback::addNegative("Failed! Old password is wrong.");
+            return false;           
+        }                   
+
+        //Validate new password
+        $new_pass = trim($new_pass);            
+        if(strlen($new_pass) == 0 || strlen($new_pass) > 8) {
+            Feedback::addNegative('Failed! New password is invalid.');
+            return false;
+        }  
+
+        //Note: this is a PHP 5.5.5+ function, but we use it with a compatibility lib
+        $hash = password_hash($new_pass, PASSWORD_DEFAULT);   
+        $success = User::updatePassword($id,$hash);
+            
+            //notify the user about password update
+            if ($success) {
+                Feedback::addPositive('Password updated');
+                return true;
+            }
+            else {
+                Feedback::addNegative('Failed to update password');
+                return false;
+            }                  
+    }    
+
     /**
      * Returns the current state of the user's login
      * @return bool user's login status

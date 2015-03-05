@@ -1,0 +1,40 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}Login{% endblock %}
+
+{# no feedback display needed here as this is just a confimation request page #}
+{% block content %}
+    <h1>Welcome</h1>
+    <div class="content">
+        <h2>Welcome to </h2>
+        <p>Select the criteria for reporst</p>
+        Select students doing the course
+            <form action="{{URL}}report/viewStudentreport" method="post">
+
+                    
+                    <label>Course</label>
+                                        <select name="course_id" size="3">
+                        {% for course in courses %}
+                            <option value="{{course.id}}">{{course.name}}</option>
+                        {% endfor %}
+                        <option value="None">None</option>
+                        <option value="All">All</option>
+                    </select>
+                    <label>of Mode</label>
+                    <select name="mode" size="3">
+                        <option value="E">Email</option>
+                        <option value="P">Postal</option>
+                        <option value="B" selected>Both</option>
+                    </select>                    
+                    <label>with Status</label>
+                    <select name="status" size="3">
+                        <option value="A" selected>Active</option>
+                        <option value="I">Inactive</option>
+                        <option value="C">Completed</option>
+                    </select>
+                    <input type="submit" text="yes" class="submit-button" />
+            </form>      
+
+    </div>  <!-- end content -->
+
+{% endblock %}

@@ -72,6 +72,19 @@ class LoginController extends controller
         $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive());        
         $this->view->render('login/register.html.twig',$params);   
     }
+    public function changePassword()
+    {
+        $params = array();        
+        $this->view->render('login/changepassword.html.twig',$params);   
+    }
+    public function changePasswordSave()
+    {
+        $login_model = $this->loadModel('Login');
+        $login_model->changePasswordSave();
+        // redirect user to base URL
+        header('location: ' . URL);
+    }    
+
     public function registerSave () {
 
         // run the login() method in the login-model
