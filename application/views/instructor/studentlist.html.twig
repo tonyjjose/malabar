@@ -1,0 +1,28 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+    <h1>Welcome</h1>
+    <div class="content">
+        <h2>The list of all students doing the course {{course.name}}</h2>
+        <table>
+            {# table head #}
+            <tr><th>No</th><th>Name</th><th>ID</th><th>Email</th><th>Approved</th><th>Active</th><th>Anonymous</th><th>Joined</th>
+            <th>Actions</th></tr>        
+            {% for student in students %}
+                <tr>
+                    <td>{{loop.index}}</td><td>{{student.name}}</td><td>{{student.id}}</td>
+                    <td>{{student.email}}</td>
+                    <td> {% if student.approved == 1 %}Yes {% else %} No {% endif %}</td>
+                    <td> {% if student.active == 1 %}Yes {% else %} No {% endif %}</td>
+                    <td> {% if student.anonymous == 1 %}Yes {% else %} No {% endif %}</td>
+                    <td>{{student.created}}</td>
+                    <td><a href="{{URL}}manager/viewstudent/{{student.id}}">View</a></td>                   
+                </tr>
+            {% endfor %}
+        </table>
+
+    </div>  <!-- end content -->
+
+{% endblock %}
