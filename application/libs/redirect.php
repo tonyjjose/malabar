@@ -1,18 +1,31 @@
 <?php
 
 /**
- * Class Redirect
+ * Redirect to specified URL
  *
- * Simple abstraction for redirecting the user to a certain page
+ * Simple abstraction for redirecting the user to a certain page.
  */
 class Redirect
 {
 	/**
-	 * To the homepage
+	 * Redirect to user's home.
+	 * To the home(ie default page) page of the respective user type.
+	 * Eg: for student this will be ..app/student/index 
+	 *
 	 */
 	public static function home()
 	{
-		header('location: ' . URL . 'home/index');
+		$user_type = Session::get('user_type');
+
+		if ($user_type == ROLE_MANAGER) {
+			header('location: ' . URL . 'manager/index');
+		} elseif ($user_type == ROLE_INSTRUCTOR) {
+			header('location: ' . URL . 'instructor/index');
+		} elseif ($user_type == ROLE_STUDENT) {
+			header('location: ' . URL . 'student/index');
+		} else {
+			header('location: ' . URL . 'error/index');
+		}
 	}
 
 	/**

@@ -1,19 +1,22 @@
 <?php
 
 /**
- * Class DatabaseFactory
+ * The DatabaseFactory class.
  *
+ * This is a singleton class which returns only the same instance of db connection.
  * Use it like this:
  * $database = DatabaseFactory::getFactory()->getConnection();
  *
- *
  */
-
 class DatabaseFactory
 {
 	private static $factory;
 	private $database;
 
+	/**
+	 * Gets the lone instance of the class.
+	 * @return object DBFactory
+	 */	
 	public static function getFactory()
 	{
 		if (!self::$factory) {
@@ -22,6 +25,10 @@ class DatabaseFactory
 		return self::$factory;
 	}
 
+	/**
+	 * Provides the PDO connection object.
+	 * @return object DB
+	 */
 	public function getConnection() {
 		if (!$this->database) {
 			$options = array(PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ, PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING);

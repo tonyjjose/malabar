@@ -1,7 +1,10 @@
 <?php
 
 /**
-* The heart of the application. :-p
+* The heart(or brain? or whatever?) of the application.
+*
+* The application class parses the REQUEST URL and loads the corresponding controller and
+* calls the method with parameters
 */
 
 class Application
@@ -26,7 +29,7 @@ class Application
 
     /**
      * "Start" the application:
-     * Analyze the URL elements and calls the according controller/method or the fallback
+     * Analyze the URL elements and calls the corresponding controller/method or the fallback
      */
     public function __construct()
     {
@@ -67,8 +70,8 @@ class Application
                 $this->url_controller->index();
             }
         } else {
-            // invalid URL, so simply redirect error page           
-            Redirect::to('error');
+            // invalid URL, so simply redirect page not found page           
+            Redirect::to('error/invalid');
         }
     }
 
@@ -85,15 +88,13 @@ class Application
             $url = explode('/', $url);
 
             // Put URL parts into according properties
-            // By the way, the syntax here is just a short form of if/else, called "Ternary Operators"
-            // @see http://davidwalsh.name/php-shorthand-if-else-ternary-operators
             $this->url_controller = (isset($url[0]) ? $url[0] : null);
             $this->url_action = (isset($url[1]) ? $url[1] : null);
             $this->url_parameter_1 = (isset($url[2]) ? $url[2] : null);
             $this->url_parameter_2 = (isset($url[3]) ? $url[3] : null);
             $this->url_parameter_3 = (isset($url[4]) ? $url[4] : null);
 
-            // for debugging. uncomment this if you have problems with the URL
+            // for debugging.
             // echo 'Controller: ' . $this->url_controller . '<br />';
             // echo 'Action: ' . $this->url_action . '<br />';
             // echo 'Parameter 1: ' . $this->url_parameter_1 . '<br />';

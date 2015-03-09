@@ -110,6 +110,10 @@ class User
 
     } 
 
+public function saveLoginTimeStamp()
+{
+	//save to db
+}	
     //get instance from DB
     public static function getInstance($id){
 

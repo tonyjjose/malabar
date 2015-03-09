@@ -1,0 +1,23 @@
+{% extends "layout.html.twig" %}
+
+{% block title %}Login{% endblock %}
+
+{% block feedback %}
+    {% for feed in feedback_positive %}
+        <span class="feedback success">{{feed|e }}</span>
+    {% endfor %}
+    {% for feed in feedback_negative %}
+        <span class="feedback failure">{{feed|e }}</span>
+    {% endfor %}    
+{% endblock %}
+
+{% block content %}
+    <h1>Error!!</h1>
+    <div class="content">
+        <h2>Unidentified erwwwwwwwwwwror</h2>
+        <p>Most probably you accessed an invalid page.</p>
+    </div>  <!-- end content -->
+
+
+
+{% endblock %}

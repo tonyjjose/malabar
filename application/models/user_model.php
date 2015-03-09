@@ -1,9 +1,9 @@
 <?php
 
 /**
- * UserModel
+ * UserModel class
  *
- * Handles the users related bussiness logic
+ * Handles the user related bussiness logic
  */
 
 class UserModel
@@ -17,6 +17,14 @@ class UserModel
         $this->db = $db;
     }
 
+    /**
+     * Now user registration process.
+     *
+     * The same process is used for user/add (done by manager) and login/register (done by new student). 
+     * The three properties $approved, $active and $type will not be set when done by student. The method takes care
+     * of this by providing the default values when they are not set.
+     * @return bool success state
+     */
     public function addSave()
     {
         //get the inputs
@@ -35,21 +43,30 @@ class UserModel
         //since it is a checkbox it wont be set if it was not checked by user.
         $anon = (Request::post('user_anon') == 'yes') ? YES : NO;
 
-        //these will be set only by manager, so set default values if they are unset
+        /* The next three inputs will be set only by manager, so set default values if they are unset.
+         * (they will be unset when the student himself register using login/register.)
+         */
+        
+        //set the default value of $type to ROLE_STUDENT if unset.
         $type = Request::post('user_type');
         $type = (is_null($type)) ? ROLE_STUDENT : $type;
 
+        //set the default value of $approved to NO if unset.
         $approved = (Request::post('user_approved') == 'yes') ? YES : NO;
-        //$approved = (is_null($approved)) ? NO : ($approved == 'yes') ? YES : NO;
-        $active = Request::post('user_active');
-        
-        if (is_null($active)){ $active = YES; }
-            //it is set, so process it.
-            else { $active = (($active) == 'yes') ? YES : NO; }
+
+        //set the default value of active to YES if unset
+        $active = Request::post('user_active');       
+        if (is_null($active)) { 
+            $active = YES;
+        }
+        //it is set, so process it.
+        else { 
+            $active = ($active == 'yes') ? YES : NO; 
+        }
 
 
         //ok we have the inputs, validate them
-    	if(!$name || strlen($name)== 0 || strlen($name) > 64) {
+    	if(!$name || strlen($name) == 0 || strlen($name) > 64) {
     		Feedback::addNegative('Failed! user name is invalid.');
     		return false;
     	}  
@@ -62,7 +79,7 @@ class UserModel
     		Feedback::addNegative('Failure! user email already exists.');
     		return false;
     	}
-        if(!$password || strlen($password)== 0 || strlen($password) > 8) {
+        if(!$password || strlen($password) == 0 || strlen($password) > 8) {
             Feedback::addNegative('Failed! user password is invalid.');
             return false;
         }     
@@ -70,6 +87,8 @@ class UserModel
             Feedback::addNegative('Failed! user should be older than 14.');
             return false;
         }  
+
+        //looks like the inputs are fine. lets add to db
 
         //Note: this is a PHP 5.5.5+ function, but we use it with a compatibility lib
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
@@ -91,6 +110,10 @@ class UserModel
         }
     }
 
+    /**
+     * User edit process.
+     * @return bool success state
+     */
     public function editSave()
     {
         //get the inputs
@@ -107,23 +130,14 @@ class UserModel
         $address = Request::post('user_address');
         $mode = Request::post('user_course_mode');
         
-        //since it is a checkbox it wont be set if it was not checked by user.
+        //since some of the next are checkbox/option, process those inputs.
         $anon = (Request::post('user_anon') == 'yes') ? YES : NO;
-
-        //these will be set only by manager, so set default values if they are unset
         $type = Request::post('user_type');
-        $type = (is_null($type)) ? ROLE_STUDENT : $type;
-        
-        $approved = Request::post('user_approved');
-        $approved = (is_null($approved)) ? NO : ($approved == 'yes') ? YES : NO;
-        
-        $active = Request::post('user_active');
-        if (is_null($active)){ $active = YES; }
-            //it is set, so process it.
-            else { $active = ($active == 'yes') ? YES : NO; }
+        $approved = (Request::post('user_approved') == 'yes') ? YES : NO;
+        $active = (Request::post('user_active') == 'yes') ? YES: NO;   
+
 
         $hash; //variable to hold the hash if needed
-
 
         //ok we have the inputs, validate them
         if(!$name || strlen($name)== 0 || strlen($name) > 64) {
@@ -144,15 +158,14 @@ class UserModel
             return false;
         }  
 
-        //OK try to add to db       
-        if (!$password || strlen($password) == 0) //is there a password field? 
-        {
+        //OK try to add to db     
+        //is there a password field?   
+        if (!$password || strlen($password) == 0) { //NO
             $success = User::update($id, $name, $email, $age, $sex, $qual, $bio, $phone, 
             $mobile, $address, $mode, $type, $approved, $active, $anon); 
-        }
-        else 
-        {
-            //new password provided. Validate it
+        } 
+        else { //new password provided. Validate it
+            
             $password = trim($password);            
             if(strlen($password) == 0 || strlen($password) > 8) {
                 Feedback::addNegative('Failed! user password is invalid.');
@@ -166,13 +179,13 @@ class UserModel
             $mobile, $address, $mode, $type, $approved, $active, $anon); 
 
             //try updating password
-            $pass_success = User::updatePassword($id,$hash);
+            $pass_success = User::updatePassword($id, $hash);
             
             //notify the user about password update
             if ($pass_success) {
                 Feedback::addPositive('Password updated');
             }
-            else{
+            else {
                 Feedback::addNegative('Failed to update password');
             }
         }
@@ -189,6 +202,10 @@ class UserModel
     }
  
 
+    /**
+     * User delete process.
+     * @return bool success state
+     */
     public function deleteSave(){
         //get the inputs
         $id = Request::post('user_id');
@@ -215,4 +232,44 @@ class UserModel
         return false;
     }    
 
+    /**
+     * User's change password process.
+     * @return bool success state
+     */
+    public function changePasswordSave()
+    {
+        //get the inputs
+        $id = Session::get('user_id');
+        $old_pass = Request::post('user_old_password');
+        $new_pass = Request::post('user_new_password');
+
+        $user = User::getInstance($id);
+
+        //is the old password correct? if not exit
+        if (!password_verify($old_pass, $user->getPasswordHash()))
+        {
+            Feedback::addNegative("Failed! Old password is wrong.");
+            return false;           
+        }                   
+
+        //Validate new password
+        $new_pass = trim($new_pass);            
+        if(strlen($new_pass) == 0 || strlen($new_pass) > 8) {
+            Feedback::addNegative('Failed! New password is invalid.');
+            return false;
+        }  
+
+        //Note: this is a PHP 5.5.5+ function, but we use it with a compatibility lib
+        $hash = password_hash($new_pass, PASSWORD_DEFAULT);   
+        $success = User::updatePassword($id, $hash);
+            
+        //notify the user about password update and return
+        if ($success) {
+            Feedback::addPositive('Password updated');
+            return true;
+        }
+
+        Feedback::addNegative('Failed to update password');
+        return false;          
+    } 
 }

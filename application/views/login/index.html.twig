@@ -2,35 +2,20 @@
 
 {% block title %}Login{% endblock %}
 
-{% block feedback %}
-    {% for feed in feedback_positive %}
-        <span class="feedback success">{{feed|e }}</span>
-    {% endfor %}
-    {% for feed in feedback_negative %}
-        <span class="feedback failure">{{feed|e }}</span>
-    {% endfor %}    
+{% block feedback %}    
 {% endblock %}
 
 {% block content %}
-    <h1>Welcome</h1>
-    <p>
-        Please fill the form to login...!!
-    </p>
-
-    <div class="login-default-box">
-        <h1>Login</h1>
+    <section id="loginform">
+    <h2>Login</h2>
         <form action="{{URL}}login/signin" method="post">
-                <label>User Email</label>
-                <input type="text" name="user_email" />
-                <label>Password</label>
+                <label for="user_email" autofocus>Email</label>
+                <input type="email" name="user_email" />
+                <label for="user_password">Password</label>
                 <input type="password" name="user_password" required />
-                <input type="checkbox" name="user_rememberme" class="remember-me-checkbox" />
-                <label class="remember-me-label">Keep me logged in (for 2 weeks)</label>
-                <input type="submit" class="login-submit-button" />
+                <input type="submit" class="submit-button" value="Login"/>
         </form>
         <a href="{{URL}}login/register">Register</a>
-        |
-        <a href="{{URL}}login/requestpasswordreset">Forgot my Password</a>
-    </div>
-
+        <p>Please contact <a href="http://www.malabarbiblecourses.org/contact-us">manager</a> incase you forgot your password</p>
+    </section>
 {% endblock %}

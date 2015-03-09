@@ -1,7 +1,11 @@
 <?php
 
 /**
- * This is the "base controller class". All other "real" controllers extend this class.
+ * The base controller class
+ *
+ * Provided the base methods required for all the controllers and also does the authentication check and session management.
+ *  Unauthenticated users are not allowed past here, they are redirected to login page.  
+ *
  */
 class Controller
 {
@@ -11,12 +15,11 @@ class Controller
     public $db = null;
 
     /**
-     * Check first if we are authorised to enter.
+     * The base constuctor for all controllers 
      *
+     * Checks first if we are authorised to enter.
      * Whenever a controller is created, open a database connection too. The idea behind is to have ONE connection
-     * that can be used by multiple models.
-     *
-     * We initialize a view.
+     * that can be used by multiple models. We also initialize the view object.
      */
     function __construct()
     {
@@ -28,19 +31,19 @@ class Controller
 
         if (!isset($_SESSION['user_logged_in'])) {
 
-                //We check the URL to see if it is to login[or login related] page, if so we allow, 
+                //We check the URL to see if it is to login or error controller, if so we allow, 
                 //otherwise, we redirect to login page.
-                if (strpos($_SERVER['REQUEST_URI'], '/app/login') === false){
-                     
+                if (!(get_class($this) === 'ErrorController' || get_class($this) === 'LoginController')) {
                     Session::destroy();
                     Redirect::to('login'); 
-                    //exit(); //should we enable this so as to prevent curl?? may be we should.                   
+                    //exit(); //should we enable this so as to prevent curl?? may be we should.                     
                 }
             }
 
+        //get the connction
         $this->openDatabaseConnection();
         
-        //We initialiase a view object for easier loading of our views.
+        //We initialiase the view
         $this->view = new View();
 
     }
@@ -50,15 +53,10 @@ class Controller
      */
     private function openDatabaseConnection()
     {
-        // set the (optional) options of the PDO connection. in this case, we set the fetch mode to
-        // "objects", which means all results will be objects, like this: $result->user_name !
-        // For example, fetch mode FETCH_ASSOC would return results like this: $result["user_name] !
-        // @see http://www.php.net/manual/en/pdostatement.fetch.php
+        // set the (optional) options of the PDO connection. we use FETCH_OBJ and may be later we change the ERRMODE
         $options = array(PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ, PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING);
 
         // generate a database connection, using the PDO connector
-        // @see http://net.tutsplus.com/tutorials/php/why-you-should-be-using-phps-pdo-for-database-access/
-        //$this->db = new PDO(DB_TYPE . ':host=' . DB_HOST . ';dbname=' . DB_NAME, DB_USER, DB_PASS, $options);
         try {
             $this->db = new PDO(DB_TYPE . ':host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8', DB_USER, DB_PASS, $options);           
         } catch (PDOException $e) {
@@ -71,7 +69,7 @@ class Controller
     /**
      * Load the model with the given name.
      * 
-     * loadModel("Song") would include models/song_model.php, and create the model object in the controller, also
+     * loadModel("Student") would include models/student_model.php, and create the model object in the controller, also
      * passing the db object.
      * Note that the model class name is written in "CamelCase", the model's filename is in lowercase letters
      * @param string $name The name of the model

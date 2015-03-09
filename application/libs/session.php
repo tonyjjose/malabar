@@ -1,15 +1,15 @@
 <?php
 
 /**
- * Session class
+ * Session wrapper class
  *
- * handles the session stuff. creates session when no one exists, sets and
- * gets values, and closes the session properly (=logout). 
+ * Handles the session stuff. Creates session when no one exists, sets and
+ * gets values, and closes the session properly. 
  */
 class Session
 {
     /**
-     * starts the session
+     * Starts the session
      */
     public static function init()
     {
@@ -20,7 +20,7 @@ class Session
     }
 
     /**
-     * sets a specific value to a specific key of the session
+     * Sets a specific value to a specific key of the session
      * @param mixed $key
      * @param mixed $value
      */
@@ -30,7 +30,7 @@ class Session
     }
 
     /**
-     * gets/returns the value of a specific key of the session
+     * Gets/returns the value of a specific key of the session
      * @param mixed $key Usually a string, right ?
      * @return mixed
      */
@@ -42,8 +42,8 @@ class Session
     }
 
     /**
-     * adds a value as a new array element to the key.
-     * useful for collecting error messages etc
+     * Adds a value as a new array element to the key.
+     * Useful for collecting error messages etc
      *
      * @param mixed $key
      * @param mixed $value
@@ -54,7 +54,7 @@ class Session
     }    
 
     /**
-     * deletes the session (= logs the user out)
+     * Deletes the session (= logs the user out)
      */
     public static function destroy()
     {

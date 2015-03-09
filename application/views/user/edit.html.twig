@@ -1,18 +1,9 @@
-{% extends "layout.html.twig" %}
+{% extends "user/user.html.twig" %}
 
-{% block title %}Login{% endblock %}
-
-{% block feedback %}
-    {% for feed in feedback_positive %}
-        <span class="feedback success">{{feed|e }}</span>
-    {% endfor %}
-    {% for feed in feedback_negative %}
-        <span class="feedback failure">{{feed|e }}</span>
-    {% endfor %}    
-{% endblock %}
+{% block title %}Edit user{% endblock %}
 
 {% block content %}
-    <h1>Welcome</h1>
+    <h2>Welcome</h2>
     <div class="content">
         <h2>Welcome to </h2>
         <p>Register to take a course</p>

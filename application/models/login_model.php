@@ -1,9 +1,10 @@
 <?php
 
 /**
- * LoginModel
+ * LoginModel class
  *
- * Handles the user's login / logout 
+ * Handles the user's login/logout related bussiness logic. 
+ *
  */
 
 class LoginModel
@@ -32,16 +33,22 @@ class LoginModel
             Feedback::addNegative("Login failed: Invalid user email");
             return false;
         }         
-        if (!$password || strlen($password)== 0) {
-            Feedback::addNegative(FEEDBACK_PASSWORD_FIELD_EMPTY);           
+        if (!$password || strlen($password) == 0) {
+            Feedback::addNegative("Failed! Invalid password");           
             return false;
         }
 
-        //As of now we make the user logged in. later we add the authentication code here
+        //ok, the inputs are fine, now lets validate it from DB
         $user = User::getInstanceFromEmail($email);
 
         if (is_null($user)) {
             Feedback::addNegative("Login failed: No such user");
+            return false;
+        }
+
+        //is the user approved? 
+        if (!$user->getApproved()) {
+            Feedback::addNegative("Login failed! User not approved.");
             return false;
         }
         
@@ -50,52 +57,38 @@ class LoginModel
             Feedback::addNegative("Login failed: Wrong password");
             return false;           
         }   
-        //$user->saveLoginTimestamp();
+        
+        //looks like we are logged in, ok, save data to session
+        $this->setUserDataToSession($user);
+
+        //enter user login timestamp to db
+        $user->saveLoginTimestamp();
+
+        return true;
+    }
+
+    /**
+     * Logout process.    
+     */
+    public function signOut()
+    {
+        // delete the session
+        Session::destroy();
+    }
+
+    /**
+     * Set authenticated user's data to session.
+     * 
+     */    
+    private function setUserDataToSession(User $user)
+    {
         Session::set('user_id', $user->getId());
         Session::set('user_name', $user->getName());
         Session::set('user_email', $user->getEmail());
         Session::set('user_type', $user->getType());
-        Session::set('user_logged_in', true); 
-        return true;
-
+        Session::set('user_last_login', $user->getLastLogIn());
+        Session::set('user_logged_in', true);         
     }
-
-    public function changePasswordSave()
-    {
-        $id = Session::get('user_id');
-        $old_pass = Request::post('user_old_password');
-        $new_pass = Request::post('user_new_password');
-
-        $user = User::getInstance($id);
-
-        //is the old password correct?
-        if (!password_verify($old_pass, $user->getPasswordHash()))
-        {
-            Feedback::addNegative("Failed! Old password is wrong.");
-            return false;           
-        }                   
-
-        //Validate new password
-        $new_pass = trim($new_pass);            
-        if(strlen($new_pass) == 0 || strlen($new_pass) > 8) {
-            Feedback::addNegative('Failed! New password is invalid.');
-            return false;
-        }  
-
-        //Note: this is a PHP 5.5.5+ function, but we use it with a compatibility lib
-        $hash = password_hash($new_pass, PASSWORD_DEFAULT);   
-        $success = User::updatePassword($id,$hash);
-            
-            //notify the user about password update
-            if ($success) {
-                Feedback::addPositive('Password updated');
-                return true;
-            }
-            else {
-                Feedback::addNegative('Failed to update password');
-                return false;
-            }                  
-    }    
 
     /**
      * Returns the current state of the user's login
@@ -104,14 +97,5 @@ class LoginModel
     public function isUserLoggedIn()
     {
         return Session::get('user_logged_in');
-    }  
-    
-    /**
-     * Logout process.    
-     */
-    public function signOut()
-    {
-        // delete the session
-        Session::destroy();
-    }      
+    }
 }

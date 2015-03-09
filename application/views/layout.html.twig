@@ -1,52 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame -->
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <!--  Mobile Viewport Fix -->
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+<head>
+    <meta charset="utf-8">
+    <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--  Mobile Viewport Fix -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
 
-        <title>{% block title %}{{ name }}{# page specific title #} {% endblock %} - MalabarBibleCourses.org</title>
-        <meta name="description" content="the description">
+    <!--  IE fix for HTML 5 block level elements Fix -->
+    <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js">
+    </script>
+    <![endif]-->        
 
-        <!-- css -->
-        <link href="{{URL}}public/css/style.css" rel="stylesheet">
-        <!-- jQuery -->
-        <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
-        <!-- JavaScript -->
-        <script src="{{URL}}public/js/application.js"></script>
-        {% block head %} {# if anything more has to be added to head #} {% endblock %} 
-    </head>
+    <title>{% block title %}{# page specific title #}{% endblock %} - MalabarBibleCourses.org</title>
+    <meta name="description" content="the description">
 
-    <body>
-        <div class="header">
-            <h1>Malabar Bible Courses</h1>
-            <img src="{{URL}}public/img/demo-image.png" />
-            <div class="navigation">
-                {% block nav %} {# should we need a different nav, we can addit here #}
-                    <ul>
-                        <!-- same like "home" or "home/index" -->
-                        <li><a href="{{URL}}">home</a></li>
-                        <li><a href="{{URL}}home/link1">Link1</a></li>
-                        <li><a href="{{URL}}home/link2">Link2</a></li>
-                        <li><a href="{{URL}}link3">Link3</a></li>
-                    </ul>
-                {% endblock %}
-            </div> <!-- end nav -->
-        </div> <!-- end header -->
+    <!-- css -->
+    <link href="{{URL}}public/css/style.css" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+    <!-- JavaScript -->
+    <script src="{{URL}}public/js/application.js"></script>
+    {% block head %} {# if anything more has to be added to head #} {% endblock %} 
+</head>
 
-        <div id="content">
-            {% block feedback%}{# any error/success msgs here #}{% endblock %}
+<body>
+    <header>
+        <img class="headerimg" src="{{URL}}/public/img/header.jpg" height="250" width="980" alt="">
 
-            {% block content %}{# the main content block #}{% endblock %}
+        <h1>Malabar Bible Courses</h1>
+        <nav>
+            <ul>
+                {% block nav -%}
+                    <li><a href="http://www.malabarbiblecourses.org">Malabar Bible Courses</a></li>
+                    {# We will add the remaing links in the child template #}
+                {% endblock %}                        
+            </ul>               
+        </nav>
+    </header>
 
-        </div><!-- end content -->
+    <main>
+        <div id="loginblock">Welcome {{SESSION_USER}}, last log on {{SESSION_LAST}}
+            <a href="{{URL}}/login/signout">Signout</a>
+        </div>
 
-        <div id="footer">
-            {% block footer %}
-                &copy; Copyright 2015 by <a href="http://malabarbiblecourses.org/">Malabar Bible Courses</a>
-            {% endblock %}
-        </div><!-- end footer -->
-    </body>
+        {%- block news -%}{# any news to be posted, may be in future #}{% endblock %}
+
+        {%- block feedback -%}{# the feedbacks #}    
+            {% for feed in feedback_positive %}
+                <span class="feedback success">{{feed}}</span>
+            {% endfor %}
+            {% for feed in feedback_negative %}
+                <span class="feedback failure">{{feed}}</span>
+            {% endfor %}     
+            {# incase anything additional needed extend it in child template #}
+        {% endblock %}
+
+        {% block content %}{# the main content block #}{% endblock %}
+    </main>
+    
+    <footer>
+        {% block footer -%}
+            &copy; Copyright 2015 by <a href="http://malabarbiblecourses.org/">Malabar Bible Courses</a>
+        {% endblock -%}
+    </footer>
+</body>
 </html>

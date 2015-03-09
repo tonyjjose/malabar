@@ -1,13 +1,15 @@
 <?php
 
 /**
- * Configuration
+ * Configuration for the Project
  *
+ * We use this page to set error reporting, timezone, and various other constants used in the application.
  */
 
 /**
  * Configuration for: Error reporting
  * Useful to show every little problem during development, but only show hard errors in production
+ * Change this later
  */
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
@@ -17,13 +19,12 @@ date_default_timezone_set("Asia/Calcutta");
 
 /**
  * Configuration for: Project URL
- * Put your URL here, for local development "127.0.0.1" or "localhost" (plus sub-folder) is fine
  */
 define('URL', 'http://127.0.0.1/app/');
+define('WWW', 'http://www.malabarbiblecourses.org/');
 
 /**
  * Configuration for: Database
- * This is the place where you define your database credentials, database type etc.
  */
 define('DB_TYPE', 'mysql');
 define('DB_HOST', 'localhost');
@@ -33,7 +34,6 @@ define('DB_PASS', 'google');
 
 /**
  * Configuration for: Folders
- * Here you define where your folders are. Unless you have renamed them, there's no need to change this.
  */
 define('LIBS_PATH', 'application/libs/');
 define('CORE_PATH', 'application/core/');
@@ -43,6 +43,7 @@ define('VIEWS_PATH', 'application/views/');
 define('TEMPLATES_PATH', 'application/views/');
 
 /* Path for twig and twig cache.
+ *
  * we are giving here filesystem level path. Note sure if this is the correct way.
  * An expert advice or review needed here  -------------???
  * Cache folder is put above the http public folder as it is writable and we dont need it to
@@ -51,26 +52,26 @@ define('TEMPLATES_PATH', 'application/views/');
 define('TWIG_PATH', 'Twig/');
 define('TWIG_CACHE_PATH', '../../cache/');
 
-
 /**
- * Configuration for: Error messages and notices
- *
- * In this project, the error messages, notices etc are all-together called "feedback".
+ * Configuration for: Success and error feedback
+ * May not be used but just provided for future if needed.
  */
 define('FEEDBACK_USERNAME_FIELD_EMPTY', 'Username field was empty.');
 define('FEEDBACK_PASSWORD_FIELD_EMPTY', 'Password field was empty.');
 
-
 /**
  * Application specific constants
  *
- *
  **/
 
+//why did we use CONST just here and define() else where? 
 CONST YES = 1;
 CONST NO = 0;
 
-define('ROLE_NONE', 'N');
+CONST ACTIVE = 1;
+CONST INACTIVE = 0;
+
+define('ROLE_NONE', 'N'); //not used as of now
 define('ROLE_STUDENT', 'S');
 define('ROLE_INSTRUCTOR', 'I');
 define('ROLE_MANAGER', 'M');
@@ -84,8 +85,3 @@ define ('COURSE_MODE_POSTAL','P');
 define ('COURSE_INSTANCE_ACTIVE','A');
 define ('COURSE_INSTANCE_INACTIVE','I');
 define ('COURSE_INSTANCE_COMPLETED','C');
-
-
-
-
-

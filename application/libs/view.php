@@ -1,18 +1,19 @@
 <?php
 
 /**
- * Class View
+ * The View class.
  *
- * Provides the render methods and does the twig initialization
+ * Provides the view render methods and does the twig initialization
  */
 class View
 {
-
     //The twig variables.
     private $loader = null;
     private $twig = null;
 
-
+    /**
+     * Initialize the twig here
+     */
     function __construct ()
     {
         //load the twig library. We installed it in the application directory.
@@ -26,26 +27,40 @@ class View
          * Note that the dir should be writable. 
          */
         //$this->twig = new Twig_Environment($this->loader, array('cache' => TWIG_CACHE_PATH,));
-        $this->twig = new Twig_Environment($this->loader, array('cache' => false,'debug' => true));   #no cache as we are coding. 
+        $this->twig = new Twig_Environment($this->loader, array('cache' => false,'debug' => true));   #no cache as we are in dev mode. 
         
         //add a twig global variable that holds the project URL.
-        $this->twig->addGlobal('URL', URL);        
+        $this->twig->addGlobal('URL', URL); 
+        $this->twig->addGlobal('SESSION_USER', Session::get('user_name'));
+        $this->twig->addGlobal('SESSION_LAST', Session::get('user_last_login'));    
     }
 
     /**
-     * This will render the template requested. 
-     * Note that the parameter list must be an array for twig.
-     *
+     * The default twig template renderer
+     *  
+     * The template specified will be rendered using the given parameters. We also set
+     * the feedback parameters before and after displaying the view, we clear the feedback entries from 
+     * $_Session[]
+     * 
+     * @param string $template Template file name
+     * @param string[] $params The parameter list
      */
-    public function render($template, $array=array())
+    public function render($template, $params=array())
     {
-        echo $this->twig->render($template,$array);
+        //we add the feedback here to the $params.This may not be the most elegant postition
+        //theoretically, but it saves a lot of typing.
+        $params['feedback_negative'] = Feedback::getNegative();
+        $params['feedback_positive'] = Feedback::getPositive();
+
+        echo $this->twig->render($template,$params);
+        
         //Clear feedback. Is it not the right place to do it???
         Feedback::clear();
     }
 
     /**
-     * This is included if we need to bypass twig for whatever reason we may need, if any.
+     * Twig less render function.
+     * Provided incase we need to display a non template file
      */
     public function renderWithoutTwig($filename)
     {

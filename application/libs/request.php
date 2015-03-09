@@ -1,8 +1,7 @@
 <?php
 
-/**
- * 
- * Class Request
+/** 
+ * Request wrapper class.
  * Abstracts the access to $_GET, $_POST and $_COOKIE, preventing direct access to these super-globals.
  */
 class Request
@@ -19,14 +18,12 @@ class Request
     public static function post($key, $clean = false)
     {
         if (isset($_POST[$key])) {
-            // we use the Ternary Operator here which saves the if/else block
-            // @see http://davidwalsh.name/php-shorthand-if-else-ternary-operators
             return ($clean) ? trim(strip_tags($_POST[$key])) : $_POST[$key];
         }
     }
 
     /**
-     * gets/returns the value of a specific key of the GET super-global
+     * Gets/returns the value of a specific key of the GET super-global
      * @param mixed $key key
      * @return mixed the key's value or nothing
      */
@@ -38,7 +35,7 @@ class Request
     }
 
     /**
-     * gets/returns the value of a specific key of the COOKIE super-global
+     * Gets/returns the value of a specific key of the COOKIE super-global
      * @param mixed $key key
      * @return mixed the key's value or nothing
      */

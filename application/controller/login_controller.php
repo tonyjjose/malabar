@@ -1,106 +1,135 @@
 <?php
 
 /**
- * Class LoginController
- * This is a login controller which handles the login..
- * We use the URLs ..app/login/index, app/login/signin, app/login/signout etc
+ * LoginController class.
  *
- *
+ * This handles all the login related requests..
+ * We use the URLs app/login/index, app/login/signin, app/login/signout etc
  */
 class LoginController extends controller
 {
+    
     function __construct()
     {  
        parent::__construct();  	
     }
 
     /**
-     * PAGE: index
-     * This method handles what happens when you move to ..app/login/index. 
-     * We use this to show the login form.
+     * A test function for debugging purposses.
+     *
+     * We can use this for outputting vars, testing code and so and so. This is accessible for non-authenticated
+     * users
      */
-    public function index(){
-  
-        //Show the login page
-        //we need to pass feedback as we return to same page if we have wrong password. 
-        $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive() );
-        $this->view->render('login/index.html.twig',$params);	
+    public function test()
+    {
+        //var_dump($_SESSION);
     }
-
-    //a test funtcion for devlopment
-    public function test(){
-        var_dump($_SESSION);
-    }
-        /**
-        * Check the supplied credentionals and validate the user.
-        * 
-        * This page will be the action [target] of the login form and this handles the POST data to 
-        * validate the user.
-        */
-    public function signIn () {
-
-        // run the login() method in the login-model
-        $login_model = $this->loadModel('Login');
-        // perform the login method, put result (true or false) into $login_successful
-        $login_successful = $login_model->signIn();
-
-        // check login status
-        if ($login_successful) {
-            // if YES, then move user to home)
-            Redirect::home();
-        } else {
-            // if NO, then move user to login/index (login form) again
-            Redirect::to('login');
-        }
-    }        
 
     /**
-     * The logout action
-     * 
-     * Just hit this and you will be signed out. 
+     * Display login form
+     */
+    public function index()
+    {  
+        //Show the login page
+        $this->view->render('login/index.html.twig');	
+    }
+
+    /**
+     * Display the registration from
+     *
+     */
+    public function register()
+    {
+        //authenticated users need not come here again.
+        $login_model = $this->loadModel('Login');
+        if ($login_model->isUserLoggedIn()) {
+            Redirect::home();
+        }    
+
+        //show the form 
+        $this->view->render('login/register.html.twig');   
+    }
+
+    /**
+     * Logout the user
+     *  
      */       
     public function signOut()
     {
         $login_model = $this->loadModel('Login');
         $login_model->signOut();
-        // redirect user to base URL
-        header('location: ' . URL);
-    }
-
-    public function register()
-    {
-        $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive());        
-        $this->view->render('login/register.html.twig',$params);   
-    }
+        
+        // redirect user to the public website
+        header('location: ' . WWW);
+    }    
+    
+    /**
+     * Display the change password from
+     *
+     */
     public function changePassword()
     {
-        $params = array();        
-        $this->view->render('login/changepassword.html.twig',$params);   
-    }
-    public function changePasswordSave()
-    {
+        //non authenticated users need not touch here.
         $login_model = $this->loadModel('Login');
-        $login_model->changePasswordSave();
-        // redirect user to base URL
-        header('location: ' . URL);
+        if (!$login_model->isUserLoggedIn()) {
+            Redirect::to('login');
+        }
+        
+        //show the form
+        $this->view->render('login/changepassword.html.twig');   
     }    
 
-    public function registerSave () {
-
-        // run the login() method in the login-model
-        $user_model = $this->loadModel('user');
-        // perform the login method, put result (true or false) into $login_successful
-        $registration_success = $user_model->addSave();
+    /**
+    * POST request handler for login form
+    *
+    * Check the supplied credentionals and validate the user.
+    * Upon validation redirect to the user's home page. 
+    */
+    public function signIn () 
+    {
+        //load the login model and run the signIn() method
+        $login_model = $this->loadModel('Login');
+        $login_successful = $login_model->signIn();
 
         // check login status
+        if ($login_successful) {
+            // if YES, then move user to home
+            Redirect::home();
+        } else {
+            // if NO, then move user to login/index (login form) again
+            Redirect::to('login');
+        }
+    }  
+
+    /**
+     * POST request handler for change password form
+     *  
+     * Note that we use the user model and does the job.
+     */ 
+    public function changePasswordSave()
+    {
+        $user_model = $this->loadModel('User');
+        $user_model->changePasswordSave();
+
+        Redirect::home();
+    }   
+
+    /**
+     * POST request handler for registration form
+     * 
+     * We use the user model and does the job.
+     */ 
+    public function registerSave () {
+
+        $user_model = $this->loadModel('User');
+        $registration_success = $user_model->addSave();
+
         if ($registration_success) {
-            // if YES, then move user to home)
-            Redirect::to('student');
+            // if YES, then display confirmation and inform about approval process.
+            Redirect::to('error/approval');
         } else {
             // if NO, then move user to login/index (login form) again
             Redirect::to('register');
         }
     }        
-
-
 }
