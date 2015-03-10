@@ -2,8 +2,6 @@
 
 {% block title %}Login{% endblock %}
 
-{% block feedback %}{{ parent() }}{% endblock %}
-
 {% block content %}
 <section id="loginform">
     <h2>Login</h2>
@@ -15,6 +13,6 @@
         <input type="submit" class="submit-button" value="Login"/>
     </form>
     <a href="{{URL}}login/register">Register</a>
-    <p>Please contact <a href="http://www.malabarbiblecourses.org/contact-us">manager</a> incase you forgot your password</p>
+    <p>Please contact our <a href="http://www.malabarbiblecourses.org/contact-us">manager</a> incase you forgot your password</p>
 </section>
 {% endblock %}

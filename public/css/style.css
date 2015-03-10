@@ -116,7 +116,7 @@ th, td {
     padding: 8px;
 line-height: 1.42857143;
 vertical-align: top;
-border-top: 1px solid #DDD;
+border: 1px solid #DDD;
 }
 
 #loginblock {
@@ -138,7 +138,7 @@ border-top: 1px solid #DDD;
 
 }
 
-#userform {
+#userform, #courseform {
 
     width: 90%;
     margin: 0 auto;
@@ -168,7 +168,7 @@ span.desc {
     display: block;
 }
 
-input, textarea {
+input, textarea, select {
     margin-bottom: 20px;
 }
 
@@ -187,6 +187,10 @@ input[type="submit"] {
     display: block;
 }
 
+select {
+    width: 300px;
+}
+
 
 
 
@@ -194,13 +198,22 @@ input[type="submit"] {
 
 .feedback {
     display: block;
-    /*border:3px solid red;*/
+    margin: 20px;
+    padding: 30px;
+    border:1px solid;
+    border-radius: 5px;  
+    font-size: 1.2em;
+    font-weight:bold;
 }
 .failure {
-    color: red;
+    color: white;
+    background: lightpink;
+    border-color: red;
 }
 .success {
-    color: green;
+    color: white;
+    background: lightgreen;
+    border-color: green;
 }
 .bold {
     font-weight: bold;

@@ -1,10 +1,11 @@
 <?php
 
 /**
- * Category class
+ * CategoryObject class
  *
- * Handles the Course Category
- * As of now the idea is to represent languages
+ * This is the course category object. It provides static methods for DB operations as well us helper methods
+ * for various view purposes.
+ * As of now, we use the categories to represent languages
  */
 
 class Category
@@ -33,7 +34,10 @@ class Category
        $this->desc = $desc;  
     } 
 
-    //get instance from DB
+    /**
+     * Create category instance.
+     * @return object Category or null
+     */
     public static function getInstance($id){
 
         $db = DatabaseFactory::getFactory()->getConnection();
@@ -50,9 +54,8 @@ class Category
     }
 
     /**
-     * Get all categories from DB, return an array of category objects 
-     * 
-     *
+     * Create all category object array
+     * @return array[] of object Category or null
      */
     public static function getAllCategories()
     {
@@ -71,25 +74,10 @@ class Category
         return $categories;       
     }
 
-    
     /**
-     * Check if a category already exists.
-     * 
-     *
+     * Save category to DB
+     *  @return bool success state
      */
-    public static function categoryExists($name)
-    {
-        $db = DatabaseFactory::getFactory()->getConnection();
-
-        //Query the DB
-        $query = $db->prepare("SELECT cat_id FROM category WHERE cat_name = :name LIMIT 1");
-        $query->execute(array(':name' => $name));
-        if ($query->rowCount() == 0) {
-            return false;
-        }
-        return true;
-    }  
-
     public static function save($name, $desc)
     {
         $db = DatabaseFactory::getFactory()->getConnection();
@@ -104,7 +92,36 @@ class Category
             return true;
         }  
         return false;
-    }  
+    } 
+    /**
+     * Check if a category already exists.
+     * 
+     * Used to check for name collisions while adding new category
+     *  @return bool success state
+     */
+    public static function categoryExists($name)
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();
+
+        //Query the DB
+        $query = $db->prepare("SELECT cat_id FROM category WHERE cat_name = :name LIMIT 1");
+        $query->execute(array(':name' => $name));
+        if ($query->rowCount() == 0) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Create all category details array.
+     * Not used anymore, just left it undeleted
+     * @return array[] or null
+     */
+    public static function getAllCourseCategoryNames()
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();
+
+        $query = $db->query("SELECT cat_id, cat_name FROM category ORDER BY cat_name ASC");   
+        return $query->fetchAll();  
+    }    
 }
-
-

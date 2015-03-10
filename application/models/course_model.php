@@ -1,9 +1,9 @@
 <?php
 
 /**
- * CourseModel
+ * CourseModel class
  *
- * Handles the courses stuff in db
+ * Handles the courses/categories related bussiness logic.
  */
 
 class CourseModel
@@ -17,15 +17,21 @@ class CourseModel
         $this->db = $db;
     }
 
+    /**
+    * New course adding process.
+    *
+    * We assume that all new courses are active.
+    * @return bool success state
+    */
     public function addSave()
     {
         //get the inputs
-        $name = Request::post('course_name');
+        $name = trim(Request::post('course_name'));
         $desc = Request::post('course_desc');
         $cat_id = Request::post('course_cat');
 
         //validate them
-    	if(!$name || strlen($name)== 0 || strlen($name) > 25) {
+    	if(!$name || strlen($name) == 0 || strlen($name) > 25) {
     		Feedback::addNegative('Failed! Course name is invalid.');
     		return false;
     	}  
@@ -58,11 +64,15 @@ class CourseModel
     	return false;
     }
 
+    /**
+    * Edit course process.
+    * @return bool success state
+    */
     public function editSave()
     {
         //get the inputs
         $id = Request::post('course_id');
-        $name = Request::post('course_name');
+        $name = trim(Request::post('course_name'));
         $desc = Request::post('course_desc');
         $cat_id = Request::post('course_cat');
         // a ternary conditional to get 1 or 0 for 'Course_Active'
@@ -87,6 +97,15 @@ class CourseModel
             Feedback::addNegative('Failure! A Course category must be selected.');
             return false;
         }
+        /* If it is marked inactive, check whether the course is in use, before updating.
+        *  A course marked Inactive are not taken by students or taught by us.
+        */
+        if ($active == NO) {
+            if (Course::isCourseInUse($id)) {
+                Feedback::addNegative ("Failure! Course taken by students, cannot mark inactive.");
+                return false;
+            }
+        }
 
         //ok, try to update to db
         $success = Course::update($id, $name, $desc, $active, $cat_id);
@@ -100,18 +119,29 @@ class CourseModel
         //We come here if its not updated properly, notify it and exit
         Feedback::addNegative('Failed! Unknown reason.');
         return false;
-    }    
+    }
 
-    public function deleteSave(){
+    /**
+    * Delete course process.
+    * @return bool success state
+    */        
+    public function deleteSave()
+    {
         //get the inputs
         $id = Request::post('course_id');
 
         //validate it
         if(!$id) {
-            //hacking attempt? why should we reach here without an id?
+            //hacking attempt? how could we reach here without an id?
             Feedback::addNegative ('Failure! No Course to delete.');
             return false;
         }
+
+        //is the course in use?
+        if (Course::isCourseInUse($id)) {
+            Feedback::addNegative ("Failure! Course taken by students, cannot be deleted");
+            return false;
+        }        
 
         //ok, lets try to delete
         $success = Course::delete($id);
@@ -123,23 +153,29 @@ class CourseModel
         }         
 
         //We come here if its not deleted properly, notify it and exit
-        Feedback::addNegative('Failed! Unknown reason.');
-        Feedback::addNegative('May be the course is in use.');        
+        Feedback::addNegative('Failed! Unknown reason.');        
         return false;
     }    
 
+    /**
+    * New category adding process.
+    * @return bool success state
+    */
     public function saveCategory(){
 
         //get the inputs
-        $name = Request::post('category_name');
+        $name = trim(Request::post('category_name'));
         $desc = Request::post('category_desc');
 
         //validate them
-        if(!$name || strlen($name)== 0 || strlen($name) > 15) {
+        if(!$name || strlen($name) == 0 || strlen($name) > 15) {
             Feedback::addNegative('Failed! Course Category name is invalid.');
             return false;
         }
-
+        if(strlen($desc) > 255) {
+            Feedback::addNegative('Failed! Course Category description is too large.');
+            return false;
+        }
         //Check if the category name already exist
         if (Category::categoryExists($name)) {
             Feedback::addNegative("Failure! Course Category name already exists.");
@@ -158,6 +194,5 @@ class CourseModel
         //We come here if its not added properly, notify it and exit
         Feedback::addNegative("Failed! Unknown reason.");
         return false;
-    }    
-
+    }
 }

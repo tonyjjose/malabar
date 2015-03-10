@@ -135,8 +135,8 @@ class LoginController extends controller
             // if YES, then display confirmation and inform about approval process.
             Redirect::to('error/approval');
         } else {
-            // if NO, then move user to login/index (login form) again
-            Redirect::to('register');
+            // if NO, then move user to registration form again
+            Redirect::to('login/register');
         }
     }        
 }

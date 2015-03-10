@@ -1,44 +1,35 @@
-{% extends "layout.html.twig" %}
+{% extends "manager/manager.html.twig" %}
 
-{% block title %}Login{% endblock %}
-
-{% block feedback %}
-    {% for feed in feedback_positive %}
-        <span class="feedback success">{{feed|e }}</span>
-    {% endfor %}
-    {% for feed in feedback_negative %}
-        <span class="feedback failure">{{feed|e }}</span>
-    {% endfor %}    
-{% endblock %}
+{% block title %}Courses{% endblock %}
 
 {% block content %}
-    <h1>Welcome</h1>
-    <div class="content">
-        <h2>The list of available courses</h2>
-        <p>This is the page of Course..We will list the courses here, for managers there will be the option to add new/edit and delete!!</p>
-        <a href="{{URL}}course/add">Add a new course</a>
-    
-        <table>
-            {# table head #}
-            <tr><th>No</th><th>Course Name</th><th>Description</th><th>Category</th><th>Active</th><th>Actions</th></tr>
+<section>
+    <h2>Courses</h2>
+    <a href="{{URL}}course/add">Add a new course</a><br>
+    <a href="{{URL}}course/addcategory">Add a new course category</a>
+</section>   
+<section>
+    <h3>Available courses</h3> 
+    <table>
+        {# table head #}
+        <tr><th>No</th><th>Course</th><th>Description</th><th>Category</th><th>Active</th><th>Actions</th></tr>
 
-            {# list the courses #}             
-            {% for course in courses %}
-                <tr>
-                    <td>{{loop.index}}</td><td>{{course.course_name}}</td><td>{{course.course_desc}}</td>
-                    {# display the correct category #}
-                    <td>{% for category in categories %} 
-                            {% if course.course_category_id == category.cat_id %}{{category.cat_name}}{% endif %}
-                        {% endfor %}
-                    </td>
-                    {# display yes or no based on whether the course is active or not #}
-                    <td> {% if course.course_active == 1 %}Yes {% else %} No {% endif %}</td>
-                    <td><a href="{{URL}}course/edit/{{course.course_id}}">Edit</a></td>
-                    <td><a href="{{URL}}course/delete/{{course.course_id}}">Delete</a></td>
-                </tr>
-            {% endfor %}
-        </table>
-
-    </div>  <!-- end content -->
-
+        {# list the courses #}             
+        {% for course in courses %}
+            <tr>
+                <td>{{loop.index}}</td><td>{{course.name}}</td><td>{{course.description}}</td>
+                {# display the correct category #}
+                <td>{% for category in categories %} 
+                        {% if course.category.id == category.id %}{{category.name}}{% endif %}
+                    {% endfor %}
+                </td>
+                {# display yes or no based on whether the course is active or not #}
+                <td> {% if course.active == 1 %}Yes {% else %} No {% endif %}</td>
+                <td><a href="{{URL}}course/edit/{{course.id}}">Edit</a><br>
+                    <a href="{{URL}}course/delete/{{course.id}}">Delete</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+</section>
 {% endblock %}

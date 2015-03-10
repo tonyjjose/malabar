@@ -18,7 +18,7 @@ class UserModel
     }
 
     /**
-     * Now user registration process.
+     * New user registration process.
      *
      * The same process is used for user/add (done by manager) and login/register (done by new student). 
      * The three properties $approved, $active and $type will not be set when done by student. The method takes care

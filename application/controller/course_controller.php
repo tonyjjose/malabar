@@ -1,84 +1,68 @@
 <?php
 
 /**
- * Class CourseController
- * 
- * Handles all course related stuff
+ * CourseController class.
  *
+ * This handles all the course related requests.
  */
 class CourseController extends Controller
 {
     /**
-     * PAGE: index
-     * We will list all the available courses here. 
-     * For managers there will be add/edit/delete controls.
+     * Courses main page.
+     *
+     * We will list all the available courses here. And links for add/editing/deleting a course.
+     * Course categories are also added from here.
      */
     public function index()
     {
-        //as of now display the home, later we will redirect to respective pages based on user roles.
-        $courses = Course::getAllCoursesRows();
-        $categories = Course::getAllCourseCategoryNames();        
-        $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive(),
-            'courses'=>$courses, 'categories'=>$categories );        
+        $courses = Course::getAllCourses();
+        $categories = Category::getAllCategories();        
+        $params = array('courses'=>$courses, 'categories'=>$categories);    
+
         $this->view->render('course/index.html.twig', $params);
-
-    }
-
-    public function test($id){
-       // $cat = Category::getInstance($id);
-        //var_dump($cat);
-
-        //var_dump(Category::getAllCategories());
-
-        echo "course\n";
-        $c = Course::getInstance(102);
-        echo $c->getId();
-        echo $c->getCategory()->getName();
-        //print_r(Course::getInstance(103));
-        //var_dump(Course::getAllCourses());
-        echo "---\n";
-
-        $cs = Course::getAllCourses();
-        foreach ($cs as $c) {
-            # code...
-                    echo $c->getId();
-        echo $c->getCategory()->getName();
-        echo "\r\n";
-        }
-
     }
 
     /**
-     * Add Course page.
-     * We display the form, along with the feedback of any previous actions.
+     * A test function for debugging purposes.
+     */
+    public function test($id){
+        // $cat = Category::getInstance($id);
+        //var_dump($cat);
+        //var_dump(Category::getAllCategories());
+    }
+
+    /**
+     * Display Add Course page.
      *
      */  
     public function add()
     {
         //gather the parameters        
         $categoryNames = Course::getAllCourseCategoryNames();
-        $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive()
-            ,'category_names'=>$categoryNames );        
-        $this->view->render('course/add.html.twig', $params);        
+        $params = array('category_names'=>$categoryNames);
 
+        $this->view->render('course/add.html.twig', $params);        
     }
+
     /**
-     * POST request after add course form submitted.
+     * POST request handler for add course form.
+     * 
      * We call the model and save it.
-     *
      */  
     public function addSave()
     {
         $course_model = $this->loadModel('Course');
-        $success = $course_model->addSave(); //we dont use $success now.  
-        Redirect::to('course/add'); 
+        $success = $course_model->addSave();   
+        
+        if ($success) {
+            Redirect::to('course'); 
+        } else {
+            Redirect::to('course/add');
+        }
     }
 
-
     /**
-     * Edit Course page.
-     * We display the edit form, along with the feedback of any previous actions.
-     *
+     * Display edit Course page.
      */  
     public function edit($id)
     {
@@ -88,28 +72,36 @@ class CourseController extends Controller
         }  
 
         //gather the parameters
-        $course = Course::getCourse($id);
-        $categories = Course::getAllCourseCategoryNames();        
+        $course = Course::getInstance($id);
+        $categories = Category::getAllCategories();         
 
         $params = array('course'=>$course,'categories'=>$categories);
         $this->view->render('course/edit.html.twig', $params); 
     }
+
     /**
-     * EditSave POST request after edit page.
-     * Save the edits
+     * POST request handler for edit course form.
+     * 
+     * Validate and save the edits.
      *
      */  
     public function editSave()
     {
+        $id = Request::post('course_id');
+
         $course_model = $this->loadModel('Course');
-        $success = $course_model->editSave(); //we dont use $success now.  
-        Redirect::to('course'); 
+        $success = $course_model->editSave();
+        
+        if ($success) {
+            Redirect::to('course'); 
+        } else {
+            Redirect::to("course/edit/{$id}");
+        }
     }  
 
 
     /**
-     * Delete Course page.
-     * We can display a confirmation dialog here.
+     * Display delete course confirmation page.
      *
      */  
     public function delete($id)
@@ -120,50 +112,47 @@ class CourseController extends Controller
         }
 
         //gather the parameters
-        $courseName = Course::getCourseName($id);
+        $course = Course::getInstance($id);
 
         //display request for confirmation 
-        $params = array('course_name'=>$courseName,'course_id'=>$id);
+        $params = array('course'=>$course);
         $this->view->render('course/delete.html.twig', $params);        
-
-
     }   
       
     /**
-     * Delete Course POST request
+     * POST request handler for delete course.
      * Delete it
-     *
      */  
     public function deleteSave()
     {
-        echo 'we came ehre' . Request::post('course_id').'';
         $course_model = $this->loadModel('Course');
-        $success = $course_model->deleteSave();
+        $course_model->deleteSave();
         Redirect::to('course');  
     }  
 
 
     /**
-     * Add Course category page.
-     * We display the form, along with the feedback of any previous actions.
+     * Display add course category page.
      *
      */    
     public function addCategory()
-    {
-        $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive() );        
-        $this->view->render('course/addCategory.html.twig', $params);
+    {        
+        $this->view->render('course/addCategory.html.twig');
     }
 
     /**
-     * The is the where the form data (POST) is handled
-     * We use the course model to validate the data and save to db
-     * Finally we redirect back to the add category page.
+     * POST request handler for add category form.
+     *
      */
-
     public function addCategorySave()
     {
         $course_model = $this->loadModel('Course');
         $success = $course_model->saveCategory(); //we dont use $success now.  
-        Redirect::to('course/addcategory');   
+        
+        if ($success) {
+            Redirect::to('course'); 
+        } else {
+            Redirect::to('course/addcategory');
+        }  
     }
 }

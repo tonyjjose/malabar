@@ -2,8 +2,6 @@
 
 {% block title %}Register{% endblock %}
 
-{% block feedback %}{# No feedback needed #}{% endblock %}
-
 {% block content %}
 <section id="userform">
     <h2>Register yourself</h2>
@@ -15,7 +13,7 @@
         <input type="email" name="user_email" id="user_email" maxlength="64" required/>                
         <label for="user_name">Name</label>
         <span class="desc">Please give your real full name here</span>
-        <input type="text" name="user_name"  id="user_name" maxlength="64" required/>
+        <input type="text" name="user_name"  id="user_name" maxlength="64" pattern="^[a-zA-Z][a-zA-Z ]{3,64}" required/>
         <label for="user_password">Password</label>
         <span class="desc">Choose a password that is 6-8 characters long</span>
         <input type="text" name="user_password"  id="user_password" maxlength="8" required/>
