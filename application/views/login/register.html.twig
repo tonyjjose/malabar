@@ -1,58 +1,63 @@
-{% extends "layout.html.twig" %}
+{% extends "login/login_base.html.twig" %}
 
 {% block title %}Register{% endblock %}
 
-{% block feedback %}
-    {% for feed in feedback_positive %}
-        <span class="feedback success">{{feed|e }}</span>
-    {% endfor %}
-    {% for feed in feedback_negative %}
-        <span class="feedback failure">{{feed|e }}</span>
-    {% endfor %}    
-{% endblock %}
+{% block feedback %}{# No feedback needed #}{% endblock %}
 
 {% block content %}
-    <h1>Welcome</h1>
-    <div class="content">
-        <h2>Welcome to </h2>
-        <p>Register to take a course</p>
-        <div>
-            <h1>Fill the form </h1>
-            <form action="{{URL}}login/registersave" method="post">
-                    <label>Email</label>
-                    <input type="text" name="user_email" maxlength="64" required/><br>                
-                    <label>Name</label>
-                    <input type="text" name="user_name" maxlength="64" required/><br>
-                    <label>Password</label>
-                    <input type="text" name="user_password" maxlength="8" required/><br>
-                    <label>Age</label>
-                    <input type="text" name="user_age" maxlength="2" required/><br>   
-                    <label>Sex</label>
-                    <input type="radio" name="user_sex" value="M" checked>Male<br>
-                    <input type="radio" name="user_sex" value="F">Female<br>
+<section id="userform">
+    <h2>Register yourself</h2>
+    <p>Please read the instructions for each field. All fields are required unless marked optional.<br> 
+        Upon registration we will review your details and approve you. Please wait for us to contact you before you can login to the site.</p>
+    <form action="{{URL}}login/registersave" method="post">
+        <label for="user_email">Email</label>
+        <span class="desc">Enter a valid email, you will be send confimation mails to it</span>
+        <input type="email" name="user_email" id="user_email" maxlength="64" required/>                
+        <label for="user_name">Name</label>
+        <span class="desc">Please give your real full name here</span>
+        <input type="text" name="user_name"  id="user_name" maxlength="64" required/>
+        <label for="user_password">Password</label>
+        <span class="desc">Choose a password that is 6-8 characters long</span>
+        <input type="text" name="user_password"  id="user_password" maxlength="8" required/>
+        <label for="user_age">Age</label>
+        <span class="desc">Anyone over 14 can register</span>
+        <input type="number" min="14" max="99"  id="user_age" name="user_age" maxlength="2" required/>
 
-                    <label>Qualification</label>
-                    <input type="text" name="user_qual" maxlength="20" /><br>     
-                    <label>Bio</label>
-                    <textarea id="user_bio" name="user_bio" maxlength="255" cols="30" rows="8" 
-                        placeholder="A small introduction about yourself, if any"></textarea><br>
-                    <label>Phone</label>
-                    <input type="text" name="user_phone" maxlength="15"/><br>
-                    <label>Mobile</label>
-                    <input type="text" name="user_mobile" maxlength="15"/><br>
-                    <label>Address</label>
-                    <textarea id="user_address" name="user_address" maxlength="255" cols="10" rows="5" 
-                        placeholder="Full postal address.."></textarea><br>  
-                    <label>Course Mode</label>
-                    <input type="radio" name="user_course_mode" value="E" checked>Email<br>
-                    <input type="radio" name="user_course_mode" value="P">Postal<br>                         
-                    <label>Anonymous (yes if checked)</label>
-                    <input type="checkbox" name="user_anon" value="yes" ><br><br><br>
+        <label for="user_sex">Sex</label>
+        <input type="radio" name="user_sex"  id="user_sex_m" value="M" checked>
+        <label for="user_sex_m" class="option" >Male</label>
+        <input type="radio" name="user_sex"  id="user_sex_f" value="F">
+        <label for="user_sex_f" class="option" >Female</label>
 
-                    <input type="submit" class="user-submit-button" />
-            </form>
-        </div>        
+        <label for="user_qual">Qualification</label>
+        <span class="desc">(optional)</span>
+        <input type="text" name="user_qual"  id="user_qual" maxlength="20" />     
+        <label for="user_bio">Bio</label>
+        <span class="desc">(optional)</span>
+        <textarea id="user_bio" name="user_bio" maxlength="255" cols="50" rows="8" 
+            placeholder="A brief introduction about yourself, if any"></textarea>
+        <label for="user_phone">Phone</label>
+        <span class="desc">(optional)</span>
+        <input type="text" name="user_phone"  placeholder="Please include your area code"
+             id="user_phone" maxlength="15"/>
+        <label for="user_mobile">Mobile</label>
+        <input type="text" name="user_mobile" placeholder="Prepend 0 if that is required." id="user_mobile" maxlength="15"/>
+        <label for="user_address">Address</label>
+        <textarea id="user_address" name="user_address" maxlength="255" cols="30" rows="5"
+            placeholder="Full postal address.."></textarea>
 
-    </div>  <!-- end content -->
+        <label for="user_course_mode">Course Mode</label>
+        <span class="desc">By choosing Postal you will be mailing the course assignments to us. By choosing email all correspondance shall by through email</span>                   
+        <input type="radio" name="user_course_mode"  id="user_course_mode_e" value="E" checked>
+        <label for="user_course_mode_e" class="option" >Email</label>                   
+        <input type="radio" name="user_course_mode"  id="user_course_mode_p" value="P">
+        <label for="user_course_mode_p" class="option" >Postal</label> 
 
+        <label for="user_anon">Anonymous (yes if checked)</label>
+        <span class="desc">If you check this your name [or details] will not be shown to your course mates</span>
+        <input type="checkbox" name="user_anon"  id="user_anon" value="yes" >
+
+        <input type="submit" class="submit-button" value="Register"/>
+    </form>
+</section>
 {% endblock %}

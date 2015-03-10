@@ -43,6 +43,7 @@ class LoginController extends controller
         //authenticated users need not come here again.
         $login_model = $this->loadModel('Login');
         if ($login_model->isUserLoggedIn()) {
+            Feedback::addNegative('You are already registered.');
             Redirect::home();
         }    
 
@@ -109,9 +110,15 @@ class LoginController extends controller
     public function changePasswordSave()
     {
         $user_model = $this->loadModel('User');
-        $user_model->changePasswordSave();
+        $change_success = $user_model->changePasswordSave();
 
-        Redirect::home();
+        if ($change_success) {
+            Redirect::home();
+        } else {
+            //let him try again
+            Redirect::to('login/changepassword');
+        }
+
     }   
 
     /**

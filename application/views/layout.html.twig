@@ -32,19 +32,21 @@
         <h1>Malabar Bible Courses</h1>
         <nav>
             <ul>
-                {% block nav -%}
-                    <li><a href="http://www.malabarbiblecourses.org">Malabar Bible Courses</a></li>
-                    {# We will add the remaing links in the child template #}
-                {% endblock %}                        
+            {% block nav -%}
+                <li><a href="http://www.malabarbiblecourses.org">Malabar Bible Courses</a></li>
+                {# We will add the remaing links in the child template #}
+            {% endblock %}                        
             </ul>               
         </nav>
     </header>
 
     <main>
+        {% block login -%}
         <div id="loginblock">Welcome {{SESSION_USER}}, last log on {{SESSION_LAST}}
             <a href="{{URL}}/login/signout">Signout</a>
         </div>
-
+    {% endblock %}
+    
         {%- block news -%}{# any news to be posted, may be in future #}{% endblock %}
 
         {%- block feedback -%}{# the feedbacks #}    

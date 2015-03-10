@@ -8,7 +8,7 @@
 
 
 body {
-    font: 18px/21px Arial,Helvetica,sans-serif;
+    /*font: 18px/21px Arial,Helvetica,sans-serif;*/
     color: #333;
     background: url(../img/bg.jpg);
     line-height: 1em;
@@ -120,7 +120,8 @@ border-top: 1px solid #DDD;
 }
 
 #loginblock {
-    float: right;
+    /*float: right;*/
+    text-align: right;
 }
 
 #loginform {
@@ -137,10 +138,39 @@ border-top: 1px solid #DDD;
 
 }
 
+#userform {
+
+    width: 90%;
+    margin: 0 auto;
+        margin-top: 50px;
+        margin-bottom: 50px;
+    padding: 30px;
+    border: 1px solid rgba(0, 0, 0, 0.3);  
+    border-radius: 9px;  
+    box-shadow: inset 0px 1px 3px 0px rgba(0, 0, 0, 0.1),   
+                0px 1px 0px 0px rgba(250, 250, 250, 0.5) ;  
+
+
+}
+
 label {  
     display: block;  
-    color: #666;  
+    /*color: #666;  */
+    color: #003577;
 }  
+label.option {  
+    display: inline;  
+    color: #333;  
+}  
+span.desc {
+    font-size: .5em;
+    color: #666; 
+    display: block;
+}
+
+input, textarea {
+    margin-bottom: 20px;
+}
 
 input[type="text"]{
     width: 300px;
