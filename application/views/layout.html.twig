@@ -42,7 +42,7 @@
 
     <main>
         {% block login -%}
-        <div id="loginblock">Welcome {{SESSION_USER}}, last log on {{SESSION_LAST}}
+        <div id="loginblock">Welcome <span class="sess_info">{{SESSION_USER}}</span>, last login on <span class="sess_info">{{SESSION_LAST}}</span>&nbsp;
             <a href="{{URL}}/login/signout">Signout</a>
         </div>
     {% endblock %}

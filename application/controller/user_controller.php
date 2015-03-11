@@ -1,57 +1,67 @@
 <?php
 
 /**
- * Class UserController
+ * UserController class
  * 
- * Handles all user related stuff
+ * This handles all the user related requests.
  *
  */
 class UserController extends Controller
 {
-
     /**
-     * PAGE: index
-     * We will list all the available users here. 
-     * For managers there will be add/edit/delete controls.
+     * Call the base constructor and also check for authorisation.
+     * 
+     * Should be only accessible by a Manager
+     */    
+    function __construct()
+    {  
+       parent::__construct();
+
+       //only managers can access this controller
+       if(!(Session::get('user_type') == ROLE_MANAGER)) {
+            Redirect::to('error/noauth');
+       }
+    } 
+    
+    /**
+     * Users main page.
+     *
+     * We will list all the available users here. And links for add/editing/deleting a user.
      */
     public function index()
     {
         //gather the parameters
         $users = User::getAllUsers();       
-        $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive(),
-            'users'=>$users,);        
-        $this->view->render('user/index.html.twig', $params);
+        $params = array('users'=>$users);  
 
+        $this->view->render('user/index.html.twig', $params);
     }
 
     /**
-     * Add user page.
-     * We display the form, along with the feedback of any previous actions.
-     *
+     * Display add user form.
      */  
     public function add()
     {
-        $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive(),'showManagerControls'=>false);        
-        $this->view->render('user/add.html.twig', $params);        
-
+        $this->view->render('user/add.html.twig');        
     }
+
     /**
-     * POST request after add user form submitted.
-     * We call the model and save it.
-     *
-     */  
+     * POST request handler for add user form.
+     */ 
     public function addSave()
     {
         $user_model = $this->loadModel('User');
-        $success = $user_model->addSave(); //we dont use $success now.  
-        Redirect::to('user/add');
+        $success = $user_model->addSave();  
+        
+        if ($success) {
+            Redirect::to('user');
+        } else {
+            Redirect::to('user/add');
+        }
     }
 
-
     /**
-     * Edit user page.
-     * We display the edit form, along with the feedback of any previous actions.
-     *
+     * Display edit user form.
      */  
     public function edit($id)
     {
@@ -63,26 +73,29 @@ class UserController extends Controller
         //gather the parameters
         $user = User::getInstance($id);       
 
-        $params = array('user'=>$user,);
+        $params = array('user'=>$user);
         $this->view->render('user/edit.html.twig', $params); 
     }
+
     /**
-     * EditSave POST request after edit page.
-     * Save the edits
-     *
-     */  
+     * POST request handler for edit user form.
+     */ 
     public function editSave()
     {
-        $user_model = $this->loadModel('user');
-        $success = $user_model->editSave(); //we dont use $success now.  
-        Redirect::to('user');
+        $id =  Request::post('user_id');
+
+        $user_model = $this->loadModel('User');
+        $success = $user_model->editSave();
+        
+        if ($success) {
+            Redirect::to('user'); 
+        } else {
+            Redirect::to("user/edit/{$id}");
+        }
     }  
 
-
     /**
-     * Delete user page.
-     * We can display a confirmation dialog here.
-     *
+     * Display delete user confirmation page.
      */  
     public function delete($id)
     {
@@ -97,37 +110,15 @@ class UserController extends Controller
         //display request for confirmation 
         $params = array('user'=>$user);
         $this->view->render('user/delete.html.twig', $params);        
-
-
     }   
-      
+
     /**
-     * Delete user POST request
-     * Delete it
-     *
-     */  
+     * POST request handler for delete user form.
+     */ 
     public function deleteSave()
     {
-        $user_model = $this->loadModel('user');
+        $user_model = $this->loadModel('User');
         $success = $user_model->deleteSave();
         Redirect::to('user');  
-    } 
-
-    public function enrol($id)
-    {
-        //is there anything to delete?
-        if(!$id) {
-            Redirect::to('error');
-        }
-
-        //gather the parameters
-        $cousrses = Course::getAllCourses();
-        $student = User::getInstance($id);
-
-        //display request for confirmation 
-        $params = array('courses'=>$courses,'student'=>$student);
-        $this->view->render('user/enrol.html.twig', $params);        
-
-
     } 
 }

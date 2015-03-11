@@ -158,6 +158,14 @@ class UserModel
             return false;
         }  
 
+        //check if the User is in use(taking a course/teaching a student) if there is a change in the type
+        if ($type <> User::getUserType($id)) {
+            if (User::isUserInUse($id)) {
+                Feedback::addNegative('Failed! user is in use, cannot change type');
+                return false;
+            }
+        }
+
         //OK try to add to db     
         //is there a password field?   
         if (!$password || strlen($password) == 0) { //NO
@@ -201,7 +209,6 @@ class UserModel
         return false;         
     }
  
-
     /**
      * User delete process.
      * @return bool success state
@@ -217,6 +224,12 @@ class UserModel
             return false;
         }
 
+        //check if the User is in use(taking a course/teaching a student)
+        if (User::isUserInUse($id)) {
+            Feedback::addNegative('Failed! user is in use, cannot delete');
+            return false;
+        }        
+
         //ok, lets try to delete
         $success = User::delete($id);
 
@@ -228,7 +241,6 @@ class UserModel
 
         //We come here if its not deleted properly, notify it and exit
         Feedback::addNegative('Failed! Unknown reason.');
-        Feedback::addNegative('Most probably the user is in use!');
         return false;
     }    
 

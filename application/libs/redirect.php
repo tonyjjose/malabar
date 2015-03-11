@@ -24,7 +24,8 @@ class Redirect
 		} elseif ($user_type == ROLE_STUDENT) {
 			header('location: ' . URL . 'student/index');
 		} else {
-			header('location: ' . URL . 'error/index');
+			//well no type, let him login to get a type. :-D
+			header('location: ' . URL . 'login');
 		}
 	}
 

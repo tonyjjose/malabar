@@ -1,24 +1,18 @@
 <?php
 
 /**
- * Class HomeController
+ * HomeController class
  *
- * Please note:
- * Don't use the same name for class and method, as this might trigger an (unintended) __construct of the class.
- * This is really weird behaviour, but documented here: http://php.net/manual/en/language.oop5.decon.php
- *
+ * Handle the app/home requests. We just redirct the user based on his type. If no type we send them to login
  */
 class HomeController extends Controller
 {
+
     /**
-     * PAGE: index
-     * This method handles what happens when you move to http://..../home/index
-     */
+     * Home request to redirect to home.  
+     */  
     public function index()
     {
-        //as of now display the home, later we will redirect to respective pages based on user roles.
-        $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive() );        
-        $this->view->render('home/index.html.twig', $params);
-
+        Redirect::home();
     }
 }

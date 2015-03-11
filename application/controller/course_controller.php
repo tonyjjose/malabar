@@ -8,6 +8,21 @@
 class CourseController extends Controller
 {
     /**
+     * Call the base constructor and also check for authorisation.
+     * 
+     * Should be only accessible by a Manager
+     */
+    function __construct()
+    {  
+       parent::__construct();
+
+       //only managers can access this controller
+       if(!(Session::get('user_type') == ROLE_MANAGER)) {
+            Redirect::to('error/noauth');
+       }
+    }
+    
+    /**
      * Courses main page.
      *
      * We will list all the available courses here. And links for add/editing/deleting a course.

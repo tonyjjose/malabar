@@ -1,71 +1,80 @@
-{% extends "layout.html.twig" %}
+{% extends "manager/manager_base.html.twig" %}
 
-{% block title %}Login{% endblock %}
-
-{% block feedback %}
-    {% for feed in feedback_positive %}
-        <span class="feedback success">{{feed|e }}</span>
-    {% endfor %}
-    {% for feed in feedback_negative %}
-        <span class="feedback failure">{{feed|e }}</span>
-    {% endfor %}    
-{% endblock %}
+{% block title %}Add user{% endblock %}
 
 {% block content %}
-    <h1>Welcome</h1>
-    <div class="content">
-        <h2>Welcome to </h2>
-        <p>Register to take a course</p>
-        <div>
-            <h1>Fill the form </h1>
-            <form action="{{URL}}user/addSave" method="post">
-                    <label>Email</label>
-                    <input type="text" name="user_email" maxlength="64" required/><br>                
-                    <label>Name</label>
-                    <input type="text" name="user_name" maxlength="64" required/><br>
-                    <label>Password</label>
-                    <input type="text" name="user_password" maxlength="8" required/><br>
-                    <label>Age</label>
-                    <input type="text" name="user_age" maxlength="2" required/><br>   
-                    <label>Sex</label>
-                    <input type="radio" name="user_sex" value="M" checked>Male<br>
-                    <input type="radio" name="user_sex" value="F">Female<br>
+<section id="userform">
+    <h2>Add user</h2>
+    <p>Please read the instructions for each field. All fields are required unless marked optional.</p>
+    <form action="{{URL}}user/addsave" method="post">
+        <label for="user_email">Email</label>
+        <span class="desc">Enter a valid email</span>
+        <input type="email" name="user_email" id="user_email" maxlength="64" required/>                
+        <label for="user_name">Name</label>
+        <span class="desc">Specify full name here (only alphabets and spaces allowed for name)</span>
+        <input type="text" name="user_name" id="user_name" maxlength="64" pattern="^[a-zA-Z][a-zA-Z ]{3,64}" required/>
+        <label for="user_password">Password</label>
+        <span class="desc">Choose a password that is 6-8 characters long</span>
+        <input type="text" name="user_password" id="user_password" maxlength="8" required/>
+        <label for="user_age">Age</label>
+        <span class="desc">Between 14 - 99</span>
+        <input type="number" min="14" max="99" id="user_age" name="user_age" maxlength="2" required/>
 
-                    <label>Qualification</label>
-                    <input type="text" name="user_qual" maxlength="20" /><br>     
-                    <label>Bio</label>
-                    <textarea id="user_bio" name="user_bio" maxlength="255" cols="30" rows="8" 
-                        placeholder="A small introduction about yourself, if any"></textarea><br>
-                    <label>Phone</label>
-                    <input type="text" name="user_phone" maxlength="15"/><br>
-                    <label>Mobile</label>
-                    <input type="text" name="user_mobile" maxlength="15"/><br>
-                    <label>Address</label>
-                    <textarea id="user_address" name="user_address" maxlength="255" cols="10" rows="5" 
-                        placeholder="Full postal address.."></textarea><br>  
-                    <label>Course Mode</label>
-                    <input type="radio" name="user_course_mode" value="E" checked>Email<br>
-                    <input type="radio" name="user_course_mode" value="P">Postal<br>                         
-                    <label>Anonymous (yes if checked)</label>
-                    <input type="checkbox" name="user_anon" value="yes" ><br><br><br>
+        <label for="user_sex">Sex</label>
+        <input type="radio" name="user_sex" id="user_sex_m" value="M" checked>
+        <label for="user_sex_m" class="option" >Male</label>
+        <input type="radio" name="user_sex" id="user_sex_f" value="F">
+        <label for="user_sex_f" class="option" >Female</label>
 
-                    <label>User type</label>
-                    <select name="user_type" size="3">
-                            <option value='S' selected>Student</option>
-                            <option value='I'>Instructor</option>
-                            <option value='M'>Manager</option>
-                    </select> <br>
-                    <label>Approved</label>
-                    <input type="checkbox" name="user_approved" value="yes" ><br> 
-                    <label>Active</label>
-                    <input type="radio" name="user_active" value="yes" checked>Active<br>
-                    <input type="radio" name="user_active" value="no">Inactive<br>   
-                                      
+        <label for="user_qual">Qualification</label>
+        <span class="desc">(optional) It could be something like BA English, SSLC, CA and so.</span>
+        <input type="text" name="user_qual" id="user_qual" maxlength="20" />     
+        <label for="user_bio">Bio</label>
+        <span class="desc">(optional)</span>
+        <textarea id="user_bio" name="user_bio" maxlength="255" cols="50" rows="8" 
+            placeholder="A brief introduction about the user, if any"></textarea>
+        <label for="user_phone">Phone</label>
+        <span class="desc">(optional)</span>
+        <input type="text" name="user_phone" placeholder="Please include area code"
+             id="user_phone" maxlength="15"/>
+        <label for="user_mobile">Mobile</label>
+        <span class="desc">Either the phone or mobile should be specified</span>
+        <input type="text" name="user_mobile" placeholder="Prepend 0 if that is required." id="user_mobile" maxlength="15"/>
+        <label for="user_address">Address</label>
+        <textarea id="user_address" name="user_address" maxlength="255" cols="30" rows="5"
+            placeholder="Full postal address.."></textarea>
 
-                    <input type="submit" class="user-submit-button" />
-            </form>
-        </div>        
+        <label for="user_course_mode">Course Mode</label>
+        <span class="desc">By choosing Postal all correspondence (lesson delivery and assignment submission) shall be by post. By choosing Email it shall by through email</span>                   
+        <input type="radio" name="user_course_mode" id="user_course_mode_e" value="E" checked>
+        <label for="user_course_mode_e" class="option" >Email</label>                   
+        <input type="radio" name="user_course_mode" id="user_course_mode_p" value="P">
+        <label for="user_course_mode_p" class="option" >Postal</label> 
 
-    </div>  <!-- end content -->
+        <label for="user_anon">Anonymous (yes if checked)</label>
+        <span class="desc">Applies only for student. If checked his/her details will not be shown to his/her coursemates</span>
+        <input type="checkbox" name="user_anon" id="user_anon" value="yes" >
 
+        <label for="user_type">User type</label>
+        <select name="user_type" id="user_type" size="4">
+                <option value='S' selected>Student</option>
+                <option value='I'>Instructor</option>
+                <option value='M'>Manager</option>
+        </select>
+
+        <label for="user_approved">Approved</label>
+        <span class="desc">Users cannot login to the site until they are approved. Vandals can also be blocked from 
+            accessing the site by making them unapproved.</span>
+        <input type="checkbox" name="user_approved" id="user_approved" value="yes" >
+
+        <label>User status</label>
+        <span class="desc">Active users are those who are using the system regularly. Those who have not used the system for longer periods can be maked Inactive.</span>
+        <input type="radio" name="user_active" id="user_active_y" value="yes" checked>
+        <label for="user_active_y" class="option" >Active</label>
+        <input type="radio" name="user_active" id="user_active_n" value="no">  
+        <label for="user_active_n" class="option" >Inactive</label>
+                          
+        <input type="submit" class="submit-button" value="Add user" />
+    </form>
+</section>
 {% endblock %}

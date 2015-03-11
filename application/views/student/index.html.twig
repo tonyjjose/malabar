@@ -1,43 +1,27 @@
-{% extends "layout.html.twig" %}
-
-{% block title %}Login{% endblock %}
-
-{% block feedback %}
-    {% for feed in feedback_positive %}
-        <span class="feedback success">{{feed|e }}</span>
-    {% endfor %}
-    {% for feed in feedback_negative %}
-        <span class="feedback failure">{{feed|e }}</span>
-    {% endfor %}    
-{% endblock %}
-
+{% extends "student/student_base.html.twig" %}
 {% block content %}
-    <h1>Welcome</h1>
-    <div class="content">
-        <h2>Dashboard</h2>
-        <p>This is the page of student..We will list his courses along with its instructor if assigned.
-            There will be an option for him to upload assignments.
-            There will be a link to view/edit his profile. </p>
+<section class="dash">
+    <h2>Dashboard</h2>
+    <p>This is the page of student..We will list his courses along with its instructor if assigned.
+        There will be an option for him to upload assignments.
+        There will be a link to view/edit his profile. </p>
+</section>
+<section class="dash">          
+    <h2>Your courses</h2>
+    <table>
+        {# table head #}
+        <tr><th>No</th><th>Course</th><th>Instructor</th><th>Status</th><th>Actions</th></tr>
 
-            <h2>Welcome {{student.name}}</h2>
-            
-            <h2>Your courses</h2>
-
-    
-        <table>
-            {# table head #}
-            <tr><th>No</th><th>Course</th><th>Instructor</th><th>Status</th><th>Actions</th></tr>
-
-            {# list the users #}             
-            {% for  course in student.getMyCourses %}
-                <tr>
-                    <td>{{loop.index}}</td><td>{{course.course.name}}</td><td>{{course.instructor.name}}</td>
-                    <td>{{course.status}}</td><td><a href="{{URL}}student/showcoursemates/{{course.course.id}}">Show course mates</a></td>
-                </tr>
-            {% endfor %}
-        </table>
-
-
-    </div>  <!-- end content -->
-
+        {# list the users #}             
+        {% for  course in student.getMyCourses %}
+            <tr>
+                <td>{{loop.index}}</td><td>{{course.course.name}}</td><td>{{course.instructor.name}}</td>
+                <td>{{course.status}}</td><td><a href="{{URL}}student/showcoursemates/{{course.course.id}}">Show course mates</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+</section>
+<section class="dash">
+    <h2>Assignments</h2>    
+</section>
 {% endblock %}

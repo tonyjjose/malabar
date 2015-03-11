@@ -1,9 +1,10 @@
 <?php
 
 /**
- * Course User
+ * UserObject base class
  *
- * The base class 
+ * This is the user object. It provides static methods for DB operations as well us helper methods
+ * for various view purposes. Other specialised types like Student, Manager and Instructor extend this class
  */
 
 
@@ -79,10 +80,11 @@ class User
         return $this->anon;
     }    
     public function getCreated(){
-        return $this->created;
+        //lets return a formated time string, eg: Mar 11 2015, 8:01 PM
+        return date("M j Y, g:i A", $this->created);
     }
     public function getLastLogin(){
-        return $this->last_login;
+        return date("M j Y, g:i A", $this->last_login);
     }
     //constructor
     function __construct($id, $name, $passward_hash, $email, $age, $sex, $qual, $bio, $phone, 
@@ -107,14 +109,37 @@ class User
         $this->approved = (is_bool($approved)) ? $approved : filter_var($approved, FILTER_VALIDATE_BOOLEAN);
         $this->active = (is_bool($active)) ? $active : filter_var($active, FILTER_VALIDATE_BOOLEAN);
         $this->anon = (is_bool($anon)) ? $anon : filter_var($anon, FILTER_VALIDATE_BOOLEAN);
-
     } 
 
-public function saveLoginTimeStamp()
-{
-	//save to db
-}	
-    //get instance from DB
+    /**
+     * Update users login timestamp.
+     * 
+     * This is done during every successful login
+     * @return bool success state
+     */
+    public function saveLoginTimeStamp()
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();
+
+        //create the time string to be put in DB.
+        $timeStamp =  date('Y-m-d H:i:s', time());
+
+        $query = $db->prepare("UPDATE users SET user_last_login_timestamp = :ts WHERE user_id = :id");
+        $query->execute(array(':ts' => $timeStamp,':id' => $this->id));
+
+        //has it got updated? if so success.
+        if ($query->rowCount() == 1) {
+            return true;
+        }
+        return false;        
+    }
+
+    /**
+     * Create User instance.
+     *
+     * We return the specialised classes depending on the type of the user. 
+     * @return object user or null
+     */
     public static function getInstance($id){
 
         $db = DatabaseFactory::getFactory()->getConnection();
@@ -158,57 +183,13 @@ public function saveLoginTimeStamp()
             $row->user_course_mode,$row->user_type,$row->user_approved,$row->user_active,$row->user_anonymous,
             $row->user_creation_timestamp,$row->user_last_login_timestamp);     */ 
     }
+
     /**
-     * Get all courses from DB, return an array of course objects 
-     * 
+     * Create User instance from email.
      *
-     */
-    public static function getAllUsers()
-    {
-        $db = DatabaseFactory::getFactory()->getConnection();
-
-        $query = $db->query("SELECT * FROM users ORDER BY user_name ASC");   
-        $rows = $query->fetchAll();
-
-        //the list of objects
-        $users = array();
-
-        foreach ($rows as $row) {
-            $users[] = new User($row->user_id,$row->user_name,$row->user_password_hash,$row->user_email,$row->user_age,
-                $row->user_sex,$row->user_qualification,$row->user_bio,$row->user_phone,$row->user_mobile,
-                $row->user_address,$row->user_course_mode,$row->user_type,$row->user_approved,$row->user_active,
-                $row->user_anonymous,$row->user_creation_timestamp,$row->user_last_login_timestamp);
-        }
-
-        return $users;
-        
-    }
-
-    public static function emailExists($email)
-    {
-        $db = DatabaseFactory::getFactory()->getConnection();
-
-        //Query the DB
-        $query = $db->prepare("SELECT user_id FROM users WHERE user_email = :email LIMIT 1");
-        $query->execute(array(':email' => $email));
-        if ($query->rowCount() == 0) {
-            return false;
-        }
-        return true;        
-    }
-    public static function emailExistsForAnotherUser($email, $id)
-    {
-        $db = DatabaseFactory::getFactory()->getConnection();
-
-        //Query the DB
-        $query = $db->prepare("SELECT user_id FROM users WHERE user_email = :email AND user_id <> :id LIMIT 1");
-        $query->execute(array(':email' => $email,':id' => $id));
-        if ($query->rowCount() == 0) {
-            return false;
-        }
-        return true;        
-    }   
-
+     * We query for the ID and call the getInstance method. 
+     * @return object user or null
+     */    
     public static function getInstanceFromEmail($email)
     {
         $db = DatabaseFactory::getFactory()->getConnection();
@@ -223,8 +204,38 @@ public function saveLoginTimeStamp()
 
         return User::getInstance($row->user_id);
 
-    } 
+    }    
 
+    /**
+     * Create all user objects array
+     * @return array[] of object user or null
+     */
+    public static function getAllUsers()
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();
+
+        $query = $db->query("SELECT * FROM users ORDER BY user_name, user_type ASC");   
+        $rows = $query->fetchAll();
+
+        //the list of objects
+        $users = array();
+
+        foreach ($rows as $row) {
+            $users[] = new User($row->user_id,$row->user_name,$row->user_password_hash,$row->user_email,$row->user_age,
+                $row->user_sex,$row->user_qualification,$row->user_bio,$row->user_phone,$row->user_mobile,
+                $row->user_address,$row->user_course_mode,$row->user_type,$row->user_approved,$row->user_active,
+                $row->user_anonymous,$row->user_creation_timestamp,$row->user_last_login_timestamp);
+        }
+
+        return $users;       
+    }
+
+    /**
+     * Save user to DB.
+     * 
+     * Users last login is not added while saving
+     * @return bool success state
+     */
     public static function save($name, $password_hash, $email, $age, $sex, $qual, $bio, $phone, 
         $mobile, $address, $course_mode, $type, $approved, $active, $anon, $created)
     {
@@ -247,7 +258,13 @@ public function saveLoginTimeStamp()
         return false;
     }
 
-    //note that we do not update password here
+    /**
+     * Update user to DB.
+     * 
+     * User create time, or last login is not updated, also We do not update password here 
+     * but use a separate method for that
+     * @return bool success state
+     */
     public static function update($id, $name, $email, $age, $sex, $qual, $bio, $phone, 
         $mobile, $address, $course_mode, $type, $approved, $active, $anon)
     {
@@ -269,6 +286,11 @@ public function saveLoginTimeStamp()
         return false; 
     }
 
+    /**
+     * Delete user from DB.
+     * 
+     * @return bool success state
+     */
     public static function delete($id)
     {
         $db = DatabaseFactory::getFactory()->getConnection();
@@ -283,9 +305,13 @@ public function saveLoginTimeStamp()
             return true;
         }
         return false;
-
     }
 
+    /**
+     * Update user's password to DB.
+     * 
+     * @return bool success state
+     */
     public static function updatePassword($id, $password_hash)
     {
         $db = DatabaseFactory::getFactory()->getConnection();
@@ -297,10 +323,56 @@ public function saveLoginTimeStamp()
         if ($query->rowCount() == 1) {
             return true;
         }
-        return false;
-            
+        return false;           
     }
 
+    /**
+     * Check for user email uniqueness
+     *
+     * This is used while adding a new user name. User emails must be unique
+     * @param @name, @id Email
+     * @return bool whether email already exits
+     */
+
+    public static function emailExists($email)
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();
+
+        //Query the DB
+        $query = $db->prepare("SELECT user_id FROM users WHERE user_email = :email LIMIT 1");
+        $query->execute(array(':email' => $email));
+        if ($query->rowCount() == 0) {
+            return false;
+        }
+        return true;        
+    }
+
+    /**
+     * Check if a given user email already exists for another user.
+     *
+     * This is used while editing a user's.
+     * @param @email, @id Email and ID of the current user
+     * @return bool whether user email exists for another user
+     */    
+    public static function emailExistsForAnotherUser($email, $id)
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();
+
+        //Query the DB
+        $query = $db->prepare("SELECT user_id FROM users WHERE user_email = :email AND user_id <> :id LIMIT 1");
+        $query->execute(array(':email' => $email,':id' => $id));
+        if ($query->rowCount() == 0) {
+            return false;
+        }
+        return true;        
+    }   
+
+    /**
+     * Retrieve the user's type
+     *
+     * @param @id ID of the  user
+     * @return string User type
+     */
     public static function getUserType($id)
     {
         $db = DatabaseFactory::getFactory()->getConnection();
@@ -313,4 +385,21 @@ public function saveLoginTimeStamp()
             return $query->fetch()->user_type;
         }
     }
+
+    /**
+     * Check if a user is taking/teaching a course.
+     * 
+     * This check is maily used when changing the type of a user. If user is in use, changing his type 
+     * will make the DB inconsistent
+     * @return bool use state
+     */
+    public static function isUserInUse($id)
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();
+
+        $query = $db->prepare("SELECT student_id FROM student_course WHERE student_id = :id OR instructor_id = :id LIMIT 1");   
+        $query->execute(array(':id'=>$id));
+
+        return ($query->rowCount() == 1);          
+    }     
 }

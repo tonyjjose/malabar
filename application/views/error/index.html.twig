@@ -1,20 +1,9 @@
-{% extends "layout.html.twig" %}
-
-{% block title %}Login{% endblock %}
-
-{% block feedback %}
-    {% for feed in feedback_positive %}
-        <span class="feedback success">{{feed|e }}</span>
-    {% endfor %}
-    {% for feed in feedback_negative %}
-        <span class="feedback failure">{{feed|e }}</span>
-    {% endfor %}    
-{% endblock %}
+{% extends "error/error_base.html.twig" %}
 
 {% block content %}
-    <h1>Error!!</h1>
-    <div class="content">
+<section id="errorform">
         <h2>Unidentified error</h2>
-        <p>Something is gone horribly wrong. Stay cool though!</p>
-    </div>  <!-- end content -->
+        {# <p>Something is gone horribly wrong. Stay cool though!</p> #}
+        <p>An unidentified error has occurred!!<br>Please contact the <a href="http://www.malabarbiblecourses.org/contact-us">Manager</a> if the error persists.</p>
+</section>
 {% endblock %}

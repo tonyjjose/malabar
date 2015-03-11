@@ -19,7 +19,6 @@ class ErrorController extends Controller
 
     /**
      * Invalid URL or page
-     * 
      */    
     public function invalid()
     {
@@ -30,7 +29,6 @@ class ErrorController extends Controller
 
     /**
      * Not authorised for access
-     * 
      */     
     public function noAuth()
     {      
@@ -39,7 +37,6 @@ class ErrorController extends Controller
 
     /**
      * Display the approval message
-     * 
      */     
     public function approval()
     {      

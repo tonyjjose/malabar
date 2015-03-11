@@ -12,7 +12,7 @@
         <span class="desc">Enter a valid email, you will be send confimation mails to it</span>
         <input type="email" name="user_email" id="user_email" maxlength="64" required/>                
         <label for="user_name">Name</label>
-        <span class="desc">Please give your real full name here</span>
+        <span class="desc">Please give your real full name here. (only alphabets and spaces allowed for name)</span>
         <input type="text" name="user_name"  id="user_name" maxlength="64" pattern="^[a-zA-Z][a-zA-Z ]{3,64}" required/>
         <label for="user_password">Password</label>
         <span class="desc">Choose a password that is 6-8 characters long</span>
@@ -35,7 +35,7 @@
         <textarea id="user_bio" name="user_bio" maxlength="255" cols="50" rows="8" 
             placeholder="A brief introduction about yourself, if any"></textarea>
         <label for="user_phone">Phone</label>
-        <span class="desc">(optional)</span>
+        <span class="desc">(optional) Please provide either a phone or mobile number</span>
         <input type="text" name="user_phone"  placeholder="Please include your area code"
              id="user_phone" maxlength="15"/>
         <label for="user_mobile">Mobile</label>
