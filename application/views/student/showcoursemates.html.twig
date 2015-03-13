@@ -1,25 +1,20 @@
-{% extends "layout.html.twig" %}
+{% extends "student/student_base.html.twig" %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Course mates{% endblock %}
+{% block feedback %}{% endblock %}
 
-{# no feedback display needed here as this is just a confimation request page #}
 {% block content %}
-    <h1>Welcome</h1>
-    <div class="content">
-        <h2>Welcome to </h2>
-        <p>Students doing ths same course</p>
-        <div>
-            <h1>Are you sure?</h1>
-            <table>
+<section id="userform">
+    <h2>Course mates</h2>
+    <p>These are the list of other students taking the same course<br>
+        You can contact them if you wish, but please respect their privacy and keep the email confidential.</p>
+    <table>
                 <tr><td>No</td><td>Name</td><td>Email</td></tr>
             {% for student in students %}
                 
                 <tr><td>{{loop.index}}</td><td>{{student.name}}</td><td>{{student.email}}</td>
                 </tr>
             {% endfor %}
-            </table>
-        </div>        
-
-    </div>  <!-- end content -->
-
+    </table>
+</section>
 {% endblock %}

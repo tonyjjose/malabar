@@ -3,7 +3,7 @@
 /**
  * UserController class
  * 
- * This handles all the user related requests.
+ * This handles all the user related requests like, URL/user/...
  *
  */
 class UserController extends Controller

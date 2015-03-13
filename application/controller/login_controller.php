@@ -4,7 +4,7 @@
  * LoginController class.
  *
  * This handles all the login related requests..
- * We use the URLs app/login/index, app/login/signin, app/login/signout etc
+ * We use the the form like, URL/login/...
  */
 class LoginController extends controller
 {

@@ -6,7 +6,7 @@
 <section id="userform">
     <h2>Edit user</h2>
     <p>Please read the instructions for each field. All fields are required unless marked optional.</p>
-    <div id="user_meta">User ID = {{user.id}}<br>User Created: {{user.created}}<br>User Lastlogin: {{user.lastlogin}}</div>
+    <div id="user_meta" class="right">User ID = {{user.id}}<br>User Created: {{user.created}}<br>User Lastlogin: {{user.lastlogin}}</div>
     <form action="{{URL}}user/editsave" method="post">
         <input type="hidden" name="user_id" value="{{user.id}}">
         <label for="user_email">Email</label>

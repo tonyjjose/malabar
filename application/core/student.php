@@ -55,7 +55,7 @@ class Student extends User
         $db = DatabaseFactory::getFactory()->getConnection();
 
         //query the DB
-        $query = $db->prepare("SELECT * FROM student_course WHERE student_id = :id");
+        $query = $db->prepare("SELECT * FROM student_course WHERE student_id = :id ORDER BY course_status");
         $query->execute(array(':id' => $this->getId()));
         
         //is this check absolutely necessary??
@@ -69,7 +69,7 @@ class Student extends User
         foreach ($rows as $row) {
             $course = Course::getInstance($row->course_id);
             $instructor = User::getInstance($row->instructor_id);
-            $this->courseInstances[] = new CourseInstance ($course,$instructor,$row->course_status);            
+            $this->courseInstances[] = new CourseInstance ($course,$instructor,$row->join_date,$row->course_status);            
         }     
     } 
 
@@ -102,8 +102,10 @@ class Student extends User
         $db = DatabaseFactory::getFactory()->getConnection();
 
         //query the DB
-        $query = $db->prepare("SELECT student_id FROM student_course WHERE student_id <> :student_id 
-            AND course_id = :course_id AND course_status = 'A'");
+        // $query = $db->prepare("SELECT student_id FROM student_course WHERE student_id <> :student_id 
+        //     AND course_id = :course_id AND course_status = 'A'");
+        $query = $db->prepare("SELECT * FROM users WHERE user_id IN (SELECT student_id FROM student_course WHERE student_id <> :student_id 
+            AND course_id = :course_id AND course_status = 'A')ORDER BY user_name ASC");
         $query->execute(array(':student_id' => $student_id, ':course_id' => $course_id));
 
         //is this check absolutely necessary??
@@ -115,7 +117,11 @@ class Student extends User
         $mates = array();
                 
         foreach ($rows as $row) {
-            $mates[] = Student::getInstance($row->student_id);            
+            //$mates[] = Student::getInstance($row->student_id);
+            $mates[] = new Student($row->user_id,$row->user_name,$row->user_password_hash,$row->user_email,$row->user_age,
+                $row->user_sex,$row->user_qualification,$row->user_bio,$row->user_phone,$row->user_mobile,
+                $row->user_address,$row->user_course_mode, $row->user_approved,$row->user_active,
+                $row->user_anonymous,$row->user_creation_timestamp,$row->user_last_login_timestamp);       
         } 
 
         return $mates;
@@ -197,7 +203,7 @@ class Student extends User
     {
         $db = DatabaseFactory::getFactory()->getConnection();      
         
-        $sql = "SELECT course_id FROM courses WHERE course_id NOT IN
+        $sql = "SELECT * FROM courses WHERE course_id NOT IN
              (SELECT course_id FROM student_course WHERE student_id = :student_id)"; 
 
         $query = $db->prepare($sql);
@@ -211,8 +217,11 @@ class Student extends User
         $rows = $query->fetchAll();     
         $courses = array();
                 
-        foreach ($rows as $row) {
-            $courses[] = Course::getInstance($row->course_id);            
+        foreach ($rows as $row) 
+        {
+            // $courses[] = Course::getInstance($row->course_id); 
+            $courses[] = new Course($row->course_id,$row->course_name,$row->course_desc,$row->course_active, 
+                Category::getInstance($row->course_category_id));                       
         } 
 
         return $courses;            
@@ -225,6 +234,19 @@ class Student extends User
            return true;
         }
         return false;
+    }
+
+    public static function isStudentDoingCourse($id, $course_id)
+    {
+        $db = DatabaseFactory::getFactory()->getConnection(); 
+
+        $sql = "SELECT student_id FROM student_course WHERE student_id = :id 
+            AND course_id = :course_id AND course_status = 'A'";
+
+        $query = $db->prepare($sql);
+        $query->execute(array('id'=>$id, 'course_id'=>$course_id)); 
+        
+        return ($query->rowCount() == 1);           
     }
 
 

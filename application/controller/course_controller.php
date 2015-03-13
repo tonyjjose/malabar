@@ -3,7 +3,7 @@
 /**
  * CourseController class.
  *
- * This handles all the course related requests.
+ * This handles all the course related requests like, URL/course/...
  */
 class CourseController extends Controller
 {

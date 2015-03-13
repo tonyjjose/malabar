@@ -1,80 +1,86 @@
 <?php
 
 /**
- * Class StudentController
- * This is a Student controller which handles the Student..
- * We use the URLs ..app/Student/index, app/Student/signin, app/Student/signout etc
- *
+ * StudentController class
+ * 
+ * This handles all the student related requests like, URL/student/...
  *
  */
 class StudentController extends Controller
 {
     function __construct()
     {  
-       parent::__construct();  	
+       parent::__construct();
+
+       if(!(Session::get('user_type') == ROLE_STUDENT)) {
+            Redirect::to('error/noauth');
+       }
     }
 
     /**
-     * PAGE: index
-     * This method handles what happens when you move to ..app/Student/index. 
-     * We use this to show the Student form.
+     * Display the students' dashboad.
+     * 
+     * We display a short profile information of the student. His courses, and links to various
+     * actions that he can perform.
      */
-    public function index(){
-  
-        //Show the Student page
-        //we need to pass feedback as we return to same page if we have wrong password. 
-        $student = Student::getInstance(5);
+    public function index()
+    { 
+        $id = Session::get('user_id');
+
+        // $student = Student::getInstance($id);
+        $student = Student::getInstance($id);
+        //get his course instances
         $student->loadMyCourses();
-        $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive(),'student'=>$student );
+
+        $params = array('user'=>$student );
         $this->view->render('student/index.html.twig',$params);	
     }
 
-    public function showProfile($id){
-        //are we authorised for view?
-        if ($id == Session::get('user_id') || Session::get('user_type') == 'M')
-        {
-            $student = User::getInstance($id);
-            $student->loadMyCourses();
-            $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive(),
-                'student'=>$student );            
-            $this->view->render('student/showprofile.html.twig',$params);
-        }
-        else
-        {
-            Redirect::to('error/noauth');
-        }
-
-    }
-    public function showCourseMates($course_id)
-    {
-        $id = Session::get('user_id');
-        $students = Student::getCourseMates($id,$course_id);
-        $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive(),
-                'students'=>$students );
-        $this->view->render('student/showcoursemates.html.twig',$params);                
-    }
-    
+    /**
+     * Display edit profile form.
+     */      
     public function editProfile($id){
         //are we authorised for view?
-        if ($id == Session::get('user_id') || Session::get('user_type') == 'M')
+        if ($id == Session::get('user_id'))
         {
             $student = User::getInstance($id);
-            var_dump($student);
-            $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive(),
-                'student'=>$student );            
+            //var_dump($student);
+            $params = array('user'=>$student );            
             $this->view->render('student/editprofile.html.twig',$params);
-        }
-        else
-        {
+        } else {
             Redirect::to('error/noauth');
         }
+    }
 
-    }    
+    /**
+     * POST request handler for edit profile form.
+     */       
     public function editProfileSave()
     {
+        $id = Request::post('user_id');
+
         $student_model = $this->loadModel('student');
-        $success = $student_model->editSave(); //we dont use $success now.  
-        //Redirect::to('user');
-        Feedback::printAll();
-    }      
+        $success = $student_model->editSave(); 
+        
+        if ($success) {
+            Redirect::to('student'); 
+        } else {
+            Redirect::to("student/editprofile/{$id}");
+        }
+    } 
+
+    /**
+     * Display the list of his course mantes
+     *
+     * The course ID is provided in URL.
+     */
+    public function showCourseMates($course_id)
+    {
+        $student_model = $this->loadModel('student');
+        $students = $student_model->getCourseMates($course_id);
+        
+        $params = array('students'=>$students);
+        $this->view->render('student/showcoursemates.html.twig',$params);                
+    }
+
 }

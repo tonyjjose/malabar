@@ -160,12 +160,16 @@ border: 1px solid #DDD;
 }
 
 #user_meta {
-    float: right;
+    /*float: right;*/
      border: 1px solid rgba(0, 0, 0, 0.3);  
     border-radius: 9px;
     color: grey;   
     padding: 20px;
     margin-bottom: 30px;
+}
+
+.right {
+    float: right;
 }
 
 label {  
@@ -206,7 +210,11 @@ select {
     width: 300px;
 }
 
-
+.profile {
+    font-weight: bold;
+    color: dimgrey;
+    margin-right: 20px;
+}
 
 
 

@@ -1,48 +1,60 @@
-{% extends "layout.html.twig" %}
+{% extends "student/student_base.html.twig" %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Edit profile{% endblock %}
 
 {% block content %}
-    <h1>Welcome</h1>
-    <div class="content">
-        <h2>Welcome to </h2>
-        <p>Edit your profile</p>
-        <div>
-            <h1>Fill the form </h1>
-            <form action="{{URL}}student/editprofilesave" method="post">
-                    <input type="hidden" name="user_id" value="{{student.id}}">
-                    <label>Email</label>
-                    <input type="text" name="user_email" maxlength="64" required value="{{student.email}}"/><br>                
-                    <label>Name</label>
-                    <input type="text" name="user_name" maxlength="64" required value="{{student.name}}"/><br>
-                    <label>Age</label>
-                    <input type="text" name="user_age" maxlength="2" required value="{{student.age}}"/><br>   
-                    <label>Sex</label>
-                    <input type="radio" name="user_sex" value="M" {% if (student.sex == 'M') %} checked {% endif %}>Male<br>
-                    <input type="radio" name="user_sex" value="F" {% if (student.sex == 'F') %} checked {% endif %}>Female<br>
+<section id="userform">
+    <h2>Edit your profile</h2>
+    <p>Please read the instructions for each field.<br>
+     All fields are required unless marked optional.</p>
+    <form action="{{URL}}student/editprofilesave" method="post">
+        <input type="hidden" name="user_id" value="{{user.id}}">
+        <label for="user_email">Email</label>
+        <span class="desc">Enter a valid email, you will be send confimation mails to it</span>
+        <input type="email" name="user_email" id="user_email" maxlength="64" required value="{{user.email}}"/>                
+        <label for="user_name">Name</label>
+        <span class="desc">Please give your real full name here. (only alphabets and spaces allowed for name)</span>
+        <input type="text" name="user_name" id="user_name" maxlength="64" pattern="^[a-zA-Z][a-zA-Z ]{3,64}" required value="{{user.name}}"/>
+        <label for="user_age">Age</label>
+        <input type="number" name="user_age" min="14" max="99"  id="user_age" maxlength="2" required value="{{user.age}}"/>   
+        
+        <label for="user_sex">Sex</label>
+        <input type="radio" name="user_sex" id="user_sex_m" value="M" {% if (user.sex == 'M') %} checked {% endif %}>
+        <label for="user_sex_m" class="option" >Male</label>
+        <input type="radio" name="user_sex"  id="user_sex_f" value="F" {% if (user.sex == 'F') %} checked {% endif %}>
+        <label for="user_sex_f" class="option" >Female</label>
 
-                    <label>Qualification</label>
-                    <input type="text" name="user_qual" maxlength="20"  value="{{student.qualification}}"/><br>     
-                    <label>Bio</label>
-                    <textarea id="user_bio" name="user_bio" maxlength="255" cols="30" rows="8" 
-                        placeholder="A small introduction about yourself, if any">{{student.bio}}</textarea><br>
-                    <label>Phone</label>
-                    <input type="text" name="user_phone" maxlength="15" value="{{student.phone}}"/><br>
-                    <label>Mobile</label>
-                    <input type="text" name="user_mobile" maxlength="15" value="{{student.mobile}}"/><br>
-                    <label>Address</label>
-                    <textarea id="user_address" name="user_address" maxlength="255" cols="10" rows="5" 
-                        placeholder="Full postal address..">{{student.address}}</textarea><br>  
-                    <label>Course Mode</label>
-                    <input type="radio" name="user_course_mode" value="E" {% if (student.courseMode == 'E') %} checked {% endif %}>Email<br>
-                    <input type="radio" name="user_course_mode" value="P" {% if (student.courseMode == 'P') %} checked {% endif %}>Postal<br>                         
-                    <label>Anonymous (yes if checked)</label>
-                    <input type="checkbox" name="user_anon" value="yes"  {% if student.anonymous %} checked {% endif %}><br><br>
+        <label for="user_qual">Qualification</label>
+        <span class="desc">(optional) It could be something like BA English, SSLC, CA and so.</span>
+        <input type="text" name="user_qual"  id="user_qual"maxlength="20"  value="{{user.qualification}}"/>     
+        <label for="user_bio">Bio</label>
+        <textarea id="user_bio" name="user_bio" maxlength="255" cols="50" rows="8" 
+            placeholder="A small introduction about yourself, if any">{{user.bio}}</textarea>
+        <label for="user_phone">Phone</label>
+        <span class="desc">(optional)</span>
+        <input type="text" name="user_phone" placeholder="Please include area code" id="user_phone" maxlength="15"
+         value="{{user.phone}}"/>
+        <label for="user_mobile">Mobile</label>
+        <span class="desc">Either the phone or mobile should be specified</span>
+        <input type="text" name="user_mobile" placeholder="Prepend 0 if that is required." maxlength="15" value="{{user.mobile}}"/>
+        <label for="user_address">Address</label>
+        <textarea id="user_address" name="user_address" maxlength="255" cols="30" rows="5" 
+            placeholder="Full postal address..">{{user.address}}</textarea>  
+        
+        <label for="user_course_mode">Course Mode</label>
+        <span class="desc">By choosing Postal all correspondence (lesson delivery and assignment submission) shall be
+         by post. By choosing Email it shall by through email</span>
+        <input type="radio" name="user_course_mode" id="user_course_mode_e" value="E" {% if (user.courseMode == 'E') %}
+             checked {% endif %}>
+        <label for="user_course_mode_e" class="option" >Email</label> 
+        <input type="radio" name="user_course_mode" id="user_course_mode_p" value="P" {% if (user.courseMode == 'P') %}     checked {% endif %}>
+        <label for="user_course_mode_p" class="option" >Postal</label>                         
+        
+        <label for="user_anon">Anonymous (yes if checked)</label>
+        <span class="desc">If you check this your name [or details] will not be shown to your course mates</span>
+        <input type="checkbox" name="user_anon" id="user_anon" value="yes" {% if user.anonymous %} checked {% endif %}>
 
-                    <input type="submit" class="student-submit-button" />
-            </form>
-        </div>        
-
-    </div>  <!-- end content -->
-
+        <input type="submit" class="submit-button" />
+    </form>
+</section>
 {% endblock %}

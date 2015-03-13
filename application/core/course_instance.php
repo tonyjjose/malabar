@@ -13,12 +13,13 @@ class CourseInstance
 	private $course;
 	private $instructor;
 	private $status;
+	private $join_date;
 
-	function __construct (Course $course, Instructor $instructor, $status) {
+	function __construct (Course $course, Instructor $instructor, $join_date, $status) {
 		$this->course = $course;
 		$this->instructor = $instructor;
+		$this->join_date = strtotime($join_date);
 		$this->status = $status;
-
 	}
     public function getCourse(){
         return $this->course;
@@ -26,7 +27,11 @@ class CourseInstance
     public function getInstructor(){
         return $this->instructor;
     }
+    public function getJoinDate(){
+        return date("j M Y", $this->join_date);
+    }
     public function getStatus(){
         return $this->status;
     }
+
 }

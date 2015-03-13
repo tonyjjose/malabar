@@ -66,4 +66,19 @@ class StudentModel
         return false;
         
     }  
+
+    public function getCourseMates ($course_id)
+    {
+        $id = Session::get('user_id');
+
+        if (!(Student::isStudentDoingCourse($id,$course_id))) {
+            Feedback::addNegative('You do not do this course');
+            echo "string";
+            return null;
+        }
+
+        return Student::getCourseMates($id,$course_id);
+
+
+    }
 }
