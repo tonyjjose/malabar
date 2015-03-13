@@ -1,25 +1,47 @@
-{% extends "layout.html.twig" %}
+{% extends "manager/manager_base.html.twig" %}
 
-{% block title %}Login{% endblock %}
-
-{% block feedback %}
-    {% for feed in feedback_positive %}
-        <span class="feedback success">{{feed|e }}</span>
-    {% endfor %}
-    {% for feed in feedback_negative %}
-        <span class="feedback failure">{{feed|e }}</span>
-    {% endfor %}    
-{% endblock %}
-
+{% block title %}Dashboard{% endblock %}
 {% block content %}
-    <h1>Welcome</h1>
-    <div class="content">
-        <h2>Welcome to our application</h2>
-        <p>This is the page of Manager..No one else should be able to touch here!!</p>
-        <a href="{{URL}}course">Courses list</a><br>
-        <a href="{{URL}}course/addcategory">Add a course category</a>
-        <a href="{{URL}}course/add">Add a new course</a>
+<section class="dash">
+    <h2>Dashboard</h2>
+    <summary id="user_meta">
+        {# <p><span class="profile">ID :</span>{{user.id}}</p> #}
+        <p><span class="profile">Name :</span>{{user.name}}</p>
+        <p><span class="profile">Email :</span>{{user.email}}</p>
+        <p><span class="profile">Phone :</span>{{user.phone}} , {{user.mobile}}</p>
+        <p><span class="profile">Created on :</span>{{user.created}}</p>
+    </summary>
+    <a href="{{URL}}user/edit/{{user.id}}">Edit my profile</a><br>
+    <a href="{{URL}}login/changepassword">Change my password</a>
+</section>
+<section class="dash">
+    <h2>Actions</h2>
+    <p>The available actions for manager are listed here.</p>
 
-    </div>  <!-- end content -->
+    <h3>Course</h3>
+    <a href="{{URL}}course">List of all courses</a>
+    <span class="desc">(to edit/delete a course use the links next to the course name in the above list)</span>
+    <a href="{{URL}}course/add">Add a new course</a><br>
+    <a href="{{URL}}course/addcategory">Add a new course category</a>
 
+    <h3>Student</h3>
+    <a href="{{URL}}manager/viewstudents">View the full list of students</a>
+    <span class="desc">Click on the student's name in the list to view the details of the student and to enrol/disenrol or edit enrollment of a student</span>
+    <a href="{{URL}}user/add">Add a new student</a>
+
+    <h3>Instructor</h3>
+    <a href="{{URL}}user">View the full list of instructors</a>
+    <span class="desc">Remember to set the type to 'instructor' while adding new</span>
+    <a href="{{URL}}user/add">Add a new instructor</a>
+
+    <h3>Users</h3>
+    <p>Users include everyone using the system.</p>
+    <a href="{{URL}}user">View the full list of users</a><br>
+    <a href="{{URL}}user/add">Add a new user</a>
+</section>
+<section class="dash">
+    <h2>Reports</h2>
+    <a href="{{URL}}report/student">Student reports</a>
+    <span class="desc">Click on to create a list of students based on various criteria like, course, mode, status etc.</span><br><br><br><br>
+</section>
 {% endblock %}

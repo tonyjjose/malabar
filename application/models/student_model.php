@@ -1,9 +1,9 @@
 <?php
 
 /**
- * UserModel
+ * StudentModel class
  *
- * Handles the users related bussiness logic
+ * Handles the students related bussiness logic.
  */
 
 class StudentModel
@@ -12,11 +12,20 @@ class StudentModel
      * Constructor, expects a Database connection
      * @param Database $db The Database object
      */        
+    public function __construct($db)
+    {
+        $this->db = $db;
+    }
 
+    /**
+    * Edit student process.
+    *
+    * We do not update password here.
+    * @return bool success state
+    */
     public function editSave()
     {
-
-     //get the inputs
+        //get the inputs
         $id = Request::post('user_id');
         $name = Request::post('user_name');
         $email = Request::post('user_email');
@@ -33,7 +42,7 @@ class StudentModel
         $anon = (Request::post('user_anon') == 'yes') ? YES : NO;        
 
         //ok we have the inputs, validate them
-        if(!$name || strlen($name)== 0 || strlen($name) > 64) {
+        if(!$name || strlen($name) == 0 || strlen($name) > 64) {
             Feedback::addNegative('Failed! user name is invalid.');
             return false;
         }  
@@ -67,6 +76,12 @@ class StudentModel
         
     }  
 
+    /**
+    * Get the list of sudents taking the same course.
+    *
+    * The list is returned only if the student takes part in that same course.
+    * @return bool success state
+    */
     public function getCourseMates ($course_id)
     {
         $id = Session::get('user_id');
@@ -78,7 +93,5 @@ class StudentModel
         }
 
         return Student::getCourseMates($id,$course_id);
-
-
     }
 }

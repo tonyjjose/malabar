@@ -19,7 +19,7 @@
             {# table head #}
             <tr><th>No</th><th>Name</th><th>ID</th><th>Email</th><th>Approved</th><th>Active</th><th>Anonymous</th><th>Joined</th>
             <th>Actions</th></tr>        
-            {% for student in students %}
+            {% for student in users %}
                 <tr>
                     <td>{{loop.index}}</td><td>{{student.name}}</td><td>{{student.id}}</td>
                     <td>{{student.email}}</td>

@@ -1,38 +1,59 @@
 <?php
 
 /**
- * Class ManagerController
+ * ManagerController class
  * 
- * Handles all manager related stuff
+ * This handles all the manager related requests like, URL/manager/...
  *
  */
 class ManagerController extends Controller
 {
+    function __construct()
+    {  
+       parent::__construct();
+
+       if(!(Session::get('user_type') == ROLE_MANAGER)) {
+            Redirect::to('error/noauth');
+       }
+    }    
+
     /**
-     * PAGE: index
-     * This method handles what happens when you move to http://..../home/index
+     * Display the managers' dashboad.
+     * 
+     * We display a short profile information, and links for various actions he can perform.
      */
     public function index()
     {
-        //as of now display the home, later we will redirect to respective pages based on user roles.
-        $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive() );        
-        $this->view->render('manager/index.html.twig', $params);
+        $id = Session::get('user_id');
 
+        $manager = Manager::getInstance($id);
+
+        $params = array('user'=>$manager );       
+        $this->view->render('manager/index.html.twig', $params);
     }
+
+    /**
+     * Display the list of students
+     */    
     public function viewStudents()
     {
         $students = Student::getAllStudents();
-        $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive(),
-            'students'=>$students );
+        $params = array('users'=>$students );
         $this->view->render('manager/viewstudents.html.twig',$params);         
-    }    
+    }
+
+    /**
+     * Display the list of students
+     */     
     public function viewStudent($id)
     {
         $student = Student::getInstance($id);
         $student->loadMyCourses();
-        $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive(),'user'=>$student );
+        $params = array('user'=>$student);
         $this->view->render('manager/viewstudent.html.twig',$params);         
     }
+
+
 
     public function editEnrol($student_id, $course_id)
     {
@@ -42,8 +63,7 @@ class ManagerController extends Controller
         //var_dump($instructors);
         $courseInstance = Student::getCourseInstance($student_id, $course_id);
 
-        $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive(),
-            'student'=>$student, 'course'=>$course,'instructors'=>$instructors,'courseInstance'=>$courseInstance);
+        $params = array('student'=>$student, 'course'=>$course,'instructors'=>$instructors,'courseInstance'=>$courseInstance);
         $this->view->render('manager/editenrol.html.twig',$params);         
     }  
 
@@ -57,7 +77,7 @@ class ManagerController extends Controller
     {
         $student = Student::getInstance($student_id);
         $course = Course::getInstance($course_id);
-        $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive(),
+        $params = array(
             'student'=>$student, 'course'=>$course,);
         $this->view->render('manager/disenrol.html.twig',$params);           
     } 
@@ -74,7 +94,7 @@ class ManagerController extends Controller
         $courses = Student::getUnEnrolledCourses($id);
         var_dump($courses);
         $instructors = Instructor::getAllInstructors(); 
-        $params = array('feedback_negative'=>Feedback::getNegative(), 'feedback_positive'=>Feedback::getPositive(),
+        $params = array(
             'student'=>$student, 'courses'=>$courses,'instructors'=>$instructors);
         $this->view->render('manager/enrol.html.twig',$params);
     }

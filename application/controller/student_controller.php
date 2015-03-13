@@ -44,11 +44,11 @@ class StudentController extends Controller
         if ($id == Session::get('user_id'))
         {
             $student = User::getInstance($id);
-            //var_dump($student);
             $params = array('user'=>$student );            
             $this->view->render('student/editprofile.html.twig',$params);
-        } else {
-            Redirect::to('error/noauth');
+            
+        } else { //a user should not be able to edit others profile
+            Redirect::to('error/noauth'); 
         }
     }
 
