@@ -1,37 +1,27 @@
-{% extends "layout.html.twig" %}
+{% extends "manager/manager_base.html.twig" %}
 
-{% block title %}Login{% endblock %}
-
-{% block feedback %}
-    {% for feed in feedback_positive %}
-        <span class="feedback success">{{feed|e }}</span>
-    {% endfor %}
-    {% for feed in feedback_negative %}
-        <span class="feedback failure">{{feed|e }}</span>
-    {% endfor %}    
-{% endblock %}
+{% block title %}Students{% endblock %}
 
 {% block content %}
-    <h1>Welcome</h1>
-    <div class="content">
-        <h2>The list of all students</h2>
-        <table>
-            {# table head #}
-            <tr><th>No</th><th>Name</th><th>ID</th><th>Email</th><th>Approved</th><th>Active</th><th>Anonymous</th><th>Joined</th>
-            <th>Actions</th></tr>        
-            {% for student in users %}
-                <tr>
-                    <td>{{loop.index}}</td><td>{{student.name}}</td><td>{{student.id}}</td>
-                    <td>{{student.email}}</td>
-                    <td> {% if student.approved == 1 %}Yes {% else %} No {% endif %}</td>
-                    <td> {% if student.active == 1 %}Yes {% else %} No {% endif %}</td>
-                    <td> {% if student.anonymous == 1 %}Yes {% else %} No {% endif %}</td>
-                    <td>{{student.created}}</td>
-                    <td><a href="{{URL}}manager/viewstudent/{{student.id}}">View</a></td>                   
-                </tr>
-            {% endfor %}
-        </table>
-
-    </div>  <!-- end content -->
-
+<section>
+    <h2>The list of all students</h2>
+    <table>
+        {# table head #}
+        <tr><th>No</th><th>Name</th><th>User ID</th><th>Email</th><th>Approved</th>
+            <th>Active</th><th>Anonymous</th><th>Actions</th></tr>        
+        {% for student in users %}
+        <tr>
+            <td>{{loop.index}}</td>
+            <td><a href="{{URL}}manager/viewstudent/{{student.id}}">{{student.name}}</a></td>
+            <td>{{student.id}}</td>
+            <td>{{student.email}}</td>
+            <td> {% if student.approved == 1 %}Yes {% else %} No {% endif %}</td>
+            <td> {% if student.active == 1 %}Yes {% else %} No {% endif %}</td>
+            <td> {% if student.anonymous == 1 %}Yes {% else %} No {% endif %}</td>
+            <td><a href="{{URL}}manager/viewstudent/{{student.id}}">View</a><br>
+                <a href="{{URL}}user/edit/{{student.id}}">Edit</a></td>                   
+        </tr>
+        {% endfor %}
+    </table>
+</section>
 {% endblock %}

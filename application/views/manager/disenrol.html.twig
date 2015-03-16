@@ -1,24 +1,16 @@
-{% extends "layout.html.twig" %}
+{% extends "manager/manager_base.html.twig" %}
 
-{% block title %}Login{% endblock %}
-
-{# no feedback display needed here as this is just a confimation request page #}
+{% block title %}Disenrol{% endblock %}
+{% block feedback %}Disenrol{% endblock %}
 {% block content %}
-    <h1>Welcome</h1>
-    <div class="content">
-        <h2>Welcome to </h2>
-        <p>Delete?</p>
-        <div>
-            <h1>Are you sure?</h1>
-            <form action="{{URL}}manager/disenrolsave" method="post">
-                <p> Are you sure to disenrol the Student: {{student.name}} from the course: {{course.name}}?
-                    <input type="hidden" name="student_id" value="{{student.id}}">
-                    <input type="hidden" name="course_id" value="{{course.id}}">
-                    <input type="submit" text="yes" class="submit-button" /><br>
-                    <a href="{{URL}}manger/viewstudent">No, Let me go back</a>
-            </form>
-        </div>        
-
-    </div>  <!-- end content -->
-
+<section id="userform">
+    <h2>Disenrol</h2>
+    <p> Are you sure to disenrol the Student: {{student.name}} from the course: {{course.name}}?</p>
+    <form action="{{URL}}manager/disenrolsave" method="post">
+        <input type="hidden" name="student_id" value="{{student.id}}">
+        <input type="hidden" name="course_id" value="{{course.id}}">
+        <input type="submit" value="Disenrol" class="submit-button" /><br>
+        <a href="{{URL}}manager/viewstudent/{{student.id}}">No, Let me go back</a>
+    </form>
+</section>
 {% endblock %}

@@ -53,8 +53,8 @@ class CourseController extends Controller
     public function add()
     {
         //gather the parameters        
-        $categoryNames = Course::getAllCourseCategoryNames();
-        $params = array('category_names'=>$categoryNames);
+        $categories = Category::getAllCategories();
+        $params = array('categories'=>$categories);
 
         $this->view->render('course/add.html.twig', $params);        
     }

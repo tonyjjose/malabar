@@ -85,6 +85,17 @@ class Instructor extends user
         }
 
         return $students;        
-    }    
+    }
 
+    /**
+     * Check for user type instructor.
+     * @return bool status
+     */
+    public static function isUserInstructor($id)
+    {
+        if (User::getUserType($id) == ROLE_INSTRUCTOR) {
+           return true;
+        }
+        return false;
+    }      
 }

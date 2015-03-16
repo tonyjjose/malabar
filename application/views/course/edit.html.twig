@@ -25,7 +25,7 @@
         <span class="desc">A course can be made ''Inactive' if it is no longer taught. <br>
             Note that courses currently taken by students cannot be marked 'Inactive'</span>
         <input type="checkbox" name="course_active" id="course_active" value="yes" {% if course.active == 1 %} checked {% endif %}>                    
-        <input type="submit" class="submit-button" value="Edit course"/>
+        <input type="submit" class="submit-button" value="Edit course"/><a href="{{URL}}course">No, let me go back</a>
     </form>
 </section>
 {% endblock %}

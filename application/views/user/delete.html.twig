@@ -6,7 +6,7 @@
 {% block content %}
 <section id="userform">
     <h2>Delete</h2>
-    <p>Are you sure to delete the user {{user.name}}?</p>
+    <p>Are you sure to delete the user "{{user.name}}"?</p>
     <span class="desc">Note that the user doing/teaching a course cannot be deleted.</span>    
     <form action="{{URL}}user/deletesave" method="post">
         <input type="hidden" name="user_id" value="{{user.id}}">

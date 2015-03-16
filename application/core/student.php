@@ -132,7 +132,7 @@ class Student extends User
      * This happens when a student enrols for a new course 
      * @return bool success state
      */
-    public static function saveCourseInstance($student_id,$course_id,$instructor_id,$status)
+    public static function saveCourseInstance($student_id, $course_id, $instructor_id, $join_date, $status)
     {
         $db = DatabaseFactory::getFactory()->getConnection(); 
 

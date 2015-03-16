@@ -1,4 +1,4 @@
-{% extends "manager/manager.html.twig" %}
+{% extends "manager/manager_base.html.twig" %}
 
 {% block title %}Delete course{% endblock %}
 {% block feedback %}{# no feedback display needed here as this is just a confimation request page #}{% endblock %}
@@ -6,7 +6,7 @@
 {% block content %}
 <section id="courseform">
     <h2>Delete</h2>
-    <p>Are you sure to delete the course {{course.name}}?</p>
+    <p>Are you sure to delete the course "{{course.name}}"?</p>
     <span class="desc">Note that if the course is taken by students, it cannot be deleted.</span>
     <form action="{{URL}}course/deleteSave" method="post">
         <input type="hidden" name="course_id" value="{{course.id}}">

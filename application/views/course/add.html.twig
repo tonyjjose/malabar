@@ -4,22 +4,22 @@
 
 {% block content %}
 <section id="courseform">
-            <h2>Add a course </h2>
-            <form action="{{URL}}course/addSave" method="post">
-                    <label for="course_name">Course Name</label>
-                    <span class="desc">Course name should be concise. The use of spaces, numbers and underscore allowed.</span>
-                    <input type="text" name="course_name" id="course_name" maxlength="25" 
-                        pattern="^[a-zA-Z0-9][a-zA-Z0-9_ ]{0,25}" required/>
-                    <label for="course_desc">Description</label>
-                    <textarea id="course_desc" name="course_desc" maxlength="255" cols="50" rows="5" 
-                    placeholder="A small description about the course, if any"></textarea>
-                    <label for="course_cat">Course Category</label>
-                    <select name="course_cat" id="course_cat" size="3">
-                    {% for name in category_names %}
-                        <option value={{name.cat_id}}>{{name.cat_name}}</option>
-                    {% endfor %}
-                    </select>  
-                    <input type="submit" class="submit-button" value="Add course" />
-            </form>
+    <h2>Add a course </h2>
+    <form action="{{URL}}course/addSave" method="post">
+        <label for="course_name">Course Name</label>
+        <span class="desc">Course name should be concise. The use of spaces, numbers and underscore allowed(not in beginning).</span>
+        <input type="text" name="course_name" id="course_name" maxlength="25" 
+            pattern="^[a-zA-Z0-9][a-zA-Z0-9_ ]{0,25}" required/>
+        <label for="course_desc">Description</label>
+        <textarea id="course_desc" name="course_desc" maxlength="255" cols="50" rows="5" 
+        placeholder="A small description about the course, if any"></textarea>
+        <label for="course_cat">Course Category</label>
+        <select name="course_cat" id="course_cat" size="4">
+        {% for category in categories %}
+            <option value={{category.id}}>{{category.name}}</option>
+        {% endfor %}
+        </select>  
+        <input type="submit" class="submit-button" value="Add course" />
+    </form>
 </section>
 {% endblock %}
