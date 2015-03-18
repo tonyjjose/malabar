@@ -1,0 +1,24 @@
+{% extends "manager/manager_base.html.twig" %}
+
+{% block title %}Instructor reports{% endblock %}
+{% block content %}
+<section>
+        <h2>The list of all instructors</h2>
+        <table>
+            {# table head #}
+            <tr><th>No</th><th>Name</th><th>ID</th><th>Email</th><th>Approved</th><th>Active</th><th>Anonymous</th><th>Joined</th>
+            <th>Actions</th></tr>        
+            {% for instructor in instructors %}
+                <tr>
+                    <td>{{loop.index}}</td><td>{{instructor.name}}</td><td>{{instructor.id}}</td>
+                    <td>{{instructor.email}}</td>
+                    <td> {% if instructor.approved == 1 %}Yes {% else %} No {% endif %}</td>
+                    <td> {% if instructor.active == 1 %}Yes {% else %} No {% endif %}</td>
+                    <td> {% if instructor.anonymous == 1 %}Yes {% else %} No {% endif %}</td>
+                    <td>{{instructor.created}}</td>
+                    <td><a href="{{URL}}manager/viewinstructor/{{instructor.id}}">View</a></td>                   
+                </tr>
+            {% endfor %}
+        </table>
+</section>
+{% endblock %}

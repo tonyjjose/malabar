@@ -1,4 +1,4 @@
-{% extends "student/student_base.html.twig" %}
+{% extends "profile/profile_base.html.twig" %}
 
 {% block title %}Edit profile{% endblock %}
 
@@ -7,7 +7,7 @@
     <h2>Edit your profile</h2>
     <p>Please read the instructions for each field.<br>
      All fields are required unless marked optional.</p>
-    <form action="{{URL}}student/editprofilesave" method="post">
+    <form action="{{URL}}profile/editsave" method="post">
         <input type="hidden" name="user_id" value="{{user.id}}">
         <label for="user_email">Email</label>
         <span class="desc">Enter a valid email, you will be send confimation mails to it</span>
@@ -44,10 +44,10 @@
         <label for="user_course_mode">Course Mode</label>
         <span class="desc">By choosing Postal all correspondence (lesson delivery and assignment submission) shall be
          by post. By choosing Email it shall by through email</span>
-        <input type="radio" name="user_course_mode" id="user_course_mode_e" value="E" {% if (user.courseMode == 'E') %}
+        <input type="radio" name="user_course_mode" id="user_course_mode_e" value="E" {% if (user.coursemode == 'E') %}
              checked {% endif %}>
         <label for="user_course_mode_e" class="option" >Email</label> 
-        <input type="radio" name="user_course_mode" id="user_course_mode_p" value="P" {% if (user.courseMode == 'P') %}     checked {% endif %}>
+        <input type="radio" name="user_course_mode" id="user_course_mode_p" value="P" {% if (user.coursemode == 'P') %}     checked {% endif %}>
         <label for="user_course_mode_p" class="option" >Postal</label>                         
         
         <label for="user_anon">Anonymous (yes if checked)</label>

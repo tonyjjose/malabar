@@ -29,10 +29,11 @@ class View
         //$this->twig = new Twig_Environment($this->loader, array('cache' => TWIG_CACHE_PATH,));
         $this->twig = new Twig_Environment($this->loader, array('cache' => false,'debug' => true));   #no cache as we are in dev mode. 
         
-        //add a twig global variable that holds the project URL.
+        //add a twig global variable that holds the project URL, user details and last url
         $this->twig->addGlobal('URL', URL); 
         $this->twig->addGlobal('SESSION_USER', Session::get('user_name'));
-        $this->twig->addGlobal('SESSION_LAST', Session::get('user_last_login'));    
+        $this->twig->addGlobal('SESSION_LAST', Session::get('user_last_login'));
+        $this->twig->addGlobal('LAST_URL', Session::get('last_url'));  
     }
 
     /**
@@ -56,6 +57,9 @@ class View
         
         //Clear feedback. Is it not the right place to do it???
         Feedback::clear();
+
+        //just save the URL that we visited just now. Used for the back button in next view.
+        Session::set('last_url', "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");        
     }
 
     /**

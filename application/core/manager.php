@@ -15,7 +15,7 @@ class Manager extends user
         $mobile, $address, $approved, $active, $anon, $created, $last_login)
     {
     	parent::__construct($id, $name, $passward_hash, $email, $age, $sex, $qual, $bio, $phone, 
-        $mobile, $address, NULL, ROLE_MANAGER, $approved, $active, $anon, $created, $last_login);
+        $mobile, $address, COURSE_MODE_EMAIL, ROLE_MANAGER, $approved, $active, $anon, $created, $last_login);
     }
     /**
      * Get all managers from DB, return an array of manager objects 

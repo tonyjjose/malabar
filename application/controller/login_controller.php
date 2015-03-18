@@ -22,7 +22,7 @@ class LoginController extends controller
      */
     public function test()
     {
-        //var_dump($_SESSION);
+        var_dump($_SERVER);
     }
 
     /**
@@ -62,23 +62,7 @@ class LoginController extends controller
         
         // redirect user to the public website
         header('location: ' . WWW);
-    }    
-    
-    /**
-     * Display the change password from
-     *
-     */
-    public function changePassword()
-    {
-        //non authenticated users need not touch here.
-        $login_model = $this->loadModel('Login');
-        if (!$login_model->isUserLoggedIn()) {
-            Redirect::to('login');
-        }
-        
-        //show the form
-        $this->view->render('login/changepassword.html.twig');   
-    }    
+    }      
 
     /**
     * POST request handler for login form
@@ -101,25 +85,7 @@ class LoginController extends controller
             Redirect::to('login');
         }
     }  
-
-    /**
-     * POST request handler for change password form
-     *  
-     * Note that we use the user model and does the job.
-     */ 
-    public function changePasswordSave()
-    {
-        $user_model = $this->loadModel('User');
-        $change_success = $user_model->changePasswordSave();
-
-        if ($change_success) {
-            Redirect::home();
-        } else {
-            //let him try again
-            Redirect::to('login/changepassword');
-        }
-
-    }   
+   
 
     /**
      * POST request handler for registration form

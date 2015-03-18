@@ -1,27 +1,21 @@
-{% extends "layout.html.twig" %}
+{% extends "instructor/instructor_base.html.twig" %}
 
-{% block title %}Login{% endblock %}
-
-{% block feedback %}
-    {% for feed in feedback_positive %}
-        <span class="feedback success">{{feed|e }}</span>
-    {% endfor %}
-    {% for feed in feedback_negative %}
-        <span class="feedback failure">{{feed|e }}</span>
-    {% endfor %}    
-{% endblock %}
+{% block title %}Dashboard{% endblock %}
 
 {% block content %}
-    <h1>Welcome</h1>
-    <div class="content">
-        <h2>Dashboard</h2>
-        <p>This is the page of instructor..We will list his courses along with its instructor if assigned.
-            There will be an option for him to upload assignments.
-            There will be a link to view/edit his profile. </p>
-
-            <h2>Welcome {{instructor.name}}</h2>
-            
-            <h2>Your courses</h2>
+<section class="dash">
+    <h2>Dashboard</h2>
+        <summary id="user_meta">
+            <p><span class="profile">Name :</span>{{user.name}}</p>
+            <p><span class="profile">Email :</span>{{user.email}}</p>
+            <p><span class="profile">Phone :</span>{{user.phone}} , {{user.mobile}}</p>
+            <p><span class="profile">Registered on :</span>{{user.created}}</p>
+        </summary>
+        <a href="{{URL}}profile/edit">Edit my profile</a><br>
+        <a href="{{URL}}profile/changepassword">Change my password</a>
+</section>
+<section class="dash">          
+    <h2>Your courses</h2>
 
     
         <table>
@@ -32,12 +26,14 @@
             {% for  course in courses %}
                 <tr>
                     <td>{{loop.index}}</td><td>{{course.name}}</td><td>{{course.description}}</td>
-                    <td>{% if course.active %} Yes {% else %} No {% endif %}</td><td><a href="{{URL}}instructor/showstudents/{{instructor.id}}/{{course.id}}/">Show my course students</a></td>
+                    <td>{% if course.active %} Yes {% else %} No {% endif %}</td><td><a href="{{URL}}instructor/showstudents/{{user.id}}/{{course.id}}/">Show my course students</a></td>
                 </tr>
             {% endfor %}
         </table>
 
-
-    </div>  <!-- end content -->
-
+</section>
+<section class="dash">
+    <h2>Latest Assignments</h2>    
+    <a href="">Links to assignments uploaed by students</a>
+</section>
 {% endblock %}

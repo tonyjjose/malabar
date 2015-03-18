@@ -11,7 +11,7 @@
                 <tr><td>No</td><td>Name</td><td>Email</td></tr>
             {% for student in students %}
                 
-                <tr><td>{{loop.index}}</td><td>{{student.name}}</td><td>{{student.email}}</td>
+                <tr><td>{{loop.index}}</td><td></a>{{student.name}}</td><td>{{student.email}}</td><td><a href="{{URL}}profile/view/{{student.id}}">View student profile</a></td>
                 </tr>
             {% endfor %}
     </table>

@@ -1,0 +1,24 @@
+{% extends "profile/profile_base.html.twig" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<section>
+    <h2>Profile</h2>
+    <summary id="user_meta">
+        {% if (show_details) %}<p><span class="profile">ID :</span>{{user.id}}</p>{% endif %}
+        <p><span class="profile">Name :</span>{{user.name}}</p>
+        <p><span class="profile">Email :</span>{{user.email}}</p>
+        {% if (show_details) %}<p><span class="profile">Age :</span>{{user.age}}</p>{% endif %}
+        {% if (show_details) %}<p><span class="profile">Sex :</span>{% if user.sex == 'M'%}Male{% else %}Female{% endif %}</p>{% endif %}
+        {% if (show_details) %}<p><span class="profile">Qualification :</span>{{user.qualification}}</p>{% endif %}
+        <p><span class="profile">Bio :</span><pre>{{user.bio}}</pre></p>
+        {% if (show_details) %}<p><span class="profile">Phone :</span>{{user.phone}} , {{user.mobile}}</p>{% endif %}
+        {% if (show_details) %}<p><span class="profile">Address :</span><pre>{{user.address}}</pre></p>{% endif %}
+        {% if (show_details) %}<p><span class="profile">Anonymous :</span>{% if (user.anonymous) %} Yes {% else %} No {% endif %}</p>{% endif %}
+        {% if (show_details) %}<p><span class="profile">Active :</span>{% if (user.active) %} Yes {% else %} No {% endif %}</p>{% endif %}
+        {% if (show_details) %}<p><span class="profile">Approved :</span>{% if (user.approved) %} Yes {% else %} No {% endif %}</p>{% endif %}
+        {% if (show_details) %}<p><span class="profile">Registered on :</span>{{user.created}}</p>{% endif %}
+    </summary>
+</section>
+{% endblock %}

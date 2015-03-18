@@ -62,6 +62,15 @@ class ReportModel
 
         return $students;
         
-    }       	
+    }  
+
+    public function instructorList()
+    {
+        $course_id = Request::post('course_id');
+
+        $instructors = Instructor::getAllInstructorsDoingCourse($course_id);
+
+        return $instructors;
+    }
 
 }

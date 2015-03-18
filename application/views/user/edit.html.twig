@@ -45,15 +45,15 @@
             placeholder="Full postal address..">{{user.address}}</textarea>  
         <label for="user_course_mode">Course Mode</label>
         <span class="desc">By choosing Postal all correspondence (lesson delivery and assignment submission) shall be by post. By choosing Email it shall by through email</span>
-        <input type="radio" name="user_course_mode" id="user_course_mode_e" value="E" {% if (user.courseMode == 'E') %} checked {% endif %}>
+        <input type="radio" name="user_course_mode" id="user_course_mode_e" value="E" {% if (user.CourseMode == 'E') %} checked {% endif %}>
         <label for="user_course_mode_e" class="option" >Email</label> 
-        <input type="radio" name="user_course_mode" id="user_course_mode_p" value="P" {% if (user.courseMode == 'P') %} checked {% endif %}>
+        <input type="radio" name="user_course_mode" id="user_course_mode_p" value="P" {% if (user.CourseMode == 'P') %} checked {% endif %}>
         <label for="user_course_mode_p" class="option" >Postal</label>                         
         <label for="user_anon">Anonymous (yes if checked)</label>
         <span class="desc">Applies only for student. If checked his/her details will not be shown to his/her coursemates</span>
         <input type="checkbox" name="user_anon" id="user_anon" value="yes"  {% if user.anonymous %} checked {% endif %}>
 
-        <label for="user_type">User type</label>
+        <label for="user_type">User type{{user.CourseMode}}</label>
         <span class="desc">User type cannot be changed if he/she is taking/teaching a course</span>
         <select name="user_type" id="user_type" size="4">
                 <option value='S' {% if (user.type == 'S') %} selected {% endif %}>Student</option>

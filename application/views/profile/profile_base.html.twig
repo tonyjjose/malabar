@@ -1,0 +1,6 @@
+{% extends "layout.html.twig" %}
+{% block nav %}
+	{{ parent() }}
+	<li><a href="{{URL}}home">Home</a></li>
+    <li><a href="{{URL}}profile/edit">Edit profile</a></li>
+{% endblock %}

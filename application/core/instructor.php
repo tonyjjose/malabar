@@ -44,6 +44,30 @@ class Instructor extends user
         return $instructors;      
     }
 
+    public static function getAllInstructorsDoingCourse($course_id)
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();
+
+        $sql = "SELECT * FROM users WHERE user_type = '".ROLE_INSTRUCTOR."' AND user_id IN 
+        (SELECT DISTINCT instructor_id FROM student_course WHERE course_id = :course_id) ORDER BY user_name ASC";
+
+        $query = $db->prepare($sql);
+        $query->execute(array(':course_id' => $course_id));  
+        $rows = $query->fetchAll();
+
+        //the list of objects
+        $instructors = array();
+
+        foreach ($rows as $row) {
+            $instructors[] = new Instructor($row->user_id,$row->user_name,$row->user_password_hash,$row->user_email,$row->user_age,
+                $row->user_sex,$row->user_qualification,$row->user_bio,$row->user_phone,$row->user_mobile,
+                $row->user_address,$row->user_approved,$row->user_active,
+                $row->user_anonymous,$row->user_creation_timestamp,$row->user_last_login_timestamp);
+        }
+
+        return $instructors; 
+    }    
+
     public static function getMyCourses($id)
     {
         $db = DatabaseFactory::getFactory()->getConnection();

@@ -10,8 +10,8 @@
             <p><span class="profile">CourseMode :</span>{% if user.coursemode == 'E'%}Email {% else %}Postal {% endif %}</p>
             <p><span class="profile">Registered on :</span>{{user.created}}</p>
         </summary>
-        <a href="{{URL}}student/editprofile/{{user.id}}">Edit my profile</a><br>
-        <a href="{{URL}}login/changepassword">Change my password</a>
+        <a href="{{URL}}profile/edit">Edit my profile</a><br>
+        <a href="{{URL}}profile/changepassword">Change my password</a>
 </section>
 <section class="dash">          
     <h2>Your courses</h2>
