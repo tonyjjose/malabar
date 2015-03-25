@@ -74,7 +74,126 @@ class StudentModel
         Feedback::addNegative('Failed! Unknown reason.');
         return false;
         
-    }  
+    }
+
+    public function saveAssignment ()
+    {
+        var_dump($_FILES['assignmentfile']);
+
+        //get the inputs
+        $filename = basename($_FILES['assignmentfile']['name']);
+        $user = Session::get('user_name');
+        $user_id = Session::get('user_id');
+        $desc = Request::post('desc');
+        $course_id = Request::post('course_id');
+
+        //create the time string to be put in DB.
+        $upload_time = date('Y-m-d H:i:s', time()); 
+
+        //disk file name, create unique file name to store to the disk, we use
+        //form username_timestring_filename.ext
+        $diskfilename =  "{$user}_".strtotime($upload_time)."_{$filename}";    
+        
+        //the upload directore
+        $dir = UPLOAD_DIR;
+
+        echo $diskfilename."\n";
+        echo basename($_FILES["assignmentfile"]["name"])."\n";
+        echo strtolower(pathinfo($filename,PATHINFO_EXTENSION));
+
+        //validate the inputs
+        if(!isset($_FILES['assignmentfile']) || strlen($filename) < 1) {
+            Feedback::addNegative('Failed! Please select the assignmment file to upload');
+            return false;            
+        }
+
+        if(!isset($course_id)) {
+            Feedback::addNegative('Failed! Please select the course.');
+            return false;               
+        }
+
+        // Check file size
+        if ($_FILES['assignmentfile']['size'] > 500000) {
+            Feedback::addNegative('Failed! File size is too large.');
+            return false;
+        } 
+
+        //check for file type.
+        $allowtype = array('doc', 'docx', 'xml', 'txt', 'pdf' , 'odt');
+        if (!in_array(strtolower(pathinfo($filename,PATHINFO_EXTENSION)), $allowtype)) {
+            Feedback::addNegative('Failed! File type is not allowed.');
+            return false;            
+        }
+
+        //check description
+        if (strlen($desc) > 255) {
+            Feedback::addNegative('Failed! Description is too large.');
+            return false;
+        }
+
+        //OK try to copy the file to our assignement director.
+        if (!move_uploaded_file($_FILES['assignmentfile']['tmp_name'], $dir.$diskfilename)) {
+            Feedback::addNegative('Failed! Assignment file not saved to server.');
+            return false;
+        }        
+
+        //OK, looks fine, lets try to add to db       
+        $success = Student::saveAssignment($filename, $desc, $upload_time, $user_id, $course_id); 
+
+        //has it got saved? if so success.
+        if ($success) {
+            Feedback::addPositive("Success! Assignments uploaded.");
+            return true;
+        }  
+
+        //We come here if its not saved properly, notify it and exit
+        Feedback::addNegative('Failed! Unknown reason.');
+        return false;
+
+
+
+//         $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+// $uploadOk = 1;
+// $imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
+// // Check if image file is a actual image or fake image
+// if(isset($_POST["submit"])) {
+//     $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
+//     if($check !== false) {
+//         echo "File is an image - " . $check["mime"] . ".";
+//         $uploadOk = 1;
+//     } else {
+//         echo "File is not an image.";
+//         $uploadOk = 0;
+//     }
+// }
+// // Check if file already exists
+// if (file_exists($target_file)) {
+//     echo "Sorry, file already exists.";
+//     $uploadOk = 0;
+// }
+// // Check file size
+// if ($_FILES["fileToUpload"]["size"] > 500000) {
+//     echo "Sorry, your file is too large.";
+//     $uploadOk = 0;
+// }
+// // Allow certain file formats
+// if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+// && $imageFileType != "gif" ) {
+//     echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+//     $uploadOk = 0;
+// }
+// // Check if $uploadOk is set to 0 by an error
+// if ($uploadOk == 0) {
+//     echo "Sorry, your file was not uploaded.";
+// // if everything is ok, try to upload file
+// } else {
+//     if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
+//         echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded.";
+//     } else {
+//         echo "Sorry, there was an error uploading your file.";
+//     }
+// }        
+    }
 
     /**
     * Get the list of sudents taking the same course.

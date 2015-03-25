@@ -36,6 +36,25 @@
 </section>
 <section class="dash">
     <h2>Assignments</h2>    
-    <a href="">Upload a new assignment</a>
+    <a href="{{URL}}assignment/upload">Upload a new assignment</a>
+        <table>
+        {# table head #}
+        <tr><th>No</th><th>Assignment</th><th>Course</th><th>Date</th></tr>
+
+        {# list the users #}             
+        {% for  assignment in assignments %}
+            <tr>
+                <td>{{loop.index}}</td>
+                <td><a href="{{URL}}assignment/download?f={{assignment.linkfile}}">{{assignment.filename}}</a></td>
+                <td>{{assignment.course.name}}</td>
+                <td>{{assignment.date}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <form action="{{URL}}assignment/upload" method="post"  enctype="multipart/form-data">
+        <label for="assignmentfile">Select assignment file</label>
+        <input type="file" name="assignmentfile" id="assignmentfile" accept=".doc,.txt,.pdf,.docx,.xml"/>
+        <input type="submit" name='submit' value="Upload Assignment" />
+    </form>
 </section>
 {% endblock %}

@@ -28,6 +28,9 @@ if (version_compare(PHP_VERSION, '5.5.0', '<')) {
     require_once("application/libs/password_compatibility_library.php");
 }
 
+//PHPMailerAutoloader
+require 'PHPMailer/PHPMailerAutoload.php';
+
 /*
 * Load helper classes
 * 
@@ -39,6 +42,9 @@ require 'application/libs/feedback.php';
 require 'application/libs/redirect.php';
 require 'application/libs/request.php';
 require 'application/libs/database.php';
+require 'application/libs/mailer.php';
+
+require 'application/config/mails.php';
 
 /*
 * Load bussiness classes
@@ -50,6 +56,7 @@ require 'application/core/user.php';
 require 'application/core/student.php';
 require 'application/core/instructor.php';
 require 'application/core/manager.php';
+require 'application/core/assignment.php';
 
 // start the application
 $app = new Application();

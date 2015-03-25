@@ -33,6 +33,13 @@ define('DB_USER', 'root');
 define('DB_PASS', 'google');
 
 /**
+ * Configuration for: Mail
+ */
+define('MAIL_FROM', 'malabarbiblecourses@gmail.com');
+define('MAIL_NAME', 'Malabar Bible Courses');
+define('MAIL_PASS', 'malaGMbcc3@');
+
+/**
  * Configuration for: Folders
  */
 define('LIBS_PATH', 'application/libs/');
@@ -51,6 +58,13 @@ define('TEMPLATES_PATH', 'application/views/');
  */
 define('TWIG_PATH', 'Twig/');
 define('TWIG_CACHE_PATH', '../../cache/');
+
+/**
+ * Assignment uploads directory.
+ * Note that his should be writable.
+ **/
+define('UPLOAD_DIR', '../../assignments/');
+
 
 /**
  * Configuration for: Success and error feedback

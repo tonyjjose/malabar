@@ -31,8 +31,9 @@ class StudentController extends Controller
         $student = Student::getInstance($id);
         //get his course instances
         $student->loadMyCourses();
+        $assignments = Student::getAllAssignments($id);
 
-        $params = array('user'=>$student );
+        $params = array('user'=>$student, 'assignments'=>$assignments);
         $this->view->render('student/index.html.twig',$params);	
     }
 

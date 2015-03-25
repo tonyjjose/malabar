@@ -106,6 +106,20 @@ CONSTRAINT `course_id_fk` FOREIGN KEY (`course_id`) REFERENCES `courses` (`cours
 PRIMARY KEY (`student_id`,`course_id`) -- a student cannot take part same course twice.
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS `bcc_app`.`assignments` (
+`assignment_id` int(5) NOT NULL AUTO_INCREMENT,
+`student_id` int(5) NOT NULL,
+`course_id` int(3) NOT NULL,
+`assignment_file` varchar(64) NOT NULL,
+`assign_desc`  varchar(255),
+`upload_date` datetime NOT NULL,
+PRIMARY KEY (`assignment_id`),
+CONSTRAINT `assignment_student_id_fk` FOREIGN KEY (`student_id`) REFERENCES `users` (`user_id`),
+CONSTRAINT `assignment_course_id_fk` FOREIGN KEY (`course_id`) REFERENCES `courses` (`course_id`)
+)  ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+ALTER TABLE `bcc_app`.`assignments` AUTO_INCREMENT=101; -- to begin from 101 onwards
+
 
 /* This is used for logging user activity.
  *

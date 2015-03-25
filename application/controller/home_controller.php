@@ -15,4 +15,19 @@ class HomeController extends Controller
     {
         Redirect::home();
     }
+    public function mail()
+    {
+        $mailer = new Mailer();
+
+        $params = array (
+            "_to" => "tonyjose2@gmail.com",
+            "_name" => "Tony Jose",
+            "_subject" => Mailer::mail('MAIL_NEWREG_STUDENT_SUBJECT'),
+            "_msg" => Mailer::mail('MAIL_NEWREG_STUDENT'),
+            "_student" => "Chackochan Pathrose");
+
+        $mailer->newMail($params);
+
+        $mailer->sendMail();
+    }
 }

@@ -195,6 +195,54 @@ class Student extends User
     }
 
     /**
+     * Save a assignment to DB. 
+     * @return bool success state
+     */
+    public static function saveAssignment($name, $desc, $date, $student_id, $course_id)
+    {
+        $db = DatabaseFactory::getFactory()->getConnection(); 
+
+        $sql = "INSERT INTO assignments (student_id, course_id, assignment_file, assign_desc, upload_date) VALUES
+             (:student_id, :course_id, :name, :desc, :date)";
+        $query = $db->prepare($sql);
+        $query->execute(array('student_id'=>$student_id, 'course_id'=>$course_id,
+            'name'=>$name, 'date'=>$date, 'desc'=>$desc));
+        
+        //has it got added? if so success.
+        if ($query->rowCount() == 1) {
+            return true;
+        }
+        return false;
+    } 
+
+    /**
+    * Get the list of assignments by a  sudents..
+    * @return array[] assignment object
+    */
+    public static function getAllAssignments($id)
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();  
+        
+        $query = $db->prepare("SELECT * FROM assignments WHERE student_id = :student_id 
+            ORDER BY upload_date,course_id");
+        $query->execute(array(':student_id' => $id));
+
+        //is this check absolutely necessary??
+        if ($query->rowCount() == 0) {
+            return null;
+        }
+
+        $rows = $query->fetchAll();
+        $assignments = array();
+
+        foreach ($rows as $row) {
+            $assignments[] = new Assignment(Student::getInstance($row->student_id), Course::getInstance($row->course_id),
+            $row->assignment_file, $row->assign_desc, $row->upload_date);
+        }
+        return $assignments;        
+    }
+
+    /**
     * Get the list of other sudents taking the course.
     *
     * The list does not include the querying student. The list included only those students who are
@@ -231,6 +279,41 @@ class Student extends User
 
         return $mates;
     }
+
+    /**
+    * Get the list of enrolled courses for a student.
+    *
+    * The list only includes active courses(ie status=1).
+    * @return array[] course object
+    */
+    public static function getEnrolledCourses($id)
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();      
+        
+        $sql = "SELECT * FROM courses WHERE course_id IN (SELECT course_id FROM student_course WHERE student_id = :student_id)
+         AND course_active ='".ACTIVE."' ORDER BY course_name ASC"; 
+
+        $query = $db->prepare($sql);
+        $query->execute(array('student_id'=>$id));
+        
+        //is this check absolutely necessary??
+        if ($query->rowCount() == 0) {
+            return array();
+        }
+        
+        $rows = $query->fetchAll();     
+        $courses = array();
+                
+        foreach ($rows as $row) 
+        {
+            // $courses[] = Course::getInstance($row->course_id); 
+            $courses[] = new Course($row->course_id,$row->course_name,$row->course_desc,$row->course_active, 
+                Category::getInstance($row->course_category_id));                       
+        } 
+
+        return $courses;
+    }
+
     /**
     * Get the list of unenrolled courses for a student.
     *

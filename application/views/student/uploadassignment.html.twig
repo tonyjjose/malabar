@@ -1,0 +1,25 @@
+{% extends "student/student_base.html.twig" %}
+
+{% block title %}Upload Assignment{% endblock %}
+{% block content %}
+<section id="courseform">
+    <h2>Upload Assignment</h2>
+    <form action="{{URL}}assignment/uploadsave" method="post"  enctype="multipart/form-data">
+        <label for="course_id">Course</label>
+        <span class="desc">Select the course to which the assignment is for.</span>
+        <select name="course_id" id="course_id" size="4">
+        {% for course in courses %}
+            <option value={{course.id}}>{{course.name}}</option>
+        {% endfor %}
+        </select>
+        <label for="desc">Description</label>
+        <span class="desc">A small description about the assignment. Please include any information that you would like to convey to the instructor.</span>
+        <textarea id="desc" name="desc" maxlength="255" cols="50" rows="5" 
+        placeholder=""></textarea>
+        <label for="assignmentfile">Select assignment file</label>
+        <span class="desc">Word documents, PDFs, text files etc</span>
+        <input type="file" name="assignmentfile" id="assignmentfile" accept=".doc,.txt,.pdf,.docx,.xml"/>
+        <input type="submit" name='submit' value="Upload Assignment" />
+    </form>
+</section>    
+{% endblock %}
