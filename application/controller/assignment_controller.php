@@ -33,7 +33,7 @@ class AssignmentController extends Controller
 
         $student_model = $this->loadModel('Student');
         $success = $student_model->saveAssignment(); 
-        Feedback::printAll();
+        //Feedback::printAll();
         if ($success) {
             Redirect::home(); 
         } else {
@@ -42,9 +42,23 @@ class AssignmentController extends Controller
     }
     public function download()
     {
-    	$f = Request::get('f');
-    	echo $f;
-
+    	$file = Request::get('f');
+        $name = Request::get('n');
+        echo $name;
+    	echo UPLOAD_DIR.$file;
+        if (file_exists(UPLOAD_DIR.$file)) {
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/octet-stream');
+            header('Content-Disposition: attachment; filename="'.$name.'"');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            header('Content-Length: ' . filesize(UPLOAD_DIR.$file));
+            readfile(UPLOAD_DIR.$file);
+            echo "we reach here";
+            //exit;
+        }
+echo "we reach here";
     }
 
 

@@ -34,6 +34,21 @@
 </section>
 <section class="dash">
     <h2>Latest Assignments</h2>    
-    <a href="">Links to assignments uploaed by students</a>
+        <table>
+        {# table head #}
+        <tr><th>No</th><th>Assignment</th><th>Student</th><th>Course</th><th>Date</th></tr>
+
+        {# list the users #}             
+        {% for  assignment in assignments %}
+            <tr>
+                <td>{{loop.index}}</td>
+                <td><a href="{{URL}}assignment/download/{{assignment.id}}?f={{assignment.linkfile}}&n={{assignment.filename}}">{{assignment.filename}}</a></td>
+                <td>{{assignment.student.name}}</td>
+                <td>{{assignment.course.name}}</td>
+                <td>{{assignment.date}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <p><a href="{{URL}}instructor/viewallassignments">View all the submitted assignments</a></p>
 </section>
 {% endblock %}

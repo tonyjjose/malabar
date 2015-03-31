@@ -26,7 +26,7 @@ class Mailer
 		// 0 = off (for production use)
 		// 1 = client messages
 		// 2 = client and server messages
-		$this->mail->SMTPDebug = 2;
+		$this->mail->SMTPDebug = 0;
 
 		//Ask for HTML-friendly debug output
 		$this->mail->Debugoutput = 'html';
@@ -61,7 +61,9 @@ class Mailer
 	{
 
 		//Set who the message is to be sent to
-		$this->mail->addAddress($params['_to'], $params['_name']);
+		//$this->mail->addAddress($params['_to'], $params['_name']);
+
+		$this->mail->addAddress("tonyjose2@gmail.com", $params['_name']);
 
 		//Set the subject line
 		$this->mail->Subject = $params['_subject'];
@@ -80,7 +82,7 @@ class Mailer
 
 	public function sendMail()
 	{
-		return true;
+		//return true;
 		//send the message, check for errors
 		if (!$this->mail->send()) {
 		    echo "Mailer Error: " . $this->mail->ErrorInfo;

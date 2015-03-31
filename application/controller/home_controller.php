@@ -24,7 +24,12 @@ class HomeController extends Controller
             "_name" => "Tony Jose",
             "_subject" => Mailer::mail('MAIL_NEWREG_STUDENT_SUBJECT'),
             "_msg" => Mailer::mail('MAIL_NEWREG_STUDENT'),
-            "_student" => "Chackochan Pathrose");
+            "_student" => "Chackochan Pathrose",
+            "_stuEmail" => "jacky@jj.com",
+            "_link" => "http://www.malabarbiblecourses.org/app/user/21",
+            "_assignName" => "bcc 29 cahpter. pdf",
+            "_assignDate" => "Mar 26 2115",
+            "_assignDesc" => "whti is ssuposed to be the assigngiment desc pandarm");
 
         $mailer->newMail($params);
 

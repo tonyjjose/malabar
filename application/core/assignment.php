@@ -9,6 +9,7 @@
 
 class Assignment
 {
+    private $id;
 	private $course;
 	private $student;
 	private $filename;
@@ -16,14 +17,18 @@ class Assignment
 	private $date;
 	private $linkfile;
 
-	function __construct (Student $student, Course $course, $filename, $desc, $date)
+	function __construct ($id, Student $student, Course $course, $filename, $desc, $date)
 	 {
+        $this->id = $id;
 	 	$this->student = $student;
 		$this->course = $course;
 		$this->filename = $filename;
 		$this->date = strtotime($date);
 		$this->desc = $desc;
 	}
+    public function getId() {
+        return $this->id;
+    }
     public function getCourse(){
         return $this->course;
     }
@@ -40,6 +45,6 @@ class Assignment
     	return $this->desc;
     }
     public function getLinkFile() {
-    	return $this->student->getName()."_".$this->date."_".$this->filename;
+    	return $this->student->getId()."_".$this->date."_".preg_replace('/[^a-zA-Z0-9._]/','',$this->filename);
     }
 }

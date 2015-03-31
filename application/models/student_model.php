@@ -92,7 +92,7 @@ class StudentModel
 
         //disk file name, create unique file name to store to the disk, we use
         //form username_timestring_filename.ext
-        $diskfilename =  "{$user}_".strtotime($upload_time)."_{$filename}";    
+        $diskfilename =  "{$user_id}_".strtotime($upload_time)."_".preg_replace('/[^a-zA-Z0-9._]/','',$filename);    
         
         //the upload directore
         $dir = UPLOAD_DIR;
@@ -119,7 +119,7 @@ class StudentModel
         } 
 
         //check for file type.
-        $allowtype = array('doc', 'docx', 'xml', 'txt', 'pdf' , 'odt');
+        $allowtype = array('doc', 'docx', 'xml', 'txt', 'pdf', 'rtf', 'odt', 'zip');
         if (!in_array(strtolower(pathinfo($filename,PATHINFO_EXTENSION)), $allowtype)) {
             Feedback::addNegative('Failed! File type is not allowed.');
             return false;            
@@ -143,6 +143,26 @@ class StudentModel
         //has it got saved? if so success.
         if ($success) {
             Feedback::addPositive("Success! Assignments uploaded.");
+
+            //lets mail the instructor about it.
+            //btw, find out the instructor first.
+            $instructor = Instructor::getInstructorForAssignment($user_id,$course_id);
+
+            $mailer = new Mailer();
+            $params = array (
+                "_to" => $instructor->getEmail(),
+                "_name" => $instructor->getName(),
+                "_subject" => Mailer::mail('MAIL_NEWASSIGNMENT_INSTRUCTOR_SUBJECT'),
+                "_msg" => Mailer::mail('MAIL_NEWASSIGNMENT_INSTRUCTOR'),
+                "_stuName" => $user,
+                "_instName" => $instructor->getName(),
+                "_assignName" => $filename,
+                "_assignDesc" => $desc,
+                "_assignDate" => $upload_time,
+                "_assignLink" => URL."assignment/download?f={$diskfilename}&n={$filename}");
+            $mailer->newMail($params);
+            $mailer->sendMail();   
+
             return true;
         }  
 

@@ -45,7 +45,7 @@
         {% for  assignment in assignments %}
             <tr>
                 <td>{{loop.index}}</td>
-                <td><a href="{{URL}}assignment/download?f={{assignment.linkfile}}">{{assignment.filename}}</a></td>
+                <td><a href="{{URL}}assignment/download/{{assignment.id}}?f={{assignment.linkfile}}&n={{assignment.filename}}">{{assignment.filename}}</a></td>
                 <td>{{assignment.course.name}}</td>
                 <td>{{assignment.date}}</td>
             </tr>

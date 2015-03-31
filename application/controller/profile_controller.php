@@ -24,6 +24,12 @@ class ProfileController extends Controller
     	Redirect::to('profile/view');
     }
 
+    public function test () {
+        $session_id = Session::get('user_id');        
+        Student::isStudentMyCourseMate($session_id, 23);
+
+    }
+
     /**
      * Display the users profile.
      *
@@ -34,17 +40,38 @@ class ProfileController extends Controller
     {
     	$session_id = Session::get('user_id');
 
-    	//if no ID is given then display the user's profile
-        if(!$id) { $id = $session_id; } 
+        //lets set the showdetails flag to false
+        $show_details = false;
 
-        
-        $show_details = ($id == $session_id) ? true : false;
-
-        if (!(Student::isUserStudent($session_id))) {
+        if (!$id) 
+        {
+            //No $id given, so lets display the user's profile
+            $id = $session_id;
+            //the user can see his full details
             $show_details = true;
+        } 
+        elseif (Student::isUserStudent($session_id)) 
+        {
+            //We have an $id param, and the session user is a student.
+            if(Instructor::isUserInstructor($id))
+            {
+                //the $id is instructor, so show his full details
+                $show_details = true;
+            } 
+            elseif (Student::isStudentMyCourseMate($session_id,$id)) 
+            {
+                //the $id is my coursemate, so we can view him, but not his full details
+                $show_details = false;
+            }
+            else 
+            {
+                //the $id is not an instructor nor our coursemate, so we cant view.
+                Redirect::to('error/noauth');
+            }
         }
-
-        if (Instructor::isUserInstructor($id)) {
+        else 
+        {
+            //this must be the manager or instructor, let him see details.
             $show_details = true;
         }     
 

@@ -94,8 +94,8 @@ class Instructor extends user
         $sql = "SELECT * FROM users WHERE user_id IN (SELECT DISTINCT student_id FROM student_course WHERE instructor_id = :instructor_id AND course_id = :course_id AND (course_status = :status_active OR course_status = :status_inactive)) ORDER BY user_name ASC";
 
         $query = $db->prepare($sql);
-        $query->execute(array(':instructor_id' => $instructor_id,'course_id'=> $course_id, 'status_active'=>COURSE_INSTANCE_ACTIVE,
-            'status_inactive'=>COURSE_INSTANCE_INACTIVE));   
+        $query->execute(array(':instructor_id' => $instructor_id,':course_id'=> $course_id, ':status_active'=>COURSE_INSTANCE_ACTIVE,
+            ':status_inactive'=>COURSE_INSTANCE_INACTIVE));   
         $rows = $query->fetchAll();
 
         //the list of objects
@@ -110,7 +110,65 @@ class Instructor extends user
 
         return $students;        
     }
+    public static function getLatestAssignments($id)
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();  
+        
+        $query = $db->prepare("SELECT ASGN.* FROM assignments AS ASGN, student_course AS ST_C WHERE ASGN.student_id = ST_C.student_id 
+            AND ASGN.course_id = ST_C.course_id AND ST_C.instructor_id = :id ORDER BY ASGN.upload_date DESC LIMIT 20");
+        $query->execute(array(':id' => $id));
 
+        //is this check absolutely necessary??
+        if ($query->rowCount() == 0) {
+            return null;
+        }
+
+        $rows = $query->fetchAll();
+        $assignments = array();
+
+        foreach ($rows as $row) {
+            $assignments[] = new Assignment($row->assignment_id, Student::getInstance($row->student_id), Course::getInstance($row->course_id),
+            $row->assignment_file, $row->assign_desc, $row->upload_date);
+        }
+        return $assignments;         
+    }
+    public static function getAllAssignments($id)
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();  
+        
+        $query = $db->prepare("SELECT ASGN.* FROM assignments AS ASGN, student_course AS ST_C WHERE ASGN.student_id = ST_C.student_id 
+            AND ASGN.course_id = ST_C.course_id AND ST_C.instructor_id = :id ORDER BY ASGN.upload_date DESC");
+        $query->execute(array(':id' => $id));
+
+        //is this check absolutely necessary??
+        if ($query->rowCount() == 0) {
+            return null;
+        }
+
+        $rows = $query->fetchAll();
+        $assignments = array();
+
+        foreach ($rows as $row) {
+            $assignments[] = new Assignment($row->assignment_id, Student::getInstance($row->student_id), Course::getInstance($row->course_id),
+            $row->assignment_file, $row->assign_desc, $row->upload_date);
+        }
+        return $assignments;         
+    }
+
+    public static function getInstructorForAssignment($student_id, $course_id)
+    {
+        $db = DatabaseFactory::getFactory()->getConnection(); 
+
+        $query = $db->prepare("SELECT instructor_id FROM student_course WHERE student_id = :id AND course_id = :course_id");        
+        $query->execute(array(':id' => $student_id,':course_id' => $course_id));
+        
+        $row = $query->fetch();
+
+        //if nothing return null 
+        if (empty($row)) {return null;}   
+
+        return Instructor::getInstance($row->instructor_id);
+    }
     /**
      * Check for user type instructor.
      * @return bool status

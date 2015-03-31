@@ -102,6 +102,32 @@ class UserModel
 
         if ($success) {
             Feedback::addPositive("Success! user '{$name}' added.");
+
+            //lets mail the user about it.
+            $mailer = new Mailer();
+            $params = array (
+                "_to" => $email,
+                "_name" => $name,
+                "_subject" => Mailer::mail('MAIL_NEWREG_STUDENT_SUBJECT'),
+                "_msg" => Mailer::mail('MAIL_NEWREG_STUDENT'),
+                "_stuName" => $name,
+                "_stuEmail" => $email,
+                "_stuPass" => $password);
+            $mailer->newMail($params);
+            $mailer->sendMail();
+
+            //lets mail the manager about new student registration
+            $params = array (
+                "_to" => MAIL_ADMIN,
+                "_name" => MAIL_ADMIN_NAME,
+                "_subject" => Mailer::mail('MAIL_NEWREG_MANAGER_SUBJECT'),
+                "_msg" => Mailer::mail('MAIL_NEWREG_MANAGER'),
+                "_stuName" => $name,
+                "_stuEmail" => $email,
+                "_stuLink" => URL."user/edit/".User::getIdFromEmail($email));
+            $mailer->newMail($params);
+            $mailer->sendMail();
+            
             return true;            
         }
         else {

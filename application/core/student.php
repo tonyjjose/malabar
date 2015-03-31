@@ -224,7 +224,7 @@ class Student extends User
         $db = DatabaseFactory::getFactory()->getConnection();  
         
         $query = $db->prepare("SELECT * FROM assignments WHERE student_id = :student_id 
-            ORDER BY upload_date,course_id");
+            ORDER BY upload_date DESC");
         $query->execute(array(':student_id' => $id));
 
         //is this check absolutely necessary??
@@ -236,7 +236,7 @@ class Student extends User
         $assignments = array();
 
         foreach ($rows as $row) {
-            $assignments[] = new Assignment(Student::getInstance($row->student_id), Course::getInstance($row->course_id),
+            $assignments[] = new Assignment($row->assignment_id, Student::getInstance($row->student_id), Course::getInstance($row->course_id),
             $row->assignment_file, $row->assign_desc, $row->upload_date);
         }
         return $assignments;        
@@ -358,6 +358,24 @@ class Student extends User
            return true;
         }
         return false;
+    }
+
+    public static function isStudentMyCourseMate($id, $student_id)
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();
+        
+        // $sql = "SELECT student_id FROM student_course JOIN student_course ON course_id = course_id and WHERE student_id = :id 
+        //     AND course_id = :course_id AND course_status = 'A'";
+
+        $sql = "SELECT SC1.student_id FROM student_course AS SC1, student_course AS SC2 WHERE SC1.course_id = SC2.course_id AND SC1.student_id = :id AND SC2.student_id = :student_id";
+
+        $query = $db->prepare($sql);
+        $query->execute(array('id'=>$id, 'student_id'=>$student_id)); 
+        
+        echo $query->rowCount();
+        return ($query->rowCount() > 1);
+
+
     }
 
     /**

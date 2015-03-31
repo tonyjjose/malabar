@@ -207,6 +207,27 @@ class User
     }    
 
     /**
+     * Create User instance from email.
+     *
+     * We query for the ID and call the getInstance method. 
+     * @return object user or null
+     */    
+    public static function getIdFromEmail($email)
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();
+
+        //Query the DB
+        $query = $db->prepare("SELECT user_id FROM users WHERE user_email = :email LIMIT 1");
+        $query->execute(array(':email' => $email));
+        $row = $query->fetch();
+
+        //if nothing return null 
+        if (empty($row)) {return null;}   
+
+        return $row->user_id;
+
+    } 
+    /**
      * Create all user objects array
      * @return array[] of object user or null
      */

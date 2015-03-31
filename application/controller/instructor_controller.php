@@ -29,7 +29,8 @@ class InstructorController extends controller
 
         $instructor = Instructor::getInstance($id);
         $myCourses = Instructor::getMyCourses($id);
-        $params = array('user'=>$instructor, 'courses'=>$myCourses);
+        $assignments = Instructor::getLatestAssignments($id);
+        $params = array('user'=>$instructor, 'courses'=>$myCourses,'assignments'=>$assignments);
         $this->view->render('instructor/index.html.twig',$params);	
     }
     public function showStudents($instructor_id, $course_id){

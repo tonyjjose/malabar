@@ -38,6 +38,8 @@ define('DB_PASS', 'google');
 define('MAIL_FROM', 'malabarbiblecourses@gmail.com');
 define('MAIL_NAME', 'Malabar Bible Courses');
 define('MAIL_PASS', 'malaGMbcc3@');
+define('MAIL_ADMIN','admin@malabarbiblecourses.org');
+define('MAIL_ADMIN_NAME', 'Manager');
 
 /**
  * Configuration for: Folders
