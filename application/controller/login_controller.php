@@ -4,7 +4,7 @@
  * LoginController class.
  *
  * This handles all the login related requests..
- * We use the the form like, URL/login/...
+ * We use the form like, URL/login/...
  */
 class LoginController extends controller
 {
@@ -22,7 +22,7 @@ class LoginController extends controller
      */
     public function test()
     {
-        var_dump($_SERVER);
+        //var_dump($_SERVER);
     }
 
     /**
@@ -30,13 +30,11 @@ class LoginController extends controller
      */
     public function index()
     {  
-        //Show the login page
         $this->view->render('login/index.html.twig');	
     }
 
     /**
      * Display the registration from
-     *
      */
     public function register()
     {
@@ -53,7 +51,6 @@ class LoginController extends controller
 
     /**
      * Logout the user
-     *  
      */       
     public function signOut()
     {
@@ -85,7 +82,6 @@ class LoginController extends controller
             Redirect::to('login');
         }
     }  
-   
 
     /**
      * POST request handler for registration form
@@ -99,7 +95,7 @@ class LoginController extends controller
 
         if ($registration_success) {
             // if YES, then display confirmation and inform about approval process.
-            Redirect::to('error/approval');
+            Redirect::to('error/confirmation');
         } else {
             // if NO, then move user to registration form again
             Redirect::to('login/register');

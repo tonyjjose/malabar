@@ -7,12 +7,13 @@
     <h2>Login</h2>
     <form action="{{URL}}login/signin" method="post">
         <label for="user_email" autofocus>Email</label>
-        <input type="email" name="user_email" />
+        <input type="email" name="user_email" id="user_email" maxlength="64" required />
         <label for="user_password">Password</label>
-        <input type="password" name="user_password" required />
+        <input type="password" name="user_password" id="user_password" maxlength="8" required />
         <input type="submit" class="submit-button" value="Login"/>
     </form>
     <a href="{{URL}}login/register">Register</a>
-    <p>Please contact our <a href="http://www.malabarbiblecourses.org/contact-us">manager</a> incase you forgot your password</p>
+    <p>Please contact our <a href="http://www.malabarbiblecourses.org/contact-us">Manager</a> incase you forgot your password</p>
 </section>
+<p></p>
 {% endblock %}

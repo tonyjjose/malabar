@@ -19,6 +19,7 @@
         {% if (show_details) %}<p><span class="profile">Active :</span>{% if (user.active) %} Yes {% else %} No {% endif %}</p>{% endif %}
         {% if (show_details) %}<p><span class="profile">Approved :</span>{% if (user.approved) %} Yes {% else %} No {% endif %}</p>{% endif %}
         {% if (show_details) %}<p><span class="profile">Registered on :</span>{{user.created}}</p>{% endif %}
+            <p><a href="{{URL}}home">Back to home</a></p>
     </summary>
 </section>
 {% endblock %}

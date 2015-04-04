@@ -1,25 +1,27 @@
 <?php
 
 /**
- * StudentController class
+ * AssignmentController class
  * 
- * This handles all the student related requests like, URL/student/...
- *
+ * This handles the assignment upload/download
  */
 class AssignmentController extends Controller
 {
     function __construct()
     {  
        parent::__construct();
-
-       if(!(Session::get('user_type') == ROLE_STUDENT)) {
-            //Redirect::to('error/noauth');
-       }
     }
 
+    /**
+     * Display the upload form
+     */ 
     public function upload()
     {
-    	$id = Session::get('user_id');
+        $id = Session::get('user_id');
+
+        if (!Student::isUserStudent($id)) {        
+            Redirect::to('error/noauth');  
+        }
 
     	$courses = Student::getEnrolledCourses($id);
 
@@ -27,25 +29,31 @@ class AssignmentController extends Controller
         $this->view->render('student/uploadassignment.html.twig',$params);
     }
 
+    /**
+     * POST request handler for upload save. 
+     * Call the student model and save if everything is fine.
+     */
     public function uploadSave()
     {
-        $id = Session::get('user_id');
-
         $student_model = $this->loadModel('Student');
         $success = $student_model->saveAssignment(); 
-        //Feedback::printAll();
+        
         if ($success) {
             Redirect::home(); 
         } else {
             Redirect::to("assignment/upload");
         }
     }
+
+    /**
+     * Stream the file to the user for download.
+     */ 
     public function download()
     {
-    	$file = Request::get('f');
+    	//get file details from GET
+        $file = Request::get('f');
         $name = Request::get('n');
-        echo $name;
-    	echo UPLOAD_DIR.$file;
+
         if (file_exists(UPLOAD_DIR.$file)) {
             header('Content-Description: File Transfer');
             header('Content-Type: application/octet-stream');
@@ -55,12 +63,7 @@ class AssignmentController extends Controller
             header('Pragma: public');
             header('Content-Length: ' . filesize(UPLOAD_DIR.$file));
             readfile(UPLOAD_DIR.$file);
-            echo "we reach here";
             //exit;
         }
-echo "we reach here";
     }
-
-
-
 }

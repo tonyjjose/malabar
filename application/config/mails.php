@@ -19,15 +19,15 @@ Regards<br>
 Malabar Bible Courses",
 "MAIL_NEWREG_STUDENT_SUBJECT" => "New registration at Malabar Bible Courses",
 "MAIL_NEWREG_MANAGER" => "Dear Manager,<br>
-We have a new student registration.<br>
+We have a new user registration.<br>
 <br>
 Kindly review the application  at <br>
 <a href='_stuLink'>_stuLink</a> <br>
-and approve the student and do the further follow up. <br>
+and approve the user and do the further follow up incase he is a student. <br>
 <br>
 Details of the application<br>
-Student Name: _stuName<br>
-Student Email: _stuEmail<br>
+Name: _stuName<br>
+Email: _stuEmail<br>
 <br>
 Regards<br>
 Malabar Bible Courses",

@@ -3,7 +3,7 @@
 /**
  * Feedback handler class
  *
- * Simple abstraction for feedbacks. we just store them in Session variables set them and
+ * Simple abstraction for feedbacks. we just store them in Session variables, set them and
  * return them with static methods
  */
 class Feedback

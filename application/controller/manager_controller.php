@@ -27,8 +27,9 @@ class ManagerController extends Controller
         $id = Session::get('user_id');
 
         $manager = Manager::getInstance($id);
+        $users = User::getLatestUsers();
 
-        $params = array('user'=>$manager );       
+        $params = array('user'=>$manager,'users'=>$users);       
         $this->view->render('manager/index.html.twig', $params);
     }
 

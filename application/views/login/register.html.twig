@@ -9,7 +9,7 @@
         Upon registration we will review your details and approve you. Please wait for us to contact you before you can login to the site.</p>
     <form action="{{URL}}login/registersave" method="post">
         <label for="user_email">Email</label>
-        <span class="desc">Enter a valid email, you will be send confimation mails to it</span>
+        <span class="desc">Enter a valid email, you will be send confimation mails to it. Note that this email will be displayed to your course mates.</span>
         <input type="email" name="user_email" id="user_email" maxlength="64" required/>                
         <label for="user_name">Name</label>
         <span class="desc">Please give your real full name here. (only alphabets and spaces allowed for name)</span>
@@ -31,7 +31,7 @@
         <span class="desc">(optional)</span>
         <input type="text" name="user_qual"  id="user_qual" maxlength="20" />     
         <label for="user_bio">Bio</label>
-        <span class="desc">(optional)</span>
+        <span class="desc">(optional) This information will be shown to your course mates.</span>
         <textarea id="user_bio" name="user_bio" maxlength="255" cols="50" rows="8" 
             placeholder="A brief introduction about yourself, if any"></textarea>
         <label for="user_phone">Phone</label>
@@ -45,14 +45,14 @@
             placeholder="Full postal address.."></textarea>
 
         <label for="user_course_mode">Course Mode</label>
-        <span class="desc">By choosing Postal you will be mailing the course assignments to us. By choosing email all correspondance shall by through email</span>                   
+        <span class="desc">By choosing Postal you will be mailing the course assignments to us. By choosing Email all correspondences shall be through email</span>                   
         <input type="radio" name="user_course_mode"  id="user_course_mode_e" value="E" checked>
         <label for="user_course_mode_e" class="option" >Email</label>                   
         <input type="radio" name="user_course_mode"  id="user_course_mode_p" value="P">
         <label for="user_course_mode_p" class="option" >Postal</label> 
 
         <label for="user_anon">Anonymous (yes if checked)</label>
-        <span class="desc">If you check this your name [or details] will not be shown to your course mates</span>
+        <span class="desc">If you check this your name [or other details] will not be shown to your course mates</span>
         <input type="checkbox" name="user_anon"  id="user_anon" value="yes" >
 
         <input type="submit" class="submit-button" value="Register"/>

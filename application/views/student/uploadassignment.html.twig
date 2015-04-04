@@ -17,9 +17,10 @@
         <textarea id="desc" name="desc" maxlength="255" cols="50" rows="5" 
         placeholder=""></textarea>
         <label for="assignmentfile">Select assignment file</label>
-        <span class="desc">Word documents, PDFs, text files etc</span>
-        <input type="file" name="assignmentfile" id="assignmentfile" accept=".doc,.txt,.pdf,.docx,.xml"/>
+        <span class="desc">Word documents, PDFs, text files etc (Max file size allowed is 2Mb)</span>
+        <input type="file" name="assignmentfile" id="assignmentfile" />
         <input type="submit" name='submit' value="Upload Assignment" />
+        <p><a href="{{URL}}home">No, let me go back</a></p>
     </form>
 </section>    
 {% endblock %}

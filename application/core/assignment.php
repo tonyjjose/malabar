@@ -1,12 +1,10 @@
 <?php
 
-
 /**
  * Assignment Object
  *
  * A simple object to hold the information of a particular instance of assignment uploaded by a student.
  */
-
 class Assignment
 {
     private $id;

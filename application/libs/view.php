@@ -27,7 +27,7 @@ class View
          * Note that the dir should be writable. 
          */
         //$this->twig = new Twig_Environment($this->loader, array('cache' => TWIG_CACHE_PATH,));
-        $this->twig = new Twig_Environment($this->loader, array('cache' => false,'debug' => true));   #no cache as we are in dev mode. 
+        $this->twig = new Twig_Environment($this->loader, array('cache' => false,'debug' => TWIG_DEBUG_STATUS));   #no cache as we are in dev mode. 
         
         //add a twig global variable that holds the project URL, user details and last url
         $this->twig->addGlobal('URL', URL); 
@@ -40,7 +40,7 @@ class View
      * The default twig template renderer
      *  
      * The template specified will be rendered using the given parameters. We also set
-     * the feedback parameters before and after displaying the view, we clear the feedback entries from 
+     * the feedback parameters before and, after displaying the view we clear the feedback entries from 
      * $_Session[]
      * 
      * @param string $template Template file name

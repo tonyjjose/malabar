@@ -14,6 +14,19 @@
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
+/* TWIG debug status
+ * true or false
+ */
+define('TWIG_DEBUG_STATUS', true);
+
+/*PHPMailer debug 
+* 0 = off (for production use)
+* 1 = client messages
+* 2 = client and server messages 
+*/
+define('PHPMAILER_DEBUB_STATUS', 0);
+
+
 //Set the default timezone for the script.
 date_default_timezone_set("Asia/Calcutta");
 
@@ -67,19 +80,10 @@ define('TWIG_CACHE_PATH', '../../cache/');
  **/
 define('UPLOAD_DIR', '../../assignments/');
 
-
-/**
- * Configuration for: Success and error feedback
- * May not be used but just provided for future if needed.
- */
-define('FEEDBACK_USERNAME_FIELD_EMPTY', 'Username field was empty.');
-define('FEEDBACK_PASSWORD_FIELD_EMPTY', 'Password field was empty.');
-
 /**
  * Application specific constants
  *
  **/
-
 //why did we use CONST just here and define() else where? 
 CONST YES = 1;
 CONST NO = 0;

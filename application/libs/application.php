@@ -66,8 +66,13 @@ class Application
                     $this->url_controller->{$this->url_action}();
                 }
             } else {
-                // default/fallback: call the index() method of a selected controller
-                $this->url_controller->index();
+                if ($this->url_action == "") {
+                    //we do not have an action, so load the index (default action)
+                    $this->url_controller->index();
+                } else {
+                    // invalid action, possibly a mistyped URL, so simply redirect page not found page           
+                    Redirect::to('error/invalid');                    
+                }
             }
         } else {
             // invalid URL, so simply redirect page not found page           

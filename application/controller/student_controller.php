@@ -21,13 +21,12 @@ class StudentController extends Controller
      * Display the students' dashboad.
      * 
      * We display a short profile information of the student. His courses, and links to various
-     * actions that he can perform.
+     * actions that he can perform. We also list his assignments.
      */
     public function index()
     { 
         $id = Session::get('user_id');
 
-        // $student = Student::getInstance($id);
         $student = Student::getInstance($id);
         //get his course instances
         $student->loadMyCourses();
@@ -36,39 +35,6 @@ class StudentController extends Controller
         $params = array('user'=>$student, 'assignments'=>$assignments);
         $this->view->render('student/index.html.twig',$params);	
     }
-
-    /**
-     * Display edit profile form.
-     */      
-    public function editProfile($id){
-        //are we authorised for view?
-        if ($id == Session::get('user_id'))
-        {
-            $student = User::getInstance($id);
-            $params = array('user'=>$student );            
-            $this->view->render('student/editprofile.html.twig',$params);
-            
-        } else { //a user should not be able to edit others profile
-            Redirect::to('error/noauth'); 
-        }
-    }
-
-    /**
-     * POST request handler for edit profile form.
-     */       
-    public function editProfileSave()
-    {
-        $id = Request::post('user_id');
-
-        $student_model = $this->loadModel('student');
-        $success = $student_model->editSave(); 
-        
-        if ($success) {
-            Redirect::to('student'); 
-        } else {
-            Redirect::to("student/editprofile/{$id}");
-        }
-    } 
 
     /**
      * Display the list of his course mantes
@@ -83,5 +49,4 @@ class StudentController extends Controller
         $params = array('students'=>$students);
         $this->view->render('student/showcoursemates.html.twig',$params);                
     }
-
 }

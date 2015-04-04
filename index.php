@@ -5,8 +5,8 @@
  * All the internal pages begin from here. 
  *
  * @author Tony J Jose
- *  www.33dots.com/
- *  https://github.com/tonyjjose
+ * www.33dots.com/
+ * https://github.com/tonyjjose
  *
  *
  * Date 4 Feb 2015	
@@ -43,7 +43,7 @@ require 'application/libs/redirect.php';
 require 'application/libs/request.php';
 require 'application/libs/database.php';
 require 'application/libs/mailer.php';
-
+// mails used in system
 require 'application/config/mails.php';
 
 /*

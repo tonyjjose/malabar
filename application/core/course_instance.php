@@ -1,12 +1,10 @@
 <?php
 
-
 /**
  * CourseInstance Object
  *
  * A simple object to hold the information of a particular instance of course done by a student.
  */
-
 
 class CourseInstance
 {

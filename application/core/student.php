@@ -6,7 +6,6 @@
  * This is the student object. It provides static methods for DB operations as well us helper methods
  * for various view purposes.
  */
-
 class Student extends User
 {
     private $courseInstances = array(); //var to hold his/her participating courses' 
@@ -139,8 +138,8 @@ class Student extends User
         $sql = "INSERT INTO student_course (student_id, course_id, instructor_id, join_date, course_status) VALUES
              (:student_id, :course_id, :instructor_id, :join_date, :status)";
         $query = $db->prepare($sql);
-        $query->execute(array('student_id'=>$student_id, 'course_id'=>$course_id,
-            'instructor_id'=>$instructor_id, 'join_date'=>$join_date, 'status'=>$status));
+        $query->execute(array(':student_id'=>$student_id, ':course_id'=>$course_id,
+            ':instructor_id'=>$instructor_id, ':join_date'=>$join_date, ':status'=>$status));
         
         //has it got added? if so success.
         if ($query->rowCount() == 1) {
@@ -163,8 +162,8 @@ class Student extends User
         $sql = "UPDATE student_course SET instructor_id = :instructor_id, course_status = :status WHERE
              student_id = :student_id AND course_id = :course_id";
         $query = $db->prepare($sql);
-        $query->execute(array('instructor_id'=>$instructor_id,'status'=>$status,
-            'student_id'=>$student_id,'course_id'=>$course_id));
+        $query->execute(array(':instructor_id'=>$instructor_id,':status'=>$status,
+            ':student_id'=>$student_id,':course_id'=>$course_id));
         
         //has it got updated? if so success.
         if ($query->rowCount() == 1) {
@@ -174,7 +173,7 @@ class Student extends User
     }     
 
     /**
-     * Delete a courseInstance to DB.
+     * Delete a courseInstance from DB.
      * 
      * This happens during disenrollment.
      * @return bool success state
@@ -185,7 +184,7 @@ class Student extends User
 
         $sql = "DELETE FROM student_course WHERE student_id = :student_id AND course_id = :course_id";
         $query = $db->prepare($sql);
-        $query->execute(array('student_id'=>$student_id,'course_id'=>$course_id));
+        $query->execute(array(':student_id'=>$student_id,':course_id'=>$course_id));
         
         //has it got deleted? if so success.
         if ($query->rowCount() == 1) {
@@ -205,8 +204,8 @@ class Student extends User
         $sql = "INSERT INTO assignments (student_id, course_id, assignment_file, assign_desc, upload_date) VALUES
              (:student_id, :course_id, :name, :desc, :date)";
         $query = $db->prepare($sql);
-        $query->execute(array('student_id'=>$student_id, 'course_id'=>$course_id,
-            'name'=>$name, 'date'=>$date, 'desc'=>$desc));
+        $query->execute(array(':student_id'=>$student_id, ':course_id'=>$course_id,
+            ':name'=>$name, ':date'=>$date, ':desc'=>$desc));
         
         //has it got added? if so success.
         if ($query->rowCount() == 1) {
@@ -216,7 +215,7 @@ class Student extends User
     } 
 
     /**
-    * Get the list of assignments by a  sudents..
+    * Get the list of assignments by a  student.
     * @return array[] assignment object
     */
     public static function getAllAssignments($id)
@@ -235,8 +234,10 @@ class Student extends User
         $rows = $query->fetchAll();
         $assignments = array();
 
+        $student = Student::getInstance($id);
+
         foreach ($rows as $row) {
-            $assignments[] = new Assignment($row->assignment_id, Student::getInstance($row->student_id), Course::getInstance($row->course_id),
+            $assignments[] = new Assignment($row->assignment_id, $student, Course::getInstance($row->course_id),
             $row->assignment_file, $row->assign_desc, $row->upload_date);
         }
         return $assignments;        
@@ -247,6 +248,7 @@ class Student extends User
     *
     * The list does not include the querying student. The list included only those students who are
     * actively participating in the course(ie status=A).
+    * We also omit those students who are anonymous and not approved.
     * @return array[] student object
     */
     public static function getCourseMates($student_id, $course_id)
@@ -255,10 +257,8 @@ class Student extends User
         $db = DatabaseFactory::getFactory()->getConnection();
 
         //query the DB
-        // $query = $db->prepare("SELECT student_id FROM student_course WHERE student_id <> :student_id 
-        //     AND course_id = :course_id AND course_status = 'A'");
         $query = $db->prepare("SELECT * FROM users WHERE user_id IN (SELECT student_id FROM student_course WHERE student_id <> :student_id 
-            AND course_id = :course_id AND course_status = 'A')ORDER BY user_name ASC");
+            AND course_id = :course_id AND course_status = 'A') AND user_anonymous = '".NO."' AND user_approved = '".YES."' ORDER BY user_name ASC");
         $query->execute(array(':student_id' => $student_id, ':course_id' => $course_id));
 
         //is this check absolutely necessary??
@@ -283,18 +283,19 @@ class Student extends User
     /**
     * Get the list of enrolled courses for a student.
     *
-    * The list only includes active courses(ie status=1).
+    * The list only includes active courses(ie status=1). We also do not list his completed courses.
     * @return array[] course object
     */
     public static function getEnrolledCourses($id)
     {
         $db = DatabaseFactory::getFactory()->getConnection();      
         
-        $sql = "SELECT * FROM courses WHERE course_id IN (SELECT course_id FROM student_course WHERE student_id = :student_id)
-         AND course_active ='".ACTIVE."' ORDER BY course_name ASC"; 
+        $sql = "SELECT * FROM courses WHERE course_id IN (SELECT course_id FROM student_course WHERE 
+            student_id = :student_id AND course_status <> '".COURSE_INSTANCE_COMPLETED."')
+            AND course_active ='".ACTIVE."' ORDER BY course_name ASC"; 
 
         $query = $db->prepare($sql);
-        $query->execute(array('student_id'=>$id));
+        $query->execute(array(':student_id'=>$id));
         
         //is this check absolutely necessary??
         if ($query->rowCount() == 0) {
@@ -328,7 +329,7 @@ class Student extends User
          AND course_active ='".ACTIVE."' ORDER BY course_name ASC"; 
 
         $query = $db->prepare($sql);
-        $query->execute(array('student_id'=>$id));
+        $query->execute(array(':student_id'=>$id));
         
         //is this check absolutely necessary??
         if ($query->rowCount() == 0) {
@@ -360,27 +361,27 @@ class Student extends User
         return false;
     }
 
+    /**
+     * Check whether two students have a common course.
+     * Note that it doesnt check their course's status. 
+     * @return bool status
+     */
     public static function isStudentMyCourseMate($id, $student_id)
     {
         $db = DatabaseFactory::getFactory()->getConnection();
-        
-        // $sql = "SELECT student_id FROM student_course JOIN student_course ON course_id = course_id and WHERE student_id = :id 
-        //     AND course_id = :course_id AND course_status = 'A'";
 
-        $sql = "SELECT SC1.student_id FROM student_course AS SC1, student_course AS SC2 WHERE SC1.course_id = SC2.course_id AND SC1.student_id = :id AND SC2.student_id = :student_id";
+        $sql = "SELECT SC1.student_id FROM student_course AS SC1, student_course AS SC2 
+            WHERE SC1.course_id = SC2.course_id AND SC1.student_id = :id AND SC2.student_id = :student_id";
 
         $query = $db->prepare($sql);
-        $query->execute(array('id'=>$id, 'student_id'=>$student_id)); 
+        $query->execute(array(':id'=>$id, ':student_id'=>$student_id)); 
         
-        echo $query->rowCount();
         return ($query->rowCount() > 1);
-
-
     }
 
     /**
      * Check whether a student is doing a particular course.
-     * Note that it doesnt check whether he as already dont it. 
+     * Note that it doesnt check whether he as already done it.  
      * @return bool status
      */
     public static function isStudentDoingCourse($id, $course_id)
@@ -388,10 +389,10 @@ class Student extends User
         $db = DatabaseFactory::getFactory()->getConnection(); 
 
         $sql = "SELECT student_id FROM student_course WHERE student_id = :id 
-            AND course_id = :course_id AND course_status = 'A'";
+            AND course_id = :course_id AND course_status = '".COURSE_INSTANCE_ACTIVE."'";
 
         $query = $db->prepare($sql);
-        $query->execute(array('id'=>$id, 'course_id'=>$course_id)); 
+        $query->execute(array(':id'=>$id, ':course_id'=>$course_id)); 
         
         return ($query->rowCount() == 1);           
     }

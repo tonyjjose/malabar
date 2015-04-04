@@ -41,5 +41,13 @@ class ErrorController extends Controller
     public function approval()
     {      
         $this->view->render('error/approval.html.twig');
-    }    
+    }
+
+    /**
+     * Display the confirmation message
+     */     
+    public function confirmation()
+    {      
+        $this->view->render('error/confirmation.html.twig');
+    }      
 }

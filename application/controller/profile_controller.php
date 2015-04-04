@@ -9,7 +9,7 @@
 class ProfileController extends Controller
 {
     /**
-     * Call the base constructor and also check for authorisation.
+     * Call the base constructor.
      */
     function __construct()
     {  
@@ -24,23 +24,18 @@ class ProfileController extends Controller
     	Redirect::to('profile/view');
     }
 
-    public function test () {
-        $session_id = Session::get('user_id');        
-        Student::isStudentMyCourseMate($session_id, 23);
-
-    }
-
     /**
      * Display the users profile.
      *
-     * When no ID given the logged in user's profile is shown. Otherwise the other users 
-     * profile is shown.
+     * When no ID given the logged-in user's profile is shown. Otherwise the other users 
+     * profile is shown. The profile details shown are based on the showdetails flag.
      */
     public function view($id=null)
     {
     	$session_id = Session::get('user_id');
 
-        //lets set the showdetails flag to false
+        //lets set the showdetails flag to false, when set to false only the
+        //name, email and bio are displayd
         $show_details = false;
 
         if (!$id) 
@@ -55,8 +50,8 @@ class ProfileController extends Controller
             //We have an $id param, and the session user is a student.
             if(Instructor::isUserInstructor($id))
             {
-                //the $id is instructor, so show his full details
-                $show_details = true;
+                //we are allowed to see part of the profile
+                $show_details = false;
             } 
             elseif (Student::isStudentMyCourseMate($session_id,$id)) 
             {
@@ -80,6 +75,9 @@ class ProfileController extends Controller
         $this->view->render('profile/view.html.twig',$params);	
     }
 
+    /**
+     * Display the edit profile form.
+     */
     public function edit()
     {
     	$id = Session::get('user_id');
@@ -87,21 +85,31 @@ class ProfileController extends Controller
         $user = User::getInstance($id);
         $params = array('user'=>$user );            
         $this->view->render('profile/edit.html.twig',$params);
-
     }
 
+    /**
+     * POST request handler for save profile
+     *  
+     * Note that we use the user model and does the job.
+     */ 
     public function editSave()
     {
-    	Redirect::to("profile/view");
+        $id = Session::get('user_id');
+        $user_model = $this->loadModel('User');
+        $success = $user_model->editSaveShort(); 
+        
+        if ($success) {
+            Redirect::home(); 
+        } else {
+            Redirect::to("profile/edit");
+        }
     }    
     
     /**
      * Display the change password from
-     *
      */
     public function changePassword()
     {
-        //show the form
         $this->view->render('profile/changepassword.html.twig');   
     }  
 
@@ -121,7 +129,6 @@ class ProfileController extends Controller
             //let him try again
             Redirect::to('profile/changepassword');
         }
-
     }
 }
 

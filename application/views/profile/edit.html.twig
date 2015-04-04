@@ -10,7 +10,7 @@
     <form action="{{URL}}profile/editsave" method="post">
         <input type="hidden" name="user_id" value="{{user.id}}">
         <label for="user_email">Email</label>
-        <span class="desc">Enter a valid email, you will be send confimation mails to it</span>
+        <span class="desc">Please change your email address only if it is absolutely necessary. And it is recommended to personally inform the Manager/Instructor about the change.</span>
         <input type="email" name="user_email" id="user_email" maxlength="64" required value="{{user.email}}"/>                
         <label for="user_name">Name</label>
         <span class="desc">Please give your real full name here. (only alphabets and spaces allowed for name)</span>
@@ -55,6 +55,7 @@
         <input type="checkbox" name="user_anon" id="user_anon" value="yes" {% if user.anonymous %} checked {% endif %}>
 
         <input type="submit" value="Edit profile" class="submit-button" />
+        <p><a href="{{URL}}home">No, let me go back</a></p>
     </form>
 </section>
 {% endblock %}

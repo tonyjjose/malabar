@@ -146,7 +146,7 @@ class UserModel
         $id = Request::post('user_id');
         $name = Request::post('user_name');
         $email = Request::post('user_email');
-        $password = Request::post('user_password');
+        $password = trim(Request::post('user_password'));
         $age = (int)Request::post('user_age');
         $sex = Request::post('user_sex');
         $qual = Request::post('user_qual');
@@ -199,9 +199,8 @@ class UserModel
             $mobile, $address, $mode, $type, $approved, $active, $anon); 
         } 
         else { //new password provided. Validate it
-            
-            $password = trim($password);            
-            if(strlen($password) == 0 || strlen($password) > 8) {
+                        
+            if(strlen($password) > 8) {
                 Feedback::addNegative('Failed! user password is invalid.');
                 return false;
             }
@@ -233,6 +232,66 @@ class UserModel
         //We come here if its not updated properly, notify it and exit
         Feedback::addNegative('Failed! Unknown reason.');
         return false;         
+    }
+
+    /**
+    * Edit user process but with less privileges.
+    *
+    * This is a short version of the edit save process.
+    * In here, We do not update password and also dont deal with type, approved or acitve.
+    * Used when a student/instructor edits his profile.
+    * @return bool success state
+    */
+    public function editSaveShort()
+    {
+        //get the inputs
+        $id = Request::post('user_id');
+        $name = Request::post('user_name');
+        $email = Request::post('user_email');
+        $age = (int)Request::post('user_age');
+        $sex = Request::post('user_sex');
+        $qual = Request::post('user_qual');
+        $bio = Request::post('user_bio');
+        $phone = Request::post('user_phone');
+        $mobile = Request::post('user_mobile');
+        $address = Request::post('user_address');
+        $mode = Request::post('user_course_mode');
+
+        //since it is a checkbox it wont be set if it was not checked by user.
+        $anon = (Request::post('user_anon') == 'yes') ? YES : NO;        
+
+        //ok we have the inputs, validate them
+        if(!$name || strlen($name) == 0 || strlen($name) > 64) {
+            Feedback::addNegative('Failed! user name is invalid.');
+            return false;
+        }  
+        if(strlen($email) > 64 || (!filter_var($email, FILTER_VALIDATE_EMAIL))) {
+            Feedback::addNegative('Failed! user email not valid.');
+            return false;
+        }              
+        //Check if the user email already exist for another user
+        if (User::emailExistsForAnotherUser($email,$id)) {
+            Feedback::addNegative('Failure! user email already exists.');
+            return false;
+        }
+        if($age < 14 || $age > 99) {
+            Feedback::addNegative('Failed! user should be older than 14.');
+            return false;
+        }  
+
+        //OK try to add to db       
+        $success = Student::update($id, $name, $email, $age, $sex, $qual, $bio, $phone, 
+        $mobile, $address, $mode, $anon); 
+
+        //has it got updated? if so success.
+        if ($success) {
+            Feedback::addPositive("Success! user '{$name}' updated.");
+            return true;
+        }  
+
+        //We come here if its not updated properly, notify it and exit
+        Feedback::addNegative('Failed! Unknown reason.');
+        return false;        
     }
  
     /**
@@ -279,7 +338,7 @@ class UserModel
         //get the inputs
         $id = Session::get('user_id');
         $old_pass = Request::post('user_old_password');
-        $new_pass = Request::post('user_new_password');
+        $new_pass = trim(Request::post('user_new_password'));
 
         $user = User::getInstance($id);
 
@@ -290,8 +349,7 @@ class UserModel
             return false;           
         }                   
 
-        //Validate new password
-        $new_pass = trim($new_pass);            
+        //Validate new password           
         if(strlen($new_pass) == 0 || strlen($new_pass) > 8) {
             Feedback::addNegative('Failed! New password is invalid.');
             return false;

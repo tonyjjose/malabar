@@ -3,8 +3,8 @@
 /**
  * Mailer class.
  *
- * Prepare and send mails.
- * As of now we use PHPMailer to send mails.
+ * Prepare and send mails for our application.
+ * As of now we use PHPMailer to send mails using SMTP. Should we need to change to native sendmail? 
  *
  */
 class Mailer
@@ -26,7 +26,7 @@ class Mailer
 		// 0 = off (for production use)
 		// 1 = client messages
 		// 2 = client and server messages
-		$this->mail->SMTPDebug = 0;
+		$this->mail->SMTPDebug = PHPMAILER_DEBUB_STATUS;
 
 		//Ask for HTML-friendly debug output
 		$this->mail->Debugoutput = 'html';
@@ -56,18 +56,26 @@ class Mailer
 		//$mail->addReplyTo('replyto@example.com', 'Malabar Bible Courses');
     }
 
-
+    /**
+     * Prepare a new email.
+     * We also parse the mail body and substitute the keywords with the values, if provided.
+     * @param params associative array. 
+     */
 	public function newMail($params = array())
 	{
+
+		//unset any prev address.
+		$this->mail->ClearAddresses();
 
 		//Set who the message is to be sent to
 		//$this->mail->addAddress($params['_to'], $params['_name']);
 
-		$this->mail->addAddress("tonyjose2@gmail.com", $params['_name']);
+		$this->mail->addAddress("tonyjose2@gmail.com", $params['_name']); /*-------for testing---------*/
 
 		//Set the subject line
 		$this->mail->Subject = $params['_subject'];
 
+		//parse the message and replace the keywords
 		$msg = $this->prepareMessage($params);
 
 		//Read an HTML message body from an external file, convert referenced images to embedded,
@@ -75,11 +83,23 @@ class Mailer
 		$this->mail->msgHTML($msg);
 	}
 
+    /**
+     * Prepare the message body.
+     * We just replaces the keywords in the message body which has the same value as the array key, 
+     * with the corresponding array values.
+     * Eg: Like, replacing a '_stuName' keyword in message using params['_stuName'] value.
+     * @param params associative array.
+     * @return string ,prepared message. 
+     */
 	private function prepareMessage($params)
 	{
 		return str_replace(array_keys($params), array_values($params), $params['_msg']);
 	}
 
+    /**
+     * Send the mail
+     * @return bool status
+     */
 	public function sendMail()
 	{
 		//return true;
@@ -92,11 +112,18 @@ class Mailer
 		}
 	}
 
+    /**
+     * Get the message body.
+     * 
+     * The mail texts are stored as an associative array in the mails.php file. Return the 
+     * corresponding message of the requested key.
+     * @param string messagekey
+     * @return bool status
+     */
     public static function mail($key)
     {
        $mails = require('application/config/mails.php');
        
        return $mails[$key];
-    }	
-
+    }
 }

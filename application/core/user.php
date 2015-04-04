@@ -168,7 +168,7 @@ class User
             return new Student($row->user_id,$row->user_name,$row->user_password_hash,$row->user_email,$row->user_age,
                 $row->user_sex,$row->user_qualification,$row->user_bio,$row->user_phone,$row->user_mobile,$row->user_address,
                 $row->user_course_mode,$row->user_approved,$row->user_active,$row->user_anonymous,
-                $row->user_creation_timestamp,$row->user_last_login_timestamp);            # code...
+                $row->user_creation_timestamp,$row->user_last_login_timestamp);
         }
         else
         {
@@ -249,6 +249,26 @@ class User
         }
 
         return $users;       
+    }
+
+    public static function getLatestUsers()
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();
+
+        $query = $db->query("SELECT * FROM users ORDER BY user_creation_timestamp DESC LIMIT 10");   
+        $rows = $query->fetchAll();
+
+        //the list of objects
+        $users = array();
+
+        foreach ($rows as $row) {
+            $users[] = new User($row->user_id,$row->user_name,$row->user_password_hash,$row->user_email,$row->user_age,
+                $row->user_sex,$row->user_qualification,$row->user_bio,$row->user_phone,$row->user_mobile,
+                $row->user_address,$row->user_course_mode,$row->user_type,$row->user_approved,$row->user_active,
+                $row->user_anonymous,$row->user_creation_timestamp,$row->user_last_login_timestamp);
+        }
+
+        return $users;         
     }
 
     /**
