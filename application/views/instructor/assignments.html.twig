@@ -1,0 +1,24 @@
+{% extends "instructor/instructor_base.html.twig" %}
+{% block title %}Assignments List{% endblock %}
+{% block content %}
+<section class="dash">
+    <h2>Assignments</h2>
+    <a href="{{URL}}home">Back to home</a>
+    <p>All the uploaded assignments are displayed below. Clicking on the names shall download them.</p>
+        <table>
+        {# table head #}
+        <tr><th>No</th><th>Assignment</th><th>Course</th><th>Date</th></tr>
+
+        {# list the users #}             
+        {% for  assignment in assignments %}
+            <tr>
+                <td>{{loop.index}}</td>
+                <td><a href="{{URL}}assignment/download?f={{assignment.linkfile}}&n={{assignment.filename}}">{{assignment.filename}}</a></td>
+                <td>{{assignment.student.name}}</td>
+                <td>{{assignment.course.name}}</td>
+                <td>{{assignment.date}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</section>
+{% endblock %}

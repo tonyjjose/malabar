@@ -5,50 +5,47 @@
 {% block content %}
 <section class="dash">
     <h2>Dashboard</h2>
-        <summary id="user_meta">
-            <p><span class="profile">Name :</span>{{user.name}}</p>
-            <p><span class="profile">Email :</span>{{user.email}}</p>
-            <p><span class="profile">Phone :</span>{{user.phone}} , {{user.mobile}}</p>
-            <p><span class="profile">Registered on :</span>{{user.created}}</p>
-        </summary>
-        <a href="{{URL}}profile/edit">Edit my profile</a><br>
-        <a href="{{URL}}profile/changepassword">Change my password</a>
+    <summary id="user_meta">
+        <p><span class="profile">Name :</span>{{user.name}}</p>
+        <p><span class="profile">Email :</span>{{user.email}}</p>
+        <p><span class="profile">Phone :</span>{{user.phone}} , {{user.mobile}}</p>
+    </summary>
+    <a href="{{URL}}profile/view">View my profile</a><br>
+    <a href="{{URL}}profile/edit">Edit my profile</a><br>
+    <a href="{{URL}}profile/changepassword">Change my password</a>
 </section>
 <section class="dash">          
     <h2>Your courses</h2>
-
-    
-        <table>
-            {# table head #}
-            <tr><th>No</th><th>Course</th><th>Desc</th><th>Status</th><th>Actions</th></tr>
-
-            {# list the users #}             
-            {% for  course in courses %}
-                <tr>
-                    <td>{{loop.index}}</td><td>{{course.name}}</td><td>{{course.description}}</td>
-                    <td>{% if course.active %} Yes {% else %} No {% endif %}</td><td><a href="{{URL}}instructor/showstudents/{{user.id}}/{{course.id}}/">Show my course students</a></td>
-                </tr>
-            {% endfor %}
-        </table>
-
-</section>
-<section class="dash">
-    <h2>Latest Assignments</h2>    
-        <table>
+    <p>The list of courses taken by you are displayed below. </p>
+    <table>
         {# table head #}
-        <tr><th>No</th><th>Assignment</th><th>Student</th><th>Course</th><th>Date</th></tr>
+        <tr><th>No</th><th>Course</th><th>Desc</th><th>Status</th><th>Actions</th></tr>
 
         {# list the users #}             
-        {% for  assignment in assignments %}
+        {% for  course in courses %}
             <tr>
-                <td>{{loop.index}}</td>
-                <td><a href="{{URL}}assignment/download/{{assignment.id}}?f={{assignment.linkfile}}&n={{assignment.filename}}">{{assignment.filename}}</a></td>
-                <td>{{assignment.student.name}}</td>
-                <td>{{assignment.course.name}}</td>
-                <td>{{assignment.date}}</td>
+                <td>{{loop.index}}</td><td>{{course.name}}</td><td>{{course.description}}</td>
+                <td>{% if course.active %} Active {% else %} Inactive {% endif %}</td><td><a href="{{URL}}instructor/showstudents/{{course.id}}">Show my course students</a></td>
             </tr>
         {% endfor %}
     </table>
-    <p><a href="{{URL}}instructor/viewallassignments">View all the submitted assignments</a></p>
+</section>
+<section class="dash">
+    <h2>Latest Assignments</h2>    
+    <table>
+    {# table head #}
+    <tr><th>No</th><th>Assignment</th><th>Student</th><th>Course</th><th>Date</th></tr>
+            
+    {% for  assignment in assignments %}
+    <tr>
+        <td>{{loop.index}}</td>
+        <td><a href="{{URL}}assignment/download/{{assignment.id}}?f={{assignment.linkfile}}&n={{assignment.filename}}">{{assignment.filename}}</a></td>
+        <td>{{assignment.student.name}}</td>
+        <td>{{assignment.course.name}}</td>
+        <td>{{assignment.date}}</td>
+    </tr>
+    {% endfor %}
+    </table>
+    <p><a href="{{URL}}instructor/assignments">View all the submitted assignments</a></p>
 </section>
 {% endblock %}

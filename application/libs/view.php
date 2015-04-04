@@ -29,8 +29,9 @@ class View
         //$this->twig = new Twig_Environment($this->loader, array('cache' => TWIG_CACHE_PATH,));
         $this->twig = new Twig_Environment($this->loader, array('cache' => false,'debug' => TWIG_DEBUG_STATUS));   #no cache as we are in dev mode. 
         
-        //add a twig global variable that holds the project URL, user details and last url
-        $this->twig->addGlobal('URL', URL); 
+        //add a twig global variable that holds the application URL, WWW, user details and last url
+        $this->twig->addGlobal('URL', URL);
+        $this->twig->addGlobal('WWW', WWW);  
         $this->twig->addGlobal('SESSION_USER', Session::get('user_name'));
         $this->twig->addGlobal('SESSION_LAST', Session::get('user_last_login'));
         $this->twig->addGlobal('LAST_URL', Session::get('last_url'));  

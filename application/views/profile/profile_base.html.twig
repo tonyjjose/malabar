@@ -2,5 +2,7 @@
 {% block nav %}
 	{{ parent() }}
 	<li><a href="{{URL}}home">Home</a></li>
+	<li><a href="{{URL}}profile/view">View profile</a></li>
     <li><a href="{{URL}}profile/edit">Edit profile</a></li>
+    <li><a href="{{LAST_URL}}">Back</a></li>
 {% endblock %}

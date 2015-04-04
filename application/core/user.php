@@ -155,13 +155,13 @@ class User
         if ($row->user_type == 'M') {
             return new Manager($row->user_id,$row->user_name,$row->user_password_hash,$row->user_email,$row->user_age,
                 $row->user_sex,$row->user_qualification,$row->user_bio,$row->user_phone,$row->user_mobile,$row->user_address,
-                $row->user_approved,$row->user_active,$row->user_anonymous,
+                $row->user_course_mode,$row->user_approved,$row->user_active,$row->user_anonymous,
                 $row->user_creation_timestamp,$row->user_last_login_timestamp);
         }
         elseif ($row->user_type == "I") {
             return new Instructor($row->user_id,$row->user_name,$row->user_password_hash,$row->user_email,$row->user_age,
                 $row->user_sex,$row->user_qualification,$row->user_bio,$row->user_phone,$row->user_mobile,$row->user_address,
-                $row->user_approved,$row->user_active,$row->user_anonymous,
+                $row->user_course_mode,$row->user_approved,$row->user_active,$row->user_anonymous,
                 $row->user_creation_timestamp,$row->user_last_login_timestamp);            
         }
         elseif ($row->user_type == 'S') {

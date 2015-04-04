@@ -42,6 +42,8 @@ class Assignment
     public function getDescription() {
     	return $this->desc;
     }
+
+    //return the diskfilename  of the form ID_TimeString_FilenameWithoutSpecialChars.ext
     public function getLinkFile() {
     	return $this->student->getId()."_".$this->date."_".preg_replace('/[^a-zA-Z0-9._]/','',$this->filename);
     }

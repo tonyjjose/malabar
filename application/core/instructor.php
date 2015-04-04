@@ -1,26 +1,23 @@
 <?php
 
-
 /**
- * Class Instructor
+ * InstructorObject class
  *
- * The base class 
+ * This is the Instructor object. It provides static methods for DB operations as well us helper methods
+ * for various view purposes.
  */
-
-
 class Instructor extends user
 {
-
     function __construct($id, $name, $passward_hash, $email, $age, $sex, $qual, $bio, $phone, 
-        $mobile, $address, $approved, $active, $anon, $created, $last_login)
+        $mobile, $address,  $course_mode, $approved, $active, $anon, $created, $last_login)
     {
     	parent::__construct($id, $name, $passward_hash, $email, $age, $sex, $qual, $bio, $phone, 
-        $mobile, $address, COURSE_MODE_EMAIL, ROLE_INSTRUCTOR, $approved, $active, $anon, $created, $last_login);
+        $mobile, $address, $course_mode, ROLE_INSTRUCTOR, $approved, $active, $anon, $created, $last_login);
     }
+
     /**
-     * Get all instructors from DB, return an array of instructor objects 
-     * 
-     *
+     * Create all instructor object array
+     * @return array[] of object instructor or null
      */
     public static function getAllInstructors()
     {
@@ -37,13 +34,17 @@ class Instructor extends user
         foreach ($rows as $row) {
             $instructors[] = new Instructor($row->user_id,$row->user_name,$row->user_password_hash,$row->user_email,$row->user_age,
                 $row->user_sex,$row->user_qualification,$row->user_bio,$row->user_phone,$row->user_mobile,
-                $row->user_address,$row->user_approved,$row->user_active,
+                $row->user_address,$row->user_course_mode,$row->user_approved,$row->user_active,
                 $row->user_anonymous,$row->user_creation_timestamp,$row->user_last_login_timestamp);
         }
 
         return $instructors;      
     }
 
+    /**
+     * List of all instructors teaching a course
+     * @return array[] of object instructor or null
+     */
     public static function getAllInstructorsDoingCourse($course_id)
     {
         $db = DatabaseFactory::getFactory()->getConnection();
@@ -61,18 +62,22 @@ class Instructor extends user
         foreach ($rows as $row) {
             $instructors[] = new Instructor($row->user_id,$row->user_name,$row->user_password_hash,$row->user_email,$row->user_age,
                 $row->user_sex,$row->user_qualification,$row->user_bio,$row->user_phone,$row->user_mobile,
-                $row->user_address,$row->user_approved,$row->user_active,
+                $row->user_address,$row->user_course_mode,$row->user_approved,$row->user_active,
                 $row->user_anonymous,$row->user_creation_timestamp,$row->user_last_login_timestamp);
         }
 
         return $instructors; 
     }    
 
+    /**
+     * List of all courses taught by an instructor
+     * @return array[] of object course or null
+     */
     public static function getMyCourses($id)
     {
         $db = DatabaseFactory::getFactory()->getConnection();
 
-        $sql = "SELECT * FROM courses WHERE course_id IN (SELECT course_id FROM student_course WHERE instructor_id = :id) ORDER BY course_name ASC";
+        $sql = "SELECT * FROM courses WHERE course_id IN (SELECT DISTINCT course_id FROM student_course WHERE instructor_id = :id) ORDER BY course_name ASC";
 
         $query = $db->prepare($sql);
         $query->execute(array(':id' => $id));   
@@ -87,11 +92,20 @@ class Instructor extends user
 
         return $courses;        
     }
+
+    /**
+     * List of all students of a course taught by an instructor.
+     * Note that we do not return students who have completed the course. But we return students who are doing 
+     * the course buy inactive.  
+     * @return array[] of object student or null
+     */    
     public static function getMyCourseStudents($instructor_id,$course_id)
     {
         $db = DatabaseFactory::getFactory()->getConnection();
 
-        $sql = "SELECT * FROM users WHERE user_id IN (SELECT DISTINCT student_id FROM student_course WHERE instructor_id = :instructor_id AND course_id = :course_id AND (course_status = :status_active OR course_status = :status_inactive)) ORDER BY user_name ASC";
+        $sql = "SELECT * FROM users WHERE user_id IN (SELECT DISTINCT student_id FROM student_course WHERE 
+            instructor_id = :instructor_id AND course_id = :course_id AND 
+            (course_status = :status_active OR course_status = :status_inactive)) ORDER BY user_name ASC";
 
         $query = $db->prepare($sql);
         $query->execute(array(':instructor_id' => $instructor_id,':course_id'=> $course_id, ':status_active'=>COURSE_INSTANCE_ACTIVE,
@@ -110,6 +124,11 @@ class Instructor extends user
 
         return $students;        
     }
+
+    /**
+     * List of latest 20 assignments uploaded for an instructor
+     * @return array[] of object assignment or null
+     */    
     public static function getLatestAssignments($id)
     {
         $db = DatabaseFactory::getFactory()->getConnection();  
@@ -132,6 +151,11 @@ class Instructor extends user
         }
         return $assignments;         
     }
+
+    /**
+     * List of all assignments uploaded for an instructor
+     * @return array[] of object assignment or null
+     */      
     public static function getAllAssignments($id)
     {
         $db = DatabaseFactory::getFactory()->getConnection();  
@@ -154,7 +178,11 @@ class Instructor extends user
         }
         return $assignments;         
     }
-
+    
+    /**
+     * Get the instructor for whom the assignment is for.
+     * @return object Instructor or null
+     */
     public static function getInstructorForAssignment($student_id, $course_id)
     {
         $db = DatabaseFactory::getFactory()->getConnection(); 
@@ -169,6 +197,7 @@ class Instructor extends user
 
         return Instructor::getInstance($row->instructor_id);
     }
+
     /**
      * Check for user type instructor.
      * @return bool status
