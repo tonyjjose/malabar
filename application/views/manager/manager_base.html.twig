@@ -1,10 +1,10 @@
 {% extends "layout.html.twig" %}
 {% block nav %}
 	{{ parent() }}
-	<li><a href="{{URL}}manager">Home</a></li>
+	<li><a href="{{URL}}home">Home</a></li>
     <li><a href="{{URL}}user">Users</a></li>
     <li><a href="{{URL}}course">Courses</a></li>
-    <li><a href="{{URL}}student">Students</a></li>
-	<li><a href="{{URL}}instructor">Instructors</a></li>
-	<li><a href="{{URL}}report">Reports</a></li>
+    <li><a href="{{URL}}manager/student">Students</a></li>
+	<li><a href="{{URL}}manager/instructor">Instructors</a></li>
+	<li><a href="{{URL}}manager/index#report">Reports</a></li>
 {% endblock %}

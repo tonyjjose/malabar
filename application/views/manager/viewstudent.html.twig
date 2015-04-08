@@ -24,10 +24,11 @@
 </section>
 <section>
     <h2>Courses</h2>
-    <a href="{{URL}}manager/enrol/{{user.id}}/">Enrol for a new course</a>
+    <a href="{{URL}}manager/enrol/{{user.id}}">Enrol for a new course</a>
     <span class="desc">Click on to enrol the student for a course and to assign an instructor</span>
 
     <h3>Enrolled courses</h3>
+    <p>The list of courses currently enrolled by the student are displayed below. Click on 'Edit' to change the Instructor or to make a course Completed/Inactive.</p>    
     <table>
     {# table head #}
     <tr><th>No</th><th>Course</th><th>Instructor</th><th>Joined</th><th>Status</th><th>Actions</th></tr>
@@ -42,6 +43,6 @@
         </tr>
     {% endfor %}
     </table>
-    <p>The list of courses currently enrolled by the student are displayed above. Click on 'Edit' to change the Instructor or to make a course Completed/Inactive.</p>        
+        
 </section>
 {% endblock %}

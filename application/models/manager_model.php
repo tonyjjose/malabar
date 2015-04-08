@@ -1,21 +1,19 @@
 <?php
 
 /**
- * UserModel
+ * ManagerModel
  *
- * Handles the users related bussiness logic
+ * Handles the Manager related bussiness logic
  */
 
 class ManagerModel
-{
-    /**
-     * Constructor, expects a Database connection
-     * @param Database $db The Database object
-     */        
+{       
 
+    /**
+    * Student enrollment save process
+    */
     public function enrolSave()
     {
-
     	//get the inputs
         $student_id = Request::post('student_id');
         $course_id = Request::post('course_id');
@@ -35,6 +33,11 @@ class ManagerModel
             return false;
         }
 
+        if(!$student_id || !$course_id || !$instructor_id) {
+            Feedback::addNegative('Failed! Choose a course or instructor');
+            return false;            
+        }
+
         //create the time string to be put in DB.
         $join_date = date('Y-m-d H:i:s', time());
 
@@ -48,9 +51,12 @@ class ManagerModel
     	Feedback::addNegative('Failed! Student not enrolled.');
     	return false;
     }
+
+    /**
+    * Student enrollment edit process
+    */    
     public function editEnrolSave()
     {
-
     	//get the inputs
         $student_id = Request::post('student_id');
         $course_id = Request::post('course_id');
@@ -68,6 +74,9 @@ class ManagerModel
     	return false;
     }
 
+    /**
+    * Disenrollment process
+    */  
     public function disEnrolSave()
     {
     	//get the inputs
@@ -75,6 +84,7 @@ class ManagerModel
         $course_id = Request::post('course_id');
 
         $success = Student::deleteCourseInstance($student_id,$course_id);
+        
         if ($success) {
       		Feedback::addPositive('Success! Student disenrolled.');
       		return true;
@@ -84,6 +94,3 @@ class ManagerModel
     	return false;        
     }
 }
-
-
-

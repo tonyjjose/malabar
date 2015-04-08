@@ -1,25 +1,22 @@
 {% extends "manager/manager_base.html.twig" %}
 
-{% block title %}Report{% endblock %}
+{% block title %}Instructor Reports{% endblock %}
 
-{# no feedback display needed here as this is just a confimation request page #}
 {% block content %}
 <section id="userform">
-    <h2>Student reports</h2>
-        <p>Select the criteria for displaying report </p>
-        Select Instructors doing the,
-            <form action="{{URL}}report/instructor/view" method="post">
-
-                    
-                    <label for="course_id">Course</label>
-                                        <select name="course_id" id="course_id" size="4">
-                        {% for course in courses %}
-                            <option value="{{course.id}}">{{course.name}}</option>
-                        {% endfor %}
-                        <option value="None">None</option>
-                        <option value="All">All</option>
-                    </select>
-                    <input type="submit" text="yes" class="submit-button" />
-            </form>      
+    <h2>Instructor Reports</h2>
+    <p>Select the criteria for display </p>
+    Select Instructors teaching the,
+    <form action="{{URL}}report/instructor/view" method="post">           
+        <label for="course_id">Course</label>
+        <select name="course_id" id="course_id" size="4" required>
+            {% for course in courses %}
+                <option value="{{course.id}}">{{course.name}}</option>
+            {% endfor %}
+            <option value="None">None</option>
+            <option value="Any">Any</option>
+        </select>
+        <input type="submit" text="yes" class="submit-button" />
+    </form>      
 </section>
 {% endblock %}

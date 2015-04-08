@@ -7,7 +7,6 @@
  * for various view purposes. Other specialised types like Student, Manager and Instructor extend this class
  */
 
-
 class User
 {
     //properties
@@ -203,14 +202,12 @@ class User
         if (empty($row)) {return null;}   
 
         return User::getInstance($row->user_id);
-
     }    
 
     /**
-     * Create User instance from email.
+     * Get user ID from email.
      *
-     * We query for the ID and call the getInstance method. 
-     * @return object user or null
+     * @return int user id
      */    
     public static function getIdFromEmail($email)
     {
@@ -225,8 +222,8 @@ class User
         if (empty($row)) {return null;}   
 
         return $row->user_id;
+    }
 
-    } 
     /**
      * Create all user objects array
      * @return array[] of object user or null
@@ -235,7 +232,7 @@ class User
     {
         $db = DatabaseFactory::getFactory()->getConnection();
 
-        $query = $db->query("SELECT * FROM users ORDER BY user_name, user_type ASC");   
+        $query = $db->query("SELECT * FROM users ORDER BY user_name ASC, user_type ASC");   
         $rows = $query->fetchAll();
 
         //the list of objects
@@ -251,6 +248,12 @@ class User
         return $users;       
     }
 
+    /**
+     * List all latest users.
+     *
+     * We sort by creation time stamp and return latest 10
+     * @return array[] of object user or null
+     */
     public static function getLatestUsers()
     {
         $db = DatabaseFactory::getFactory()->getConnection();
@@ -374,7 +377,6 @@ class User
      * @param @name, @id Email
      * @return bool whether email already exits
      */
-
     public static function emailExists($email)
     {
         $db = DatabaseFactory::getFactory()->getConnection();
@@ -391,7 +393,7 @@ class User
     /**
      * Check if a given user email already exists for another user.
      *
-     * This is used while editing a user's.
+     * This is used while editing a user's profile.
      * @param @email, @id Email and ID of the current user
      * @return bool whether user email exists for another user
      */    

@@ -44,7 +44,7 @@ class Student extends User
 
         foreach ($rows as $row) {
             $course = Course::getInstance($row->course_id);
-            $instructor = User::getInstance($row->instructor_id);
+            $instructor = Instructor::getInstance($row->instructor_id);
             $this->courseInstances[] = new CourseInstance ($course,$instructor,$row->join_date,$row->course_status);            
         }     
     }     
@@ -73,7 +73,32 @@ class Student extends User
         }
 
         return $students;       
-    }   
+    }
+
+    /**
+     * Create student object array based on the given query.
+     * This procedure may not be the most elagant way, but anyhow it does the job. :)
+     * @param string SQL containing the selection criteria.
+     * @return array[] of object student or null
+     */
+    public static function getStudents($sql)
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();
+        $query = $db->query($sql);   
+        $rows = $query->fetchAll();
+
+        //the list of objects
+        $students = array();
+
+        foreach ($rows as $row) {
+            $students[] = new Student($row->user_id,$row->user_name,$row->user_password_hash,$row->user_email,$row->user_age,
+                $row->user_sex,$row->user_qualification,$row->user_bio,$row->user_phone,$row->user_mobile,
+                $row->user_address,$row->user_course_mode, $row->user_approved,$row->user_active,
+                $row->user_anonymous,$row->user_creation_timestamp,$row->user_last_login_timestamp);
+        }
+
+        return $students;         
+    } 
 
     /**
      * Update student to DB.
@@ -283,7 +308,7 @@ class Student extends User
     /**
     * Get the list of enrolled courses for a student.
     *
-    * The list only includes active courses(ie status=1). We also do not list his completed courses.
+    * We do not list his completed courses.
     * @return array[] course object
     */
     public static function getEnrolledCourses($id)
@@ -291,8 +316,7 @@ class Student extends User
         $db = DatabaseFactory::getFactory()->getConnection();      
         
         $sql = "SELECT * FROM courses WHERE course_id IN (SELECT course_id FROM student_course WHERE 
-            student_id = :student_id AND course_status <> '".COURSE_INSTANCE_COMPLETED."')
-            AND course_active ='".ACTIVE."' ORDER BY course_name ASC"; 
+            student_id = :student_id AND course_status <> '".COURSE_INSTANCE_COMPLETED."') ORDER BY course_name ASC"; 
 
         $query = $db->prepare($sql);
         $query->execute(array(':student_id'=>$id));
@@ -326,7 +350,7 @@ class Student extends User
         $db = DatabaseFactory::getFactory()->getConnection();      
         
         $sql = "SELECT * FROM courses WHERE course_id NOT IN (SELECT course_id FROM student_course WHERE student_id = :student_id)
-         AND course_active ='".ACTIVE."' ORDER BY course_name ASC"; 
+         AND course_active = '".ACTIVE."' ORDER BY course_name ASC"; 
 
         $query = $db->prepare($sql);
         $query->execute(array(':student_id'=>$id));

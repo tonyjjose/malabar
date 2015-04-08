@@ -16,7 +16,6 @@ class CourseController extends Controller
     {  
        parent::__construct();
 
-       //only managers can access this controller
        if(!(Session::get('user_type') == ROLE_MANAGER)) {
             Redirect::to('error/noauth');
        }
@@ -30,20 +29,10 @@ class CourseController extends Controller
      */
     public function index()
     {
-        $courses = Course::getAllCourses();
-        $categories = Category::getAllCategories();        
-        $params = array('courses'=>$courses, 'categories'=>$categories);    
+        $courses = Course::getAllCourses();       
+        $params = array('courses'=>$courses);    
 
         $this->view->render('course/index.html.twig', $params);
-    }
-
-    /**
-     * A test function for debugging purposes.
-     */
-    public function test($id){
-        // $cat = Category::getInstance($id);
-        //var_dump($cat);
-        //var_dump(Category::getAllCategories());
     }
 
     /**

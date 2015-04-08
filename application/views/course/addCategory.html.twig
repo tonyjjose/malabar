@@ -4,20 +4,21 @@
 
 {% block content %}
 <section>
-        <h2>Category</h2>
-        <p>Course categories are a means to group courses. For example a language can be a category.</p>
+    <h2>Course Category</h2>
+    <p>Course categories are a means to group courses. For example, a language can be a category.</p>
 </section>
 <section id="courseform">
     <h2>Add a new category</h2>
     <form action="{{URL}}course/addcategorysave" method="post">
         <label for="category_name">Category Name</label>
-        <span class="desc">Category name should be concise. The use of spaces, numbers and underscore allowed.</span>
+        <span class="desc">Category name should be concise. The use of spaces, numbers and underscore are allowed(though not in beginning).</span>
         <input type="text" name="category_name" maxlength="15"  id="category_name" 
-            pattern="^[a-zA-Z0-9][a-zA-Z0-9_ ]{0,25}" required/>
+            pattern="^[a-zA-Z0-9][a-zA-Z0-9_ ]{0,15}" required/>
         <label for="category_desc">Description</label>
         <textarea id="category_desc" name="category_desc" maxlength="255" cols="50" rows="5" 
         placeholder="A small description about the category, if any"></textarea>
         <input type="submit" class="submit-button" value="Add Category" />
     </form>
+    <p><a href="{{LAST_URL}}">No, let me go back</a></p>
 </section>
 {% endblock %}

@@ -107,7 +107,6 @@ class UserController extends Controller
         //gather the parameters
         $user = User::getInstance($id);
 
-        //display request for confirmation 
         $params = array('user'=>$user);
         $this->view->render('user/delete.html.twig', $params);        
     }   

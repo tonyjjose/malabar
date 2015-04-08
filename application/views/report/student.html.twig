@@ -1,37 +1,35 @@
 {% extends "manager/manager_base.html.twig" %}
 
-{% block title %}Report{% endblock %}
+{% block title %}Student Reports{% endblock %}
 
-{# no feedback display needed here as this is just a confimation request page #}
 {% block content %}
 <section id="userform">
-    <h2>Student reports</h2>
-        <p>Select the criteria for displaying report </p>
-        Select students doing the,
-            <form action="{{URL}}report/student/view" method="post">
-
-                    
-                    <label for="course_id">Course</label>
-                                        <select name="course_id" id="course_id" size="4">
-                        {% for course in courses %}
-                            <option value="{{course.id}}">{{course.name}}</option>
-                        {% endfor %}
-                        <option value="None">None</option>
-                        <option value="All">All</option>
-                    </select>
-                    <label for="mode">of Mode</label>
-                    <select name="mode" size="4" id="mode">
-                        <option value="E">Email</option>
-                        <option value="P">Postal</option>
-                        <option value="B" selected>Both</option>
-                    </select>                    
-                    <label for="status">with Status of the course</label>
-                    <select name="status" size="4" id="status">
-                        <option value="A" selected>Active</option>
-                        <option value="I">Inactive</option>
-                        <option value="C">Completed</option>
-                    </select>
-                    <input type="submit" text="yes" class="submit-button" />
-            </form>      
+    <h2>Student Reports</h2>
+    <p>Select the criteria for display,</p>
+    Select students doing the,
+    <form action="{{URL}}report/student/view" method="post">           
+        <label for="course_id">Course</label>
+        <select name="course_id" id="course_id" size="4" required>
+            {% for course in courses %}
+                <option value="{{course.id}}">{{course.name}}</option>
+            {% endfor %}
+            <option value="None">None</option>
+            <option value="All">All</option>
+        </select>
+        <label for="mode">of Mode</label>
+        <select name="mode" size="4" id="mode" required>
+            <option value="E">Email</option>
+            <option value="P">Postal</option>
+            <option value="B" selected>Both</option>
+        </select>                    
+        <label for="status">with Status of the course</label>
+        <select name="status" size="4" id="status" required>
+            <option value="A" selected>Active</option>
+            <option value="I">Inactive</option>
+            <option value="C">Completed</option>
+            <option value="All">Any</option>
+        </select>
+        <input type="submit" value="Display Report" class="submit-button" />
+    </form>      
 </section>
 {% endblock %}

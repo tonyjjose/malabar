@@ -16,16 +16,16 @@
 </section>
 <section class="dash">          
     <h2>Your courses</h2>
-    <p>The list of courses taken by you are displayed below. </p>
+    <p>The list of courses taken by you are displayed below. The list aslo includes courses that were previously taught by you. </p>
     <table>
         {# table head #}
-        <tr><th>No</th><th>Course</th><th>Desc</th><th>Status</th><th>Actions</th></tr>
+        <tr><th>No</th><th>Course</th><th>Description</th><th>Students</th><th>Actions</th></tr>
 
         {# list the users #}             
         {% for  course in courses %}
             <tr>
                 <td>{{loop.index}}</td><td>{{course.name}}</td><td>{{course.description}}</td>
-                <td>{% if course.active %} Active {% else %} Inactive {% endif %}</td><td><a href="{{URL}}instructor/showstudents/{{course.id}}">Show my course students</a></td>
+                <td>{{user.studentcount(user.id,course.id)}}</td><td><a href="{{URL}}instructor/showstudents/{{course.id}}">Show  students</a></td>
             </tr>
         {% endfor %}
     </table>

@@ -5,27 +5,27 @@
 {% block content %}
 <section>
     <h2>Users</h2>
-    <p>Every user (including students, instructors and managers) in the system are diplayed here.
-        They are sorted by their name and then by type.  <br>Note that a user is displyed here even if the user is approved/active/anonymous or not</p>
+    <p>Every user (including students, instructors and managers) in the system are displayed here.
+        They are sorted by their name and then by type.<br>Note that a user is displyed here even if the user is approved/active/anonymous or not</p>
     <a href="{{URL}}user/add">Add a new user</a>
- </section>
+</section>
 <section>
-        <h2>The list of available users</h2>
-        <table>
-            {# table head #}
-            <tr><th>No</th><th>Name</th><th>User ID</th><th>Email</th><th>Type</th><th>Approved</th><th>Actions</th></tr>
+    <h2>The list of available users</h2>
+    <table>
+    {# table head #}
+    <tr><th>No</th><th>Name</th><th>User ID</th><th>Email</th><th>Type</th><th>Approved</th><th>Actions</th></tr>
 
-            {# list the users #}             
-            {% for user in users %}
-                <tr>
-                    <td>{{loop.index}}</td><td>{{user.name}}</td><td>{{user.id}}</td>
-                    <td>{{user.email}}</td>
-                    <td>{% if user.type == 'S' %}Student{% elseif user.type == 'I' %}Instructor{% else %} Manager {% endif %}</td>
-                    <td> {% if user.approved == 1 %}Yes {% else %} No {% endif %}</td>
-                    <td><a href="{{URL}}user/edit/{{user.id}}">Edit</a><br>
-                        <a href="{{URL}}user/delete/{{user.id}}">Delete</a></td>                    
-                </tr>
-            {% endfor %}
-        </table>
+    {# list the users #}             
+    {% for user in users %}
+        <tr>
+            <td>{{loop.index}}</td><td>{{user.name}}</td><td>{{user.id}}</td>
+            <td>{{user.email}}</td>
+            <td>{% if user.type == 'S' %}Student{% elseif user.type == 'I' %}Instructor{% else %} Manager {% endif %}</td>
+            <td> {% if user.approved == 1 %}Yes {% else %} No {% endif %}</td>
+            <td><a href="{{URL}}user/edit/{{user.id}}">Edit</a><br>
+                <a href="{{URL}}user/delete/{{user.id}}">Delete</a></td>                    
+        </tr>
+    {% endfor %}
+    </table>
 </section>
 {% endblock %}

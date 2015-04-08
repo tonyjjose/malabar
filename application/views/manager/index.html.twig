@@ -11,57 +11,64 @@
         <p><span class="profile">Phone :</span>{{user.phone}} , {{user.mobile}}</p>
         <p><span class="profile">Created on :</span>{{user.created}}</p>
     </summary>
-    <a href="{{URL}}user/edit/{{user.id}}">Edit my profile</a><br>
+    <a href="{{URL}}profile/view">View my profile</a><br>
+    <a href="{{URL}}profile/edit">Edit my profile</a><br>
     <a href="{{URL}}profile/changepassword">Change my password</a>
 </section>
 <section class="dash">
     <h2>Actions</h2>
-    <p>The available actions for manager are listed here.</p>
+    <p>The available actions are listed here.</p>
 
     <h3>Course</h3>
     <a href="{{URL}}course">List of all courses</a>
-    <span class="desc">(to edit/delete a course use the links next to the course name in the above list)</span>
+    <span class="desc">(to edit/delete a course use the links next to the course name in the displayed list)</span>
     <a href="{{URL}}course/add">Add a new course</a><br>
     <a href="{{URL}}course/addcategory">Add a new course category</a>
 
     <h3>Student</h3>
-    <a href="{{URL}}manager/viewstudents">View the full list of students</a>
-    <span class="desc">Click on the student's name in the list to view the details of the student and to enrol/disenrol or edit enrollment of a student</span>
+    <a href="{{URL}}manager/student">View the full list of students</a>
+    <span class="desc">Click on the student's name in the list to see his courses, enrol/disenrol or edit enrollment of a student</span>
     <a href="{{URL}}user/add">Add a new student</a>
 
     <h3>Instructor</h3>
-    <a href="{{URL}}user">View the full list of instructors</a>
-    <span class="desc">Remember to set the type to 'instructor' while adding new</span>
+    <a href="{{URL}}manager/instructor">View the full list of instructors</a>
+    <span class="desc">Click on the instructor's name in the list to see the courses taught, and the number of students</span>    
     <a href="{{URL}}user/add">Add a new instructor</a>
+    <span class="desc">Remember to set the type to 'instructor' while adding new</span>
 
     <h3>Users</h3>
     <p>Users include everyone using the system.</p>
-    <a href="{{URL}}user">View the full list of users</a><br>
+    <a href="{{URL}}user">View the full list of users</a>
+    <span class="desc">(to edit/delete a user, use the links next to the user name in the displayed list)</span>
     <a href="{{URL}}user/add">Add a new user</a>
 </section>
 <section class="dash">
-    <h2>Reports</h2>
+    <h2><a id="report">Reports</a></h2>
     <a href="{{URL}}report/student">Student reports</a>
-    <span class="desc">Click on to create a list of students based on various criteria like, course, mode, status etc.</span><br>
+    <span class="desc">Click on to create a list of students based on various criteria like, course, mode, status etc.</span>
+    <a href="{{URL}}report/instructor">Instructor reports</a>
+    <span class="desc">Click on to view a list of instructors based on courses.</span>
+    <a href="{{URL}}report/course">Course reports</a>
+    <span class="desc">Click on to view a list of courses.</span>    
 </section>
 <section class="dash">
     <h2>Latest User Registrations</h2>
-    <span class="desc">The lastest 10 user registrations are listed here.</span>
-        <table>
-            {# table head #}
-            <tr><th>No</th><th>Name</th><th>User ID</th><th>Email</th><th>Type</th><th>Approved</th><th>Actions</th></tr>
+    <p>The latest 10 user registrations are listed here.</p>
+    <table>
+        {# table head #}
+        <tr><th>No</th><th>Name</th><th>User ID</th><th>Email</th><th>Type</th><th>Approved</th><th>Actions</th></tr>
 
-            {# list the users #}             
-            {% for user in users %}
-                <tr>
-                    <td>{{loop.index}}</td><td>{{user.name}}</td><td>{{user.id}}</td>
-                    <td>{{user.email}}</td>
-                    <td>{% if user.type == 'S' %}Student{% elseif user.type == 'I' %}Instructor{% else %} Manager {% endif %}</td>
-                    <td> {% if user.approved == 1 %}Yes {% else %} No {% endif %}</td>
-                    <td><a href="{{URL}}user/edit/{{user.id}}">Edit</a><br>
-                        <a href="{{URL}}user/delete/{{user.id}}">Delete</a></td>                    
-                </tr>
-            {% endfor %}
-        </table>
+        {# list the users #}             
+        {% for user in users %}
+            <tr>
+                <td>{{loop.index}}</td><td>{{user.name}}</td><td>{{user.id}}</td>
+                <td>{{user.email}}</td>
+                <td>{% if user.type == 'S' %}Student{% elseif user.type == 'I' %}Instructor{% else %} Manager {% endif %}</td>
+                <td> {% if user.approved == 1 %}Yes {% else %} No {% endif %}</td>
+                <td><a href="{{URL}}user/edit/{{user.id}}">Edit</a><br>
+                    <a href="{{URL}}user/delete/{{user.id}}">Delete</a></td>                    
+            </tr>
+        {% endfor %}
+    </table>
 </section>
 {% endblock %}

@@ -7,30 +7,26 @@
     <h2>Courses</h2>
     <a href="{{URL}}course/add">Add a new course</a><br>
     <a href="{{URL}}course/addcategory">Add a new course category</a>
-    <a href="{{URL}}public/img/cflfdbeccge.png">Test.file</a>
 </section>   
 <section>
-    <h3>Available courses</h3> 
+    <h3>Available courses</h3>
+    Courses marked 'Inactive' are not available for enrollment.
     <table>
-        {# table head #}
-        <tr><th>No</th><th>Course</th><th>Description</th><th>Category</th><th>Active</th><th>Actions</th></tr>
+    {# table head #}
+    <tr><th>No</th><th>Course</th><th>Description</th><th>Category</th><th>Active</th><th>Actions</th></tr>
 
-        {# list the courses #}             
-        {% for course in courses %}
-            <tr>
-                <td>{{loop.index}}</td><td>{{course.name}}</td><td>{{course.description}}</td>
-                {# display the correct category #}
-                <td>{% for category in categories %} 
-                        {% if course.category.id == category.id %}{{category.name}}{% endif %}
-                    {% endfor %}
-                </td>
-                {# display yes or no based on whether the course is active or not #}
-                <td> {% if course.active == 1 %}Yes {% else %} No {% endif %}</td>
-                <td><a href="{{URL}}course/edit/{{course.id}}">Edit</a><br>
-                    <a href="{{URL}}course/delete/{{course.id}}">Delete</a>
-                </td>
-            </tr>
-        {% endfor %}
+    {# list the courses #}             
+    {% for course in courses %}
+        <tr>
+            <td>{{loop.index}}</td><td>{{course.name}}</td><td>{{course.description}}</td>
+            <td>{{course.category.name}}</td>
+            {# display yes or no based on whether the course is active or not #}
+            <td> {% if course.active == 1 %}Yes {% else %} No {% endif %}</td>
+            <td><a href="{{URL}}course/edit/{{course.id}}">Edit</a><br>
+                <a href="{{URL}}course/delete/{{course.id}}">Delete</a>
+            </td>
+        </tr>
+    {% endfor %}
     </table>
 </section>
 {% endblock %}

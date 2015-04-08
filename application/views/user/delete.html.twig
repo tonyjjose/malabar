@@ -11,7 +11,7 @@
     <form action="{{URL}}user/deletesave" method="post">
         <input type="hidden" name="user_id" value="{{user.id}}">
         <input type="submit" text="yes" class="submit-button" value="Delete user" /><br>
-        <a href="{{URL}}user">No, Let me go back</a>
+        <a href="{{LAST_URL}}">No, Let me go back</a>
     </form>
 </section>
 {% endblock %}

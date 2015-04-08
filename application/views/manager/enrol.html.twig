@@ -12,23 +12,24 @@
         <p><span class="profile">Student Email:</span> {{student.email}}</p>
     </summary>
 
-        <form action="{{URL}}manager/enrolsave" method="post">       
+    <form action="{{URL}}manager/enrolsave" method="post">       
         <input type="hidden" name="student_id" value="{{student.id}}">
         <label for="course_id">Course</label>
         <span class="desc">Click on to select the course to enrol</span>
-        <select name="course_id" id="course_id" size="4">
+        <select name="course_id" id="course_id" size="4" required>
         {% for course in courses %}
             <option value="{{course.id}}" >{{course.name}}</option>
         {% endfor %}
         </select>                    
         <label for="instructor_id">Instructor</label>
         <span class="desc">Choose the instructor for the course for this student</span>
-        <select name="instructor_id" id="instructor_id" size="4">
+        <select name="instructor_id" id="instructor_id" size="4" required>
         {% for instructor in instructors %}
             <option value="{{instructor.id}}">{{instructor.name}}</option>
         {% endfor %}
         </select>
         <input type="submit" value="Enrol" class="submit-button" />
+        <a href="{{URL}}manager/student/{{student.id}}">No, let me go back</a>
     </form>
 </section>
 {% endblock %}

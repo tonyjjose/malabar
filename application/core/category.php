@@ -110,18 +110,5 @@ class Category
             return false;
         }
         return true;
-    }
-
-    /**
-     * Create all category details array.
-     * Not used anymore, just left it undeleted
-     * @return array[] or null
-     */
-    public static function getAllCourseCategoryNames()
-    {
-        $db = DatabaseFactory::getFactory()->getConnection();
-
-        $query = $db->query("SELECT cat_id, cat_name FROM category ORDER BY cat_name ASC");   
-        return $query->fetchAll();  
-    }    
+    }  
 }

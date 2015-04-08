@@ -5,6 +5,8 @@
 {% block content %}
 <section>
     <h2>The list of all students</h2>
+    <a href="{{URL}}home">Back to home</a>
+    <p>Click on the student's name to view his complete profile and add/edit/delete his course enrollments.</p>
     <table>
         {# table head #}
         <tr><th>No</th><th>Name</th><th>User ID</th><th>Email</th><th>Approved</th>
@@ -12,14 +14,15 @@
         {% for student in users %}
         <tr>
             <td>{{loop.index}}</td>
-            <td><a href="{{URL}}manager/viewstudent/{{student.id}}">{{student.name}}</a></td>
+            <td><a href="{{URL}}manager/student/{{student.id}}">{{student.name}}</a></td>
             <td>{{student.id}}</td>
             <td>{{student.email}}</td>
-            <td> {% if student.approved == 1 %}Yes {% else %} No {% endif %}</td>
-            <td> {% if student.active == 1 %}Yes {% else %} No {% endif %}</td>
-            <td> {% if student.anonymous == 1 %}Yes {% else %} No {% endif %}</td>
-            <td><a href="{{URL}}manager/viewstudent/{{student.id}}">View</a><br>
-                <a href="{{URL}}user/edit/{{student.id}}">Edit</a></td>                   
+            <td> {% if student.approved %}Yes {% else %} No {% endif %}</td>
+            <td> {% if student.active %}Yes {% else %} No {% endif %}</td>
+            <td> {% if student.anonymous %}Yes {% else %} No {% endif %}</td>
+            <td>
+                <a href="{{URL}}user/edit/{{student.id}}">Edit</a><br>
+                <a href="{{URL}}user/delete/{{student.id}}">Delete</a></td>
         </tr>
         {% endfor %}
     </table>

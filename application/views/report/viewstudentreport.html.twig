@@ -16,7 +16,7 @@
                     <td> {% if student.active == 1 %}Yes {% else %} No {% endif %}</td>
                     <td> {% if student.anonymous == 1 %}Yes {% else %} No {% endif %}</td>
                     <td>{{student.created}}</td>
-                    <td><a href="{{URL}}manager/viewstudent/{{student.id}}">View</a></td>                   
+                    <td><a href="{{URL}}manager/student/{{student.id}}">View</a></td>                   
                 </tr>
             {% endfor %}
         </table>

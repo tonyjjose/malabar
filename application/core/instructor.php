@@ -16,6 +16,20 @@ class Instructor extends user
     }
 
     /**
+     * The number of students of this instructor
+     * Note that we do not count students who have completed the course. But we count students who are doing 
+     * the course but inactive.  
+     * @return int number of students
+     */ 
+    public function getNoOfStudents()
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();
+
+        return $db->query("SELECT COUNT(student_id) FROM student_course WHERE 
+            instructor_id = '".$this->getId()."' AND course_status <> '".COURSE_INSTANCE_COMPLETED."'")->fetchColumn();        
+    }
+
+    /**
      * Create all instructor object array
      * @return array[] of object instructor or null
      */
@@ -40,6 +54,59 @@ class Instructor extends user
 
         return $instructors;      
     }
+
+    /**
+     * Create all active and approved instructor's array
+     * @return array[] of object instructor or null
+     */
+    public static function getAllActiveInstructors()
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();
+
+        $sql = "SELECT * FROM users WHERE user_type = '".ROLE_INSTRUCTOR."' AND user_active = '".ACTIVE."' 
+            AND user_approved = '".YES."'ORDER BY user_name ASC";
+
+        $query = $db->query($sql);   
+        $rows = $query->fetchAll();
+
+        //the list of objects
+        $instructors = array();
+
+        foreach ($rows as $row) {
+            $instructors[] = new Instructor($row->user_id,$row->user_name,$row->user_password_hash,$row->user_email,$row->user_age,
+                $row->user_sex,$row->user_qualification,$row->user_bio,$row->user_phone,$row->user_mobile,
+                $row->user_address,$row->user_course_mode,$row->user_approved,$row->user_active,
+                $row->user_anonymous,$row->user_creation_timestamp,$row->user_last_login_timestamp);
+        }
+
+        return $instructors;      
+    }
+
+    /**
+     * Create instructor object array based on the given query.
+     * This procedure may not be the most elagant way, but anyhow it does the job. :)
+     * @param string SQL containing the selection criteria.
+     * @return array[] of object instructor or null
+     */
+    public static function getInstructors($sql)
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();
+
+        $query = $db->query($sql);   
+        $rows = $query->fetchAll();
+
+        //the list of objects
+        $instructors = array();
+
+        foreach ($rows as $row) {
+            $instructors[] = new Instructor($row->user_id,$row->user_name,$row->user_password_hash,$row->user_email,$row->user_age,
+                $row->user_sex,$row->user_qualification,$row->user_bio,$row->user_phone,$row->user_mobile,
+                $row->user_address,$row->user_course_mode,$row->user_approved,$row->user_active,
+                $row->user_anonymous,$row->user_creation_timestamp,$row->user_last_login_timestamp);
+        }
+
+        return $instructors;      
+    }    
 
     /**
      * List of all instructors teaching a course
@@ -96,7 +163,7 @@ class Instructor extends user
     /**
      * List of all students of a course taught by an instructor.
      * Note that we do not return students who have completed the course. But we return students who are doing 
-     * the course buy inactive.  
+     * the course but inactive.  
      * @return array[] of object student or null
      */    
     public static function getMyCourseStudents($instructor_id,$course_id)
@@ -123,6 +190,20 @@ class Instructor extends user
         }
 
         return $students;        
+    }
+
+    /**
+     * The number of students for a particular course.
+     * Note that we do not count students who have completed the course. But we count students who are doing 
+     * the course but inactive.  
+     * @return int number of students
+     */ 
+    public function getStudentCount($instructor_id,$course_id)
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();
+        return $db->query("SELECT COUNT(student_id) FROM student_course WHERE 
+            instructor_id = '".$instructor_id."' AND course_id = '".$course_id."' AND 
+            course_status <> '".COURSE_INSTANCE_COMPLETED."'")->fetchColumn();
     }
 
     /**

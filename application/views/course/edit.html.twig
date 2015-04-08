@@ -22,8 +22,7 @@
             {% endfor %}
         </select>    
         <label for="course_active">Active/Inactive (Active if checked)</label>
-        <span class="desc">A course can be made ''Inactive' if it is no longer taught. <br>
-            Note that courses currently taken by students cannot be marked 'Inactive'</span>
+        <span class="desc">A course can be made ''Inactive' and they wont be displayed for enrollment.</span>
         <input type="checkbox" name="course_active" id="course_active" value="yes" {% if course.active == 1 %} checked {% endif %}>                    
         <input type="submit" class="submit-button" value="Edit course"/><a href="{{URL}}course">No, let me go back</a>
     </form>

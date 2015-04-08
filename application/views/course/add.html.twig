@@ -5,21 +5,22 @@
 {% block content %}
 <section id="courseform">
     <h2>Add a course </h2>
-    <form action="{{URL}}course/addSave" method="post">
+    <form action="{{URL}}course/addsave" method="post">
         <label for="course_name">Course Name</label>
-        <span class="desc">Course name should be concise. The use of spaces, numbers and underscore allowed(not in beginning).</span>
+        <span class="desc">Course name should be concise. The use of spaces, numbers and underscore are allowed(though not in beginning).</span>
         <input type="text" name="course_name" id="course_name" maxlength="25" 
             pattern="^[a-zA-Z0-9][a-zA-Z0-9_ ]{0,25}" required/>
         <label for="course_desc">Description</label>
         <textarea id="course_desc" name="course_desc" maxlength="255" cols="50" rows="5" 
         placeholder="A small description about the course, if any"></textarea>
         <label for="course_cat">Course Category</label>
-        <select name="course_cat" id="course_cat" size="4">
+        <select name="course_cat" id="course_cat" size="4" required>
         {% for category in categories %}
             <option value={{category.id}}>{{category.name}}</option>
         {% endfor %}
         </select>  
         <input type="submit" class="submit-button" value="Add course" />
+        <p><a href="{{LAST_URL}}">No, let me go back</a></p>
     </form>
 </section>
 {% endblock %}

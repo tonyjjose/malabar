@@ -16,21 +16,25 @@
         
         <label for="instructor_id">Select Instructor</label>
         <span class="desc">Select a different Instructor if required</span>
+
         <select name="instructor_id" id="instructor_id" size="4">
-            {% for instructor in instructors %}
-                <option value="{{instructor.id}}" {% if instructor.id == courseInstance.instructor.id %}
-                    Selected {% endif %}>{{instructor.name}}</option>
+            {# display the assigned instructor at first and make him selected#}
+            <option value="{{courseInstance.instructor.id}}" selected>{{courseInstance.instructor.name}}</option>
+            {# We loop thorough the all active instructors but we dont re-include the above instructor, even if he is in the list.#}
+            {% for instructor in instructors if not (instructor.id == courseInstance.instructor.id) %}
+                <option value="{{instructor.id}}">{{instructor.name}}</option>
             {% endfor %}
         </select>
 
         <label for="status">Status</label>
-        <span class="desc">Mark Inactive if there is no response from the student</span>
+        <span class="desc">Mark Inactive if there is no response from the student for long time</span>
         <select name="status" id="status" size="3">
             <option value="A"{% if courseInstance.status == 'A' %} Selected {% endif %}>Active</option>
             <option value="I"{% if courseInstance.status == 'I' %} Selected {% endif %}>Inactive</option>
             <option value="C"{% if courseInstance.status == 'C' %} Selected {% endif %}>Completed</option>
         </select>
         <input type="submit" value="Edit enrollment" class="submit-button" />
+        <a href="{{URL}}manager/student/{{student.id}}">No, let me go back</a>
     </form>
 </section>
 {% endblock %}

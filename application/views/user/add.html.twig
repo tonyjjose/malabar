@@ -8,7 +8,7 @@
     <p>Please read the instructions for each field. All fields are required unless marked optional.</p>
     <form action="{{URL}}user/addsave" method="post">
         <label for="user_email">Email</label>
-        <span class="desc">Enter a valid email</span>
+        <span class="desc">Enter a valid email.</span>
         <input type="email" name="user_email" id="user_email" maxlength="64" required/>                
         <label for="user_name">Name</label>
         <span class="desc">Specify full name here (only alphabets and spaces allowed for name)</span>
@@ -44,8 +44,15 @@
         <textarea id="user_address" name="user_address" maxlength="255" cols="30" rows="5"
             placeholder="Full postal address.."></textarea>
 
+        <label for="user_type">User type</label>
+        <select name="user_type" id="user_type" size="4">
+                <option value='S' selected>Student</option>
+                <option value='I'>Instructor</option>
+                <option value='M'>Manager</option>
+        </select>            
+
         <label for="user_course_mode">Course Mode</label>
-        <span class="desc">By choosing Postal all correspondence (lesson delivery and assignment submission) shall be by post. By choosing Email it shall by through email</span>                   
+        <span class="desc">Applies only for student. By choosing Postal all correspondence (lesson delivery and assignment submission) shall be by post. By choosing Email it shall by through email</span>                   
         <input type="radio" name="user_course_mode" id="user_course_mode_e" value="E" checked>
         <label for="user_course_mode_e" class="option" >Email</label>                   
         <input type="radio" name="user_course_mode" id="user_course_mode_p" value="P">
@@ -54,13 +61,6 @@
         <label for="user_anon">Anonymous (yes if checked)</label>
         <span class="desc">Applies only for student. If checked his/her details will not be shown to his/her coursemates</span>
         <input type="checkbox" name="user_anon" id="user_anon" value="yes" >
-
-        <label for="user_type">User type</label>
-        <select name="user_type" id="user_type" size="4">
-                <option value='S' selected>Student</option>
-                <option value='I'>Instructor</option>
-                <option value='M'>Manager</option>
-        </select>
 
         <label for="user_approved">Approved</label>
         <span class="desc">Users cannot login to the site until they are approved. Vandals can also be blocked from 
@@ -75,6 +75,7 @@
         <label for="user_active_n" class="option" >Inactive</label>
                           
         <input type="submit" class="submit-button" value="Add user" />
+        <a href="{{LAST_URL}}">No, let me go back</a>
     </form>
 </section>
 {% endblock %}

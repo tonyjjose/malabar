@@ -7,7 +7,6 @@
  * for various view purposes.
  */
 
-
 class Course
 {
     //properties
@@ -27,6 +26,7 @@ class Course
     public function getDescription() {
         return $this->desc;
     }
+    //active can be toggled off when we wish to disable the course
     public function getActive() {
         return $this->active;
     }    
@@ -39,8 +39,7 @@ class Course
     {  
         $this->id = (is_int($id)) ? $id : (int)$id ;
         $this->name = $name;
-        $this->desc = $desc;  
-        //$this->active = $active;
+        $this->desc = $desc;
         $this->active = (is_bool($active)) ? $active : filter_var($active, FILTER_VALIDATE_BOOLEAN);
         $this->category = $category;
     } 
@@ -88,6 +87,28 @@ class Course
     }
 
     /**
+     * Create all active course object array
+     * @return array[] of object course or null
+     */
+    public static function getAllActiveCourses()
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();
+
+        $query = $db->query("SELECT * FROM courses WHERE course_active = '".ACTIVE."'ORDER BY course_name ASC");   
+        $rows = $query->fetchAll();
+
+        //the list of objects
+        $courses = array();
+
+        foreach ($rows as $row) {
+            $courses[] = new Course($row->course_id,$row->course_name,$row->course_desc,$row->course_active, 
+                Category::getInstance($row->course_category_id));
+        }
+
+        return $courses;        
+    }    
+
+    /**
      * Save course to DB.
      * 
      * we assume that all new courses are active. 
@@ -100,7 +121,7 @@ class Course
         //ok, try to update to db  
         $sql = "INSERT INTO courses (course_name, course_desc, course_category_id) VALUES (:name, :desc, :cat_id)";
         $query = $db->prepare($sql);
-        $query->execute(array(':name'=>$name,':desc'=>$desc,'cat_id'=>$cat_id));
+        $query->execute(array(':name'=>$name,':desc'=>$desc,':cat_id'=>$cat_id));
 
         //has it got updated? if so success.
         if ($query->rowCount() == 1) {
@@ -122,7 +143,7 @@ class Course
         $sql = "UPDATE courses SET course_name = :name, course_desc = :desc, course_active = :active, 
             course_category_id = :cat_id WHERE course_id = :id";
         $query = $db->prepare($sql);
-        $query->execute(array(':name'=>$name,':desc'=>$desc,':active'=>$active,'cat_id'=>$cat_id, 'id'=>$id));
+        $query->execute(array(':name'=>$name,':desc'=>$desc,':active'=>$active,':cat_id'=>$cat_id, ':id'=>$id));
 
         //has it got updated? if so success.
         if ($query->rowCount() == 1) {
@@ -208,42 +229,6 @@ class Course
         return ($query->rowCount() == 1);        
     }
 
-    /******  old functions *****************************************/
-    /**
-     * Create course details array from ID.
-     * Not used anymore, just left it undeleted
-     * @return array[] or null
-     */
-    public static function getCourse($id)
-    {
-        $db = DatabaseFactory::getFactory()->getConnection();
-
-        //query the DB
-        $query = $db->prepare("SELECT * FROM courses WHERE course_id = :id LIMIT 1");
-        $query->execute(array(':id' => $id));
-        
-        //is this check absolutely necessary??
-        if ($query->rowCount() == 0) {
-            return null;
-        }
-
-        //it will raise a DB warning, if there is no row, so we checked it in the prev line.
-        return $query->fetch();
-    } 
-
-    /**
-     * Create all courses' details array.
-     * Not used anymore, just left it undeleted
-     * @return array[] or null
-     */
-    public static function getAllCoursesRows()
-    {
-        $db = DatabaseFactory::getFactory()->getConnection();
-
-        $query = $db->query("SELECT * FROM courses ORDER BY course_name ASC");   
-        return $query->fetchAll();    
-    }
-
     /**
      * Get course name from ID.
      * Not used anymore, just left it undeleted
@@ -265,9 +250,30 @@ class Course
         //it will raise a DB warning, if there is no row, so we checked it in the prev line.
         return $query->fetch()->course_name;
     }
+
+    /**
+     * The number of students for a particular course.
+     * Note that we do not count students who have completed the course. But we count students who are doing 
+     * the course but inactive.  
+     * @return int number of students
+     */ 
+    public static function getStudentCount($id)
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();
+        return $db->query("SELECT COUNT(student_id) FROM student_course WHERE 
+            course_id = {$id} AND course_status <> '".COURSE_INSTANCE_COMPLETED."'")->fetchColumn();
+    }
+
+    /**
+     * The number of completed students for a particular course.
+     * Note that we only count students who have completed the course.
+     * @return int number of students
+     */     
+    public static function getCompletedStudentCount($id)
+    {
+        $db = DatabaseFactory::getFactory()->getConnection();
+        return $db->query("SELECT COUNT(student_id) FROM student_course WHERE 
+            course_id = '".$id."' AND 
+            course_status = '".COURSE_INSTANCE_COMPLETED."'")->fetchColumn();        
+    }
 }
-
-
-   
-
-

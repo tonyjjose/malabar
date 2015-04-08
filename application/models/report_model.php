@@ -1,76 +1,85 @@
 <?php
 
 /**
- * UserModel
+ * ReportModel
  *
- * Handles the users related bussiness logic
+ * Handles the reports related bussiness logic.
  */
 
 class ReportModel
-{
-    /**
-     * Constructor, expects a Database connection
-     * @param Database $db The Database object
-     */        
+{     
 
+    /**
+     * The list of students based on the selection criterea. 
+     * @return array() student object
+     */ 
     public function studentList()
     {
         $course_id = Request::post('course_id');
-        $mode= Request::post('mode');
+        $mode = Request::post('mode');
         $status = Request::post('status');  
+        
         $sql;
 
+        //parse the mode input
         if ($mode == 'B') {
-        	$mode = "(user_course_mode = 'E' OR user_course_mode = 'P')";
-        }
-        else
-        {
+        	$mode = "(user_course_mode = '".COURSE_MODE_EMAIL."' OR user_course_mode = '".COURSE_MODE_POSTAL."')";
+        } else {
         	$mode = "user_course_mode = '{$mode}'";
         }
 
+        //parse the status input
+        if($status == 'All') {
+            $status = "1=1"; //simple trick to drop that condition
+        } else {
+            $status = "course_status = '{$status}'";
+        }
+
+        //parse the course_id input
         if($course_id == 'All')
         {
         	$sql = "SELECT * FROM users WHERE user_id IN (SELECT DISTINCT student_id FROM student_course WHERE
-        	 course_status = '{$status}') AND {$mode} AND user_type = '".ROLE_STUDENT."' ORDER BY user_name ASC";
-
+        	 {$status}) AND {$mode} AND user_type = '".ROLE_STUDENT."' ORDER BY user_name ASC";
         }
         elseif ($course_id == 'None') {
-        	$sql = "SELECT * FROM users WHERE user_id NOT IN (SELECT DISTINCT student_id FROM student_course) AND {$mode} AND user_type = '".ROLE_STUDENT."' ORDER BY user_name ASC";
+        	$sql = "SELECT * FROM users WHERE user_id NOT IN (SELECT DISTINCT student_id FROM student_course) AND 
+             {$mode} AND user_type = '".ROLE_STUDENT."' ORDER BY user_name ASC";
         }
         else 
         {
         	$sql = "SELECT * FROM users WHERE user_id IN (SELECT DISTINCT student_id FROM student_course WHERE
-        	 course_id = '{$course_id}' AND course_status = '{$status}') AND {$mode} AND user_type = '".ROLE_STUDENT."' ORDER BY user_name ASC";        	
+        	 course_id = '{$course_id}' AND {$status}) AND {$mode} AND user_type = '".ROLE_STUDENT."' ORDER BY user_name ASC";        	
         }
-
-        $db = DatabaseFactory::getFactory()->getConnection();
-    	$query = $db->query($sql);
-
-        $rows = $query->fetchAll();
 
         //var_dump($sql);
-
-        //the list of objects
-        $students = array();
-
-        foreach ($rows as $row) {
-            $students[] = new Student($row->user_id,$row->user_name,$row->user_password_hash,$row->user_email,$row->user_age,
-                $row->user_sex,$row->user_qualification,$row->user_bio,$row->user_phone,$row->user_mobile,
-                $row->user_address,$row->user_course_mode,$row->user_approved,$row->user_active,
-                $row->user_anonymous,$row->user_creation_timestamp,$row->user_last_login_timestamp);
-        }
-
-        return $students;
-        
+        return Student::getStudents($sql);       
     }  
 
+    /**
+     * The list of instructors based on the selection criterea. 
+     * @return array() instructor object
+     */ 
     public function instructorList()
     {
         $course_id = Request::post('course_id');
+        $sql;
 
-        $instructors = Instructor::getAllInstructorsDoingCourse($course_id);
+        //parse the course_id
+        if ($course_id == 'Any') {
+                $sql = "SELECT * FROM users WHERE user_type = '".ROLE_INSTRUCTOR."' AND user_id IN 
+        (SELECT DISTINCT instructor_id FROM student_course WHERE course_status <> '".COURSE_INSTANCE_COMPLETED."') ORDER BY user_name ASC";
+        } 
+        elseif ($course_id == 'None') {
+                $sql = "SELECT * FROM users WHERE user_type = '".ROLE_INSTRUCTOR."' AND user_id NOT IN 
+        (SELECT DISTINCT instructor_id FROM student_course WHERE course_status <> '".COURSE_INSTANCE_COMPLETED."') ORDER BY user_name ASC";
 
-        return $instructors;
+        }
+        else {
+                $sql = "SELECT * FROM users WHERE user_type = '".ROLE_INSTRUCTOR."' AND user_id IN 
+        (SELECT DISTINCT instructor_id FROM student_course WHERE course_id = '{$course_id}' AND course_status <> '".COURSE_INSTANCE_COMPLETED."') ORDER BY user_name ASC";
+
+        }
+        //var_dump($sql);
+        return Instructor::getInstructors($sql);
     }
-
 }

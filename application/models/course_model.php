@@ -99,13 +99,15 @@ class CourseModel
         }
         /* If it is marked inactive, check whether the course is in use, before updating.
         *  A course marked Inactive are not taken by students or taught by us.
+        *  ------- changed this rule on Apr 7th -------------
+        *  lets make the course inactive even if it is in use. 
         */
-        if ($active == NO) {
-            if (Course::isCourseInUse($id)) {
-                Feedback::addNegative ("Failure! Course taken by students, cannot mark inactive.");
-                return false;
-            }
-        }
+        // if ($active == NO) {
+        //     if (Course::isCourseInUse($id)) {
+        //         Feedback::addNegative ("Failure! Course taken by students, cannot mark inactive.");
+        //         return false;
+        //     }
+        // }
 
         //ok, try to update to db
         $success = Course::update($id, $name, $desc, $active, $cat_id);

@@ -20,7 +20,8 @@ class ManagerController extends Controller
     /**
      * Display the managers' dashboad.
      * 
-     * We display a short profile information, and links for various actions he can perform.
+     * We display a short profile information, list of latest users, and 
+     * links for various actions he can perform.
      */
     public function index()
     {
@@ -34,37 +35,68 @@ class ManagerController extends Controller
     }
 
     /**
-     * Display the list of students
-     */    
-    public function viewStudents()
-    {
-        $students = Student::getAllStudents();
-        $params = array('users'=>$students );
-        $this->view->render('manager/viewstudents.html.twig',$params);         
-    }
-
-    /**
-     * Display the detail of a particular student
+     * Display the list of students or details of a particular student
      *
+     * If an id is given we display that particular student. 
      * The enrolled coursed will also be listed along with the provisions to make new
      * enrollment, edit and disenrol.
      */     
-    public function viewStudent($id)
+    public function student($id=null)
     {
-        $student = Student::getInstance($id);
-        $student->loadMyCourses();
-        $params = array('user'=>$student);
-        $this->view->render('manager/viewstudent.html.twig',$params);         
+        if(is_null($id)) {
+            $students = Student::getAllStudents();
+            $params = array('users'=>$students );
+            $this->view->render('manager/viewstudents.html.twig',$params);
+        } else {
+            $student = Student::getInstance($id);
+            $student->loadMyCourses();
+            $params = array('user'=>$student);
+            $this->view->render('manager/viewstudent.html.twig',$params);
+        }        
     }
 
+    /**
+     * Display the list of instructors or details of a particular instructor
+     *
+     * If an id is given we display that particular instructor. 
+     * The enrolled coursed will also be listed along with the provisions to make new
+     * enrollment, edit and disenrol.
+     */     
+    public function instructor($id=null)
+    {
+        if(is_null($id)) {
+            $instructors = Instructor::getAllInstructors();
+            $params = array('users'=>$instructors);
+            $this->view->render('manager/viewinstructors.html.twig',$params);
+        } else {
+            $instructor = Instructor::getInstance($id);
+            //$instructor->loadMyCourses();
+            $params = array('user'=>$instructor);
+            $this->view->render('manager/viewinstructor.html.twig',$params);
+        }        
+    }
+    /**
+     * Display the list of students of the given instrucotr for the 
+     * given course
+     */
+    public function courseStudents($instructor_id, $course_id)
+    {
+        $students = Instructor::getMyCourseStudents($instructor_id, $course_id);
+        
+        $params = array('students'=>$students);
+        $this->view->render('manager/coursestudentlist.html.twig',$params);
+
+    }
     /**
      * Display the new enrol form
      */    
     public function enrol($id)
     {
         $student = Student::getInstance($id);
+        //get the list of unenrolled active courses
         $courses = Student::getUnEnrolledCourses($id);
-        $instructors = Instructor::getAllInstructors();
+        //lets get the list of active and approved instructors
+        $instructors = Instructor::getAllActiveInstructors();
 
         $params = array('student'=>$student, 'courses'=>$courses,'instructors'=>$instructors);
         $this->view->render('manager/enrol.html.twig',$params);
@@ -78,7 +110,7 @@ class ManagerController extends Controller
         $id = Request::post('student_id');        
         $manager_model = $this->loadModel('Manager');
         $success = $manager_model->enrolSave();     
-        Redirect::to("manager/viewstudent/{$id}");          
+        Redirect::to("manager/student/{$id}");          
     }    
 
     /**
@@ -88,7 +120,7 @@ class ManagerController extends Controller
     {
         $student = Student::getInstance($student_id);
         $course = Course::getInstance($course_id);
-        $instructors = Instructor::getAllInstructors();
+        $instructors = Instructor::getAllActiveInstructors();
         $courseInstance = Student::getCourseInstance($student_id, $course_id);
 
         $params = array('student'=>$student, 'course'=>$course,'instructors'=>$instructors,'courseInstance'=>$courseInstance);
@@ -104,7 +136,7 @@ class ManagerController extends Controller
         $manager_model = $this->loadModel('Manager');
         $success = $manager_model->editEnrolSave();   
 
-        Redirect::to("manager/viewstudent/{$id}");    
+        Redirect::to("manager/student/{$id}");    
     }
 
     /**
@@ -125,8 +157,7 @@ class ManagerController extends Controller
     {
         $id = Request::post('student_id');
         $manager_model = $this->loadModel('Manager');
-        $success = $manager_model->disEnrolSave(); 
-
-        Redirect::to("manager/viewstudent/{$id}");          
+        $manager_model->disEnrolSave(); 
+        Redirect::to("manager/student/{$id}");          
     }
 }

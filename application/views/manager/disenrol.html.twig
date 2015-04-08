@@ -1,16 +1,16 @@
 {% extends "manager/manager_base.html.twig" %}
 
 {% block title %}Disenrol{% endblock %}
-{% block feedback %}Disenrol{% endblock %}
+{% block feedback %}{% endblock %}
 {% block content %}
 <section id="userform">
     <h2>Disenrol</h2>
-    <p> Are you sure to disenrol the Student: {{student.name}} from the course: {{course.name}}?</p>
+    <p> Are you sure to disenrol "{{student.name}}"" from the course "{{course.name}}"?</p>
     <form action="{{URL}}manager/disenrolsave" method="post">
         <input type="hidden" name="student_id" value="{{student.id}}">
         <input type="hidden" name="course_id" value="{{course.id}}">
         <input type="submit" value="Disenrol" class="submit-button" /><br>
-        <a href="{{URL}}manager/viewstudent/{{student.id}}">No, Let me go back</a>
+        <a href="{{URL}}manager/student/{{student.id}}">No, Let me go back</a>
     </form>
 </section>
 {% endblock %}

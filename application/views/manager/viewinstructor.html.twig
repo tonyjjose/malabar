@@ -1,0 +1,40 @@
+{% extends "manager/manager_base.html.twig" %}
+
+{% block title %}Instructor profile{% endblock %}
+
+{% block content %}
+<section>
+    <h2>Instructor profile</h2>
+    <summary id="user_meta">
+        <p><span class="profile">ID :</span>{{user.id}}</p>
+        <p><span class="profile">Name :</span>{{user.name}}</p>
+        <p><span class="profile">Email :</span>{{user.email}}</p>
+        <p><span class="profile">Age :</span>{{user.age}}</p>
+        <p><span class="profile">Sex :</span>{% if user.sex == 'M'%}Male{% else %}Female{% endif %}</p>
+        <p><span class="profile">Phone :</span>{{user.phone}} , {{user.mobile}}</p>
+        <p><span class="profile">Address :</span><pre>{{user.address}}</pre></p>
+        <p><span class="profile">Active :</span>{% if (user.active) %} Yes {% else %} No {% endif %}</p>
+        <p><span class="profile">Approved :</span>{% if (user.approved) %} Yes {% else %} No {% endif %}</p>
+        <p><span class="profile">Joined on :</span>{{user.created}}</p>
+    </summary>
+    <a href="{{URL}}user/edit/{{user.id}}">Edit instructor profile</a><br>
+    <a href="{{URL}}user/delete/{{user.id}}">Delete instructor</a>
+</section>
+<section>
+    <h2>Courses</h2>
+    <p>The list of courses taught by the instructor are displayed. <br>
+        The number of students currently being taught are also displayed.</p>
+    <p>Clicking on the student count will display the students.</p>    
+    <table>
+    {# table head #}
+    <tr><th>No</th><th>Course</th><th>No: of Students</th></tr>
+    {# list the users #}             
+    {% for course in user.mycourses(user.id) %}
+        <tr>
+            <td>{{loop.index}}</td><td>{{course.name}}</td><td><a href="{{URL}}manager/coursestudents/{{user.id}}/{{course.id}}">{{user.studentcount(user.id,course.id)}}</a></td>
+        </tr>
+    {% endfor %}
+    </table>
+        
+</section>
+{% endblock %}

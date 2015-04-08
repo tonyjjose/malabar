@@ -1,0 +1,30 @@
+{% extends "manager/manager_base.html.twig" %}
+
+{% block title %}Instructors{% endblock %}
+
+{% block content %}
+<section>
+    <h2>The list of all Instructors</h2>
+    <a href="{{URL}}home">Back to home</a>
+    <p>Click on the instructor's name to view his complete profile and the courses taught by him.</p>
+    <table>
+        {# table head #}
+        <tr><th>No</th><th>Name</th><th>User ID</th><th>Email</th><th>Approved</th>
+            <th>Active</th><th>No: of Students</th><th>Actions</th></tr>        
+        {% for instructor in users %}
+        <tr>
+            <td>{{loop.index}}</td>
+            <td><a href="{{URL}}manager/instructor/{{instructor.id}}">{{instructor.name}}</a></td>
+            <td>{{instructor.id}}</td>
+            <td>{{instructor.email}}</td>
+            <td> {% if instructor.approved %}Yes {% else %} No {% endif %}</td>
+            <td> {% if instructor.active %}Yes {% else %} No {% endif %}</td>
+            <td>{{instructor.NoOfStudents}}</td>
+            <td>
+                <a href="{{URL}}user/edit/{{instructor.id}}">Edit</a><br>
+                <a href="{{URL}}user/delete/{{instructor.id}}">Delete</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</section>
+{% endblock %}
